@@ -396,3 +396,59 @@ const TRENDS = [
     ideas: ["Cool Aunt Club", "Auntie Est. {YEAR}", "Promoted To Grandma", "Nana Custom Grandkids Names"],
     tags: ["aunt shirt", "auntie sweatshirt", "cool aunt", "grandma shirt", "nana shirt", "pregnancy reveal", "promoted to aunt", "custom grandma", "aunt gift", "gigi shirt", "grandkids names", "new aunt", "family gift"] },
 ];
+
+/*
+ * ABD etkinlik tarihleri (geri sayım için).
+ *   fixed: [ay, gün]            → her yıl aynı gün
+ *   nth:   [ay, haftaGünü, n]   → ayın n. haftaGünü (0=Pazar, 4=Perşembe); n=-1 son
+ *   easter: true                → Paskalya Pazarı
+ * Etkinliği olmayan trendlerde zirve ayının ortası kullanılır.
+ */
+const EVENTS = {
+  newyear: { name: "Yılbaşı gecesi", fixed: [11, 31] },
+  valentine: { name: "Sevgililer Günü", fixed: [1, 14] },
+  galentine: { name: "Galentine's Day", fixed: [1, 13] },
+  bhm: { name: "Siyahi Tarih Ayı", fixed: [1, 1] },
+  stpatrick: { name: "St. Patrick's Day", fixed: [2, 17] },
+  easter: { name: "Paskalya", easter: true },
+  earthday: { name: "Dünya Günü", fixed: [3, 22] },
+  autism: { name: "Otizm Farkındalık Günü", fixed: [3, 2] },
+  mothers: { name: "Anneler Günü", nth: [4, 0, 2] },
+  teacherapp: { name: "Öğretmenler Haftası", nth: [4, 1, 1] },
+  nurseweek: { name: "Hemşireler Haftası", fixed: [4, 6] },
+  graduation: { name: "Mezuniyet sezonu", fixed: [4, 15] },
+  pride: { name: "Pride Ayı", fixed: [5, 1] },
+  fathers: { name: "Babalar Günü", nth: [5, 0, 3] },
+  juneteenth: { name: "Juneteenth", fixed: [5, 19] },
+  july4: { name: "4 Temmuz", fixed: [6, 4] },
+  backtoschool: { name: "Okulların açılışı", fixed: [7, 15] },
+  football: { name: "Futbol sezonu açılışı", nth: [8, 4, 1] },
+  halloween: { name: "Cadılar Bayramı", fixed: [9, 31] },
+  breastcancer: { name: "Pembe Ekim", fixed: [9, 1] },
+  veterans: { name: "Gaziler Günü", fixed: [10, 11] },
+  thanksgiving: { name: "Şükran Günü", nth: [10, 4, 4] },
+  christmas: { name: "Noel", fixed: [11, 25] },
+  xmasfamily: { name: "Noel", fixed: [11, 25] },
+  uglysweater: { name: "Ugly Sweater Day", nth: [11, 5, 3] },
+};
+
+/*
+ * Gerçek ilgi sinyali: İngilizce Wikipedia sayfa görüntülenmeleri (Wikimedia API, günlük güncellenir).
+ * Etsy/Google Trends'in herkese açık tarayıcı API'si olmadığı için en yakın ücretsiz canlı kaynak budur.
+ */
+const WIKI = {
+  newyear: "New_Year's_Eve", fitness: "Physical_fitness", valentine: "Valentine's_Day",
+  galentine: "Galentine's_Day", bhm: "Black_History_Month", stpatrick: "Saint_Patrick's_Day",
+  basketball: "Basketball", easter: "Easter", earthday: "Earth_Day", autism: "Autism",
+  mothers: "Mother's_Day", teacherapp: "Teachers'_Day", nurseweek: "International_Nurses_Day",
+  graduation: "Graduation", pride: "Pride_Month", fathers: "Father's_Day", juneteenth: "Juneteenth",
+  july4: "Independence_Day_(United_States)", summer: "Summer", reunion: "Family_reunion",
+  bachelorette: "Bachelor_party", backtoschool: "School_supplies", football: "American_football",
+  fall: "Autumn", halloween: "Halloween", breastcancer: "Breast_Cancer_Awareness_Month",
+  thanksgiving: "Thanksgiving_(United_States)", veterans: "Veterans_Day", christmas: "Christmas",
+  xmasfamily: "Christmas_and_holiday_season", uglysweater: "Christmas_jumper", winter: "Skiing",
+  dogmom: "Dog", cat: "Cat", bookish: "BookTok", nurse: "Nursing", teacher: "Teacher",
+  mentalhealth: "Mental_health", faith: "Christianity", western: "Rodeo", outdoors: "Camping",
+  fishing: "Fishing", pickleball: "Pickleball", humor: "Sarcasm", coffee: "Coffee",
+  birthday: "Birthday", aunt: "Grandparent",
+};
