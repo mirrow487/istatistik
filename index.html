@@ -258,6 +258,77 @@ table.plain { border-collapse: collapse; width: 100%; }
 .toast { position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); transform: translate(-50%, 20px); opacity: 0; transition: .25s; z-index: 40; background: var(--good); color: #05210f; padding: 10px 18px; border-radius: 999px; font-weight: 700; pointer-events: none; }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
 
+
+/* ---------- Arka plan silme aracı ---------- */
+.bg-tool { display: grid; grid-template-columns: 340px 1fr; gap: 16px; align-items: start; }
+.bg-tool > * { min-width: 0; }
+.bg-side { display: flex; flex-direction: column; gap: 14px; }
+.drop {
+  display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; cursor: pointer;
+  border: 2px dashed var(--line); border-radius: 16px; padding: 20px 14px; background: var(--panel-2); transition: border-color .15s, background .15s;
+}
+.drop:hover, .drop.over { border-color: var(--accent); background: rgba(255, 138, 61, .07); }
+.drop b { font-family: var(--f-display); font-size: 1.05rem; color: var(--text); }
+.drop span { color: var(--muted); font-size: .82rem; font-weight: 500; }
+.pick-row { display: flex; align-items: center; gap: 8px; }
+.pick-row input[type=color] { width: 44px; height: 40px; padding: 2px; border-radius: 10px; border: 1px solid var(--line); background: var(--panel); cursor: pointer; flex: none; }
+.pick-row .mono { flex: 1; font-size: .9rem; color: var(--text); }
+.pick-row .btn { padding: 8px 12px; font-size: .84rem; }
+.pick-row .btn.on { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.range { display: grid; grid-template-columns: 1fr auto; gap: 4px 10px; align-items: center; }
+.range output { font-family: var(--f-mono); font-size: .8rem; color: var(--text); }
+.range input { grid-column: 1 / -1; accent-color: var(--accent); width: 100%; }
+.range small { grid-column: 1 / -1; color: var(--muted); font-weight: 500; }
+.check { flex-direction: row; align-items: center; gap: 10px; font-size: .88rem; color: var(--text); cursor: pointer; }
+.check input { accent-color: var(--accent); width: 18px; height: 18px; }
+.bg-side .btn.cta { padding: 13px; font-size: 1rem; }
+.hint { color: var(--muted); font-size: .8rem; margin: 0; }
+.stage-bar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; font-size: .82rem; color: var(--text-2); font-weight: 600; }
+.sw { width: 26px; height: 26px; border-radius: 8px; border: 2px solid var(--line); cursor: pointer; padding: 0; }
+.sw.on { border-color: var(--accent); box-shadow: 0 0 0 2px var(--ink), 0 0 0 4px var(--accent); }
+.sw.checker, .after.checker {
+  background-color: #fff;
+  background-image: linear-gradient(45deg, #d6d6d6 25%, transparent 25%), linear-gradient(-45deg, #d6d6d6 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #d6d6d6 75%), linear-gradient(-45deg, transparent 75%, #d6d6d6 75%);
+  background-size: 16px 16px; background-position: 0 0, 0 8px, 8px -8px, -8px 0;
+}
+.sw.checker { background-size: 8px 8px; background-position: 0 0, 0 4px, 4px -4px, -4px 0; }
+.compare { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.compare figure { margin: 0; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.compare figcaption { font-size: .74rem; text-transform: uppercase; letter-spacing: .08em; font-weight: 700; color: var(--muted); }
+.frame { min-width: 0; grid-template-columns: minmax(0, 1fr); border-radius: 14px; border: 1px solid var(--line); overflow: hidden; display: grid; place-items: center; aspect-ratio: 5 / 6; background: var(--panel-2); }
+.frame canvas { max-width: 100%; max-height: 100%; min-width: 0; display: block; margin: auto; }
+#bgBefore { cursor: default; }
+#bgBefore.picking { cursor: crosshair; }
+.stats { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+.stats .pill { white-space: normal; line-height: 1.35; padding-block: 5px; }
+
+/* ---------- Renk çarkı ---------- */
+.colors { background: var(--panel-2); border: 1px solid var(--line); border-radius: 16px; padding: 14px; margin-top: 14px; display: grid; grid-template-columns: auto 1fr; gap: 16px; }
+.wheel-wrap { position: relative; width: 200px; height: 200px; touch-action: none; }
+.wheel-wrap canvas { width: 200px; height: 200px; border-radius: 50%; cursor: crosshair; display: block; }
+.wheel-dot { position: absolute; width: 18px; height: 18px; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 0 0 1px rgba(0,0,0,.6), 0 2px 6px rgba(0,0,0,.5); transform: translate(-50%, -50%); pointer-events: none; }
+.wheel-side { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.cur-color { display: flex; align-items: center; gap: 10px; }
+.cur-color .big-sw { width: 48px; height: 48px; border-radius: 12px; border: 1px solid rgba(255,255,255,.2); flex: none; }
+.cur-color b { display: block; font-size: .95rem; }
+.cur-color .mono { font-size: .8rem; color: var(--text-2); }
+.btn-row { display: flex; gap: 6px; flex-wrap: wrap; }
+.btn-row .btn { padding: 7px 11px; font-size: .8rem; }
+.palette { display: flex; gap: 8px; flex-wrap: wrap; min-height: 44px; align-items: center; }
+.pchip { display: inline-flex; align-items: center; gap: 7px; background: var(--panel); border: 1px solid var(--line); border-radius: 999px; padding: 4px 6px 4px 4px; font-size: .78rem; }
+.pchip i { width: 24px; height: 24px; border-radius: 50%; border: 1px solid rgba(255,255,255,.25); }
+.pchip button { border: 0; background: transparent; color: var(--muted); cursor: pointer; padding: 0 4px; font-size: .9rem; }
+.pchip button:hover { color: var(--bad); }
+.pchip .warn { color: var(--warn); font-weight: 700; }
+.colors .hint { grid-column: 1 / -1; }
+@media (max-width: 900px) { .bg-tool { grid-template-columns: 1fr; } }
+@media (max-width: 640px) {
+  .colors { grid-template-columns: 1fr; justify-items: center; }
+  .wheel-side { width: 100%; }
+  .compare { grid-template-columns: minmax(0, 1fr); }
+}
+
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
 @media (max-width: 900px) {
   .spot { grid-template-columns: 1fr; }
@@ -322,6 +393,7 @@ table.plain { border-collapse: collapse; width: 100%; }
     <button class="tab" role="tab" id="tab-popular" aria-selected="true" aria-controls="view-popular" data-view="popular">Şu an popüler <span class="count" id="cntPopular"></span></button>
     <button class="tab" role="tab" id="tab-prep" aria-selected="false" aria-controls="view-prep" data-view="prep">Hazırlanma zamanı <span class="count" id="cntPrep"></span></button>
     <button class="tab" role="tab" id="tab-calendar" aria-selected="false" aria-controls="view-calendar" data-view="calendar">Yıllık takvim</button>
+    <button class="tab" role="tab" id="tab-bg" aria-selected="false" aria-controls="view-bg" data-view="bg">Arka plan sil</button>
     <button class="tab" role="tab" id="tab-sales" aria-selected="false" aria-controls="view-sales" data-view="sales">Satışlarım</button>
   </nav>
 
@@ -351,6 +423,52 @@ table.plain { border-collapse: collapse; width: 100%; }
     <p class="view-note">Hangi tema hangi ay zirve yapıyor? Açık renk = yüksek talep. Turuncu çerçeve = seçili ay. Bir satıra tıkla → prompt açılır.</p>
     <div class="scale" aria-hidden="true"><span>düşük</span><div></div><span>yüksek</span></div>
     <div class="scroll"><table class="heat" id="heat"></table></div>
+  </section>
+
+  <section id="view-bg" role="tabpanel" aria-labelledby="tab-bg" hidden>
+    <p class="view-note">Gemini'den gelen görseli yükle: düz beyaz/siyah arka planı silip Printify'a hazır <b>şeffaf PNG</b> yapar. Görsel bilgisayarından/telefonundan dışarı çıkmaz.</p>
+    <div class="bg-tool">
+      <div class="panel bg-side">
+        <label class="drop" id="drop" for="bgFile">
+          <b>Görsel seç</b>
+          <span>ya da buraya sürükle · PNG / JPG / WEBP</span>
+        </label>
+        <input type="file" id="bgFile" accept="image/*" hidden>
+        <label>Silinecek arka plan rengi
+          <span class="pick-row">
+            <input type="color" id="bgColor" value="#ffffff" aria-label="Arka plan rengi">
+            <span class="mono" id="bgColorTxt">#FFFFFF</span>
+            <button type="button" class="btn" id="bgPick">Görselden seç</button>
+          </span>
+        </label>
+        <label>Ne silinsin?
+          <select id="bgMode">
+            <option value="flood">Sadece dış arka plan (önerilen)</option>
+            <option value="global">Bu rengin hepsi (harf içleri dahil)</option>
+          </select>
+        </label>
+        <label class="range">Tolerans <output id="bgTolOut">40</output>
+          <input type="range" id="bgTol" min="0" max="150" value="40">
+          <small>Arka plan kalıyorsa artır, tasarım siliniyorsa azalt.</small>
+        </label>
+        <label class="range">Kenar yumuşatma <output id="bgSoftOut">24</output>
+          <input type="range" id="bgSoft" min="0" max="90" value="24">
+          <small>Tırtıklı kenarları ve beyaz haleyi temizler.</small>
+        </label>
+        <label class="check"><input type="checkbox" id="bgTrim" checked> Boş kenarları kırp</label>
+        <label class="check"><input type="checkbox" id="bgFit" checked> Printify boyutuna yerleştir (4500×5400 px)</label>
+        <button type="button" class="btn cta" id="bgSave">Şeffaf PNG'yi indir</button>
+        <p class="hint" id="bgInfo"></p>
+      </div>
+      <div class="panel">
+        <div class="stage-bar" id="stageBar">Önizleme zemini:</div>
+        <div class="compare">
+          <figure><figcaption>Önce</figcaption><div class="frame"><canvas id="bgBefore" aria-label="Orijinal görsel"></canvas></div></figure>
+          <figure><figcaption>Sonra</figcaption><div class="frame after checker" id="afterWrap"><canvas id="bgAfter" aria-label="Arka planı silinmiş görsel"></canvas></div></figure>
+        </div>
+        <div class="stats" id="bgStats"></div>
+      </div>
+    </div>
   </section>
 
   <section id="view-sales" role="tabpanel" aria-labelledby="tab-sales" hidden>
@@ -404,7 +522,7 @@ table.plain { border-collapse: collapse; width: 100%; }
   </div>
   <div class="sheet-body">
     <div>
-      <div class="step-h"><span class="n">1</span>Seçenekleri ayarla</div>
+      <div class="step-h"><span class="n">1</span>Seçenekleri ve renkleri ayarla</div>
       <div class="opts">
         <label>Ürün <select id="pProduct"></select></label>
         <label>Tasarım stili <select id="pStyle"></select></label>
@@ -428,6 +546,25 @@ table.plain { border-collapse: collapse; width: 100%; }
           </select>
         </label>
       </div>
+      <div class="colors" aria-label="Tasarım renkleri">
+        <div class="wheel-wrap" id="wheelWrap">
+          <canvas id="wheel" width="400" height="400" aria-label="Renk çarkı: rengi seçmek için tıkla veya sürükle"></canvas>
+          <span class="wheel-dot" id="wheelDot"></span>
+        </div>
+        <div class="wheel-side">
+          <div class="cur-color"><span class="big-sw" id="curSw"></span><div><b id="curName">—</b><span class="mono" id="curHex"></span></div></div>
+          <label class="range">Parlaklık <output id="valOut">100</output><input type="range" id="valRange" min="15" max="100" value="100"></label>
+          <div class="btn-row">
+            <button type="button" class="btn cta" id="addColor">+ Paletime ekle</button>
+            <button type="button" class="btn" data-harmony="comp">Tamamlayıcı</button>
+            <button type="button" class="btn" data-harmony="analog">Analog</button>
+            <button type="button" class="btn" data-harmony="triad">Üçlü</button>
+            <button type="button" class="btn" id="clearColors">Temizle</button>
+          </div>
+          <div class="palette" id="palette"></div>
+        </div>
+        <p class="hint">Tasarımda kullanılacak renkleri seç (en fazla 5). Boş bırakırsan Gemini renkleri kendisi seçer. ⚠ işareti: bu renk seçtiğin tişört renginde zor görünür.</p>
+      </div>
     </div>
     <div>
       <div class="step-h"><span class="n">2</span>Kopyala ve Gemini'ye yapıştır</div>
@@ -449,7 +586,7 @@ table.plain { border-collapse: collapse; width: 100%; }
     <div class="tips">
       <b>Printify'a yüklemeden önce</b>
       <ul>
-        <li>Görseli <b>4500×5400 px</b> boyutuna büyüt ve arka planı sil.</li>
+        <li>Arka planı sitedeki <button type="button" class="btn" id="toBgTool" style="padding:4px 10px;font-size:.8rem">Arka plan sil</button> aracıyla temizle; 4500×5400 px'e o yerleştirir.</li>
         <li>Yazıyı harf harf kontrol et — yapay zekâ bazen harfleri bozar.</li>
         <li>Açık tişörte koyu, koyu tişörte açık tasarım koy.</li>
       </ul>
@@ -1362,6 +1499,7 @@ const WIKI = {
     $("#pIdea").replaceChildren(...t.ideas.map((i) => el("option", { value: fill(i, t), text: fill(i, t) })), el("option", { value: "", text: "Yazısız (sadece çizim)" }));
     $("#pText").value = "";
     setText($("#tagsOut"), t.tags.map((x) => fill(x, t)).join(", "));
+    renderPalette();
     updatePrompt();
     $("#scrim").hidden = false; $("#sheet").hidden = false;
     document.body.style.overflow = "hidden";
@@ -1399,7 +1537,9 @@ const WIKI = {
       `STYLE: ${STYLES[$("#pStyle").value].en}.`,
       `AUDIENCE: ${t.audience}.`,
       `GARMENT COLOR: ${GARMENT_COLORS[colorKey].en} — ${contrast}`,
-      `COLORS: limit the palette to 3–5 flat, harmonious colors that feel on-trend in the US ${season}.`,
+      palette.length
+        ? `COLORS: use ONLY this color palette (flat colors, no gradients): ${palette.map((h) => `${colorName(h)} (${h})`).join(", ")}.`
+        : `COLORS: limit the palette to 3–5 flat, harmonious colors that feel on-trend in the US ${season}.`,
       `LAYOUT: ${PLACE_EN[$("#pPlace").value]}. One single, centered, isolated artwork; nothing touching the canvas edges; no lines thinner than 2 mm when printed; bold, clean shapes suitable for DTG printing.`,
       `BACKGROUND: ${bgLine}`,
       "AVOID: t-shirt mockups, models, garments, frames, borders, watermarks, signatures, extra or misspelled text, trademarked characters, brand names, sports team or league logos, celebrity likenesses and copyrighted quotes.",
@@ -1418,12 +1558,301 @@ const WIKI = {
     $("#spotBtn").addEventListener("click", (e) => openSheet(e.currentTarget.dataset.id));
   }
 
+  /* ---------- Dosya kaydetme: Claude görünümünde downloads, yerelde normal indirme ---------- */
+  let downloadsNs;
+  const downloadsReady = (async () => {
+    try { downloadsNs = window.claude?.use ? await window.claude.use("downloads") : null; } catch { downloadsNs = null; }
+  })();
+  async function saveFile(filename, blob) {
+    await downloadsReady;
+    if (downloadsNs) {
+      try { await downloadsNs.save({ filename, data: blob }); toast("Kaydedildi"); }
+      catch (e) { if (e?.code !== "declined") toast("Kaydedilemedi — tekrar dene"); }
+      return;
+    }
+    const url = URL.createObjectURL(blob);
+    const a = el("a", { href: url, download: filename });
+    document.body.append(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 5000);
+    toast("İndirildi");
+  }
+
+  /* ---------- Renk yardımcıları ---------- */
+  const hex2rgb = (h) => { const n = parseInt(h.slice(1), 16); return [n >> 16 & 255, n >> 8 & 255, n & 255]; };
+  const rgb2hex = (r, g, b) => "#" + [r, g, b].map((v) => Math.round(v).toString(16).padStart(2, "0")).join("").toUpperCase();
+  function hsv2rgb(h, s, v) {
+    const f = (n) => { const k = (n + h / 60) % 6; return v - v * s * Math.max(0, Math.min(k, 4 - k, 1)); };
+    return [f(5) * 255, f(3) * 255, f(1) * 255];
+  }
+  function rgb2hsv(r, g, b) {
+    r /= 255; g /= 255; b /= 255;
+    const mx = Math.max(r, g, b), mn = Math.min(r, g, b), d = mx - mn;
+    let h = 0;
+    if (d) h = mx === r ? ((g - b) / d) % 6 : mx === g ? (b - r) / d + 2 : (r - g) / d + 4;
+    return [mod(h * 60, 360), mx ? d / mx : 0, mx];
+  }
+  function lum([r, g, b]) {
+    const c = [r, g, b].map((v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; });
+    return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
+  }
+  const contrast = (a, b) => { const [x, y] = [lum(a), lum(b)].sort((p, q) => q - p); return (x + 0.05) / (y + 0.05); };
+  // Gemini'nin anlayacağı İngilizce renk adları (en yakın eşleşme)
+  const NAMED = { black: "#000000", "off-white": "#F5F2EA", white: "#FFFFFF", cream: "#FFF5DC", beige: "#D9C7A4", sand: "#C2B280", tan: "#D2B48C", brown: "#7B4A2D", chocolate: "#4E2A1A", rust: "#B7410E", "burnt orange": "#CC5500", orange: "#FF8C00", peach: "#FFB38A", coral: "#FF7F50", salmon: "#FA8072", red: "#D62828", "cherry red": "#9B111E", burgundy: "#800020", maroon: "#5A1A1A", pink: "#FFB6C1", "hot pink": "#FF69B4", blush: "#E8B4B8", magenta: "#D0208A", lavender: "#B9A6E0", purple: "#6A3D9A", plum: "#5E2750", navy: "#1B2A4A", "royal blue": "#2A52BE", "sky blue": "#87CEEB", "baby blue": "#A7C7E7", teal: "#008080", turquoise: "#30D5C8", mint: "#98E2C6", "sage green": "#9CAF88", olive: "#6B7A2E", "forest green": "#1F4D2B", "kelly green": "#2E9D4A", lime: "#A4D233", "mustard yellow": "#E1AD01", "golden yellow": "#FFC72C", "lemon yellow": "#FFF44F", charcoal: "#36454F", gray: "#8A8A8A", silver: "#C0C0C0", gold: "#D4AF37" };
+  function colorName(hex) {
+    const [r, g, b] = hex2rgb(hex);
+    let best = "", bd = Infinity;
+    for (const [n, h] of Object.entries(NAMED)) {
+      const [R, G, B] = hex2rgb(h);
+      const d = 2 * (r - R) ** 2 + 4 * (g - G) ** 2 + 3 * (b - B) ** 2;
+      if (d < bd) { bd = d; best = n; }
+    }
+    return best;
+  }
+  const GARMENT_HEX = { white: "#FFFFFF", black: "#151515", ivory: "#F3ECD8", pepper: "#4A4A48", sand: "#D8C8A8", heather: "#CFCFCF", navy: "#1F2A44", green: "#23412F", maroon: "#5B1F2A", pink: "#F6CFD6" };
+
+  /* ---------- Renk çarkı ---------- */
+  const wheel = { h: 20, s: 0.85, v: 1 };
+  const palette = store.get("trendRadar.palette", []);
+  const curHex = () => rgb2hex(...hsv2rgb(wheel.h, wheel.s, wheel.v));
+  function drawWheel() {
+    const cv = $("#wheel"), ctx = cv.getContext("2d"), N = cv.width, R = N / 2;
+    const img = ctx.createImageData(N, N), d = img.data;
+    for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {
+      const dx = x - R + 0.5, dy = y - R + 0.5, r = Math.hypot(dx, dy);
+      if (r > R) continue;
+      const [cr, cg, cb] = hsv2rgb(mod(Math.atan2(dy, dx) * 180 / Math.PI, 360), r / R, wheel.v);
+      const i = (y * N + x) * 4;
+      d[i] = cr; d[i + 1] = cg; d[i + 2] = cb; d[i + 3] = r > R - 1 ? 255 * (R - r) : 255;
+    }
+    ctx.putImageData(img, 0, 0);
+  }
+  function updateWheelUi() {
+    const size = $("#wheelWrap").clientWidth || 200, R = size / 2, a = wheel.h * Math.PI / 180;
+    const dot = $("#wheelDot");
+    dot.style.left = `${R + Math.cos(a) * wheel.s * R}px`;
+    dot.style.top = `${R + Math.sin(a) * wheel.s * R}px`;
+    const hex = curHex();
+    dot.style.background = hex;
+    $("#curSw").style.background = hex;
+    setText($("#curHex"), hex);
+    setText($("#curName"), colorName(hex));
+    setText($("#valOut"), String(Math.round(wheel.v * 100)));
+  }
+  function renderPalette() {
+    const g = hex2rgb(GARMENT_HEX[$("#pColor").value] || "#FFFFFF");
+    $("#palette").replaceChildren(...(palette.length ? palette.map((hex, i) => {
+      const weak = contrast(hex2rgb(hex), g) < 1.6;
+      return el("span", { class: "pchip", title: weak ? "Bu renk seçili tişört renginde zor görünür" : hex },
+        el("i", { style: `background:${hex}` }), `${colorName(hex)} `, el("span", { class: "mono", text: hex }),
+        weak ? el("span", { class: "warn", text: " ⚠" }) : null,
+        el("button", { type: "button", "aria-label": `${hex} rengini çıkar`, onclick: () => { palette.splice(i, 1); savePalette(); } }, "✕"));
+    }) : [el("span", { class: "hint", text: "Palet boş — Gemini renkleri kendisi seçecek." })]));
+  }
+  function savePalette() { store.set("trendRadar.palette", palette); renderPalette(); updatePrompt(); }
+  function addToPalette(hexes) {
+    for (const h of hexes) { if (!palette.includes(h)) palette.push(h); }
+    while (palette.length > 5) palette.shift();
+    savePalette();
+  }
+  function setupWheel() {
+    drawWheel(); updateWheelUi(); renderPalette();
+    const wrap = $("#wheelWrap");
+    const pick = (e) => {
+      const r = wrap.getBoundingClientRect(), R = r.width / 2;
+      const dx = e.clientX - r.left - R, dy = e.clientY - r.top - R;
+      wheel.h = mod(Math.atan2(dy, dx) * 180 / Math.PI, 360);
+      wheel.s = Math.min(1, Math.hypot(dx, dy) / R);
+      updateWheelUi();
+    };
+    wrap.addEventListener("pointerdown", (e) => { wrap.setPointerCapture(e.pointerId); pick(e); });
+    wrap.addEventListener("pointermove", (e) => { if (wrap.hasPointerCapture(e.pointerId)) pick(e); });
+    $("#valRange").addEventListener("input", (e) => { wheel.v = Number(e.target.value) / 100; drawWheel(); updateWheelUi(); });
+    $("#addColor").addEventListener("click", () => addToPalette([curHex()]));
+    $("#clearColors").addEventListener("click", () => { palette.length = 0; savePalette(); });
+    document.querySelectorAll("[data-harmony]").forEach((b) => b.addEventListener("click", () => {
+      const offs = { comp: [0, 180], analog: [-30, 0, 30], triad: [0, 120, 240] }[b.dataset.harmony];
+      palette.length = 0;
+      addToPalette(offs.map((o) => rgb2hex(...hsv2rgb(mod(wheel.h + o, 360), wheel.s, wheel.v))));
+    }));
+    $("#pColor").addEventListener("change", renderPalette);
+  }
+
+  /* ---------- Arka plan silme ---------- */
+  const bg = { src: null, out: null, picking: false, stage: "checker", timer: 0 };
+  function sampleImage() {
+    // Araç boş açılmasın diye: beyaz zeminli örnek tasarım
+    const c = el("canvas", { width: 900, height: 1080 }), x = c.getContext("2d");
+    x.fillStyle = "#fff"; x.fillRect(0, 0, 900, 1080);
+    x.fillStyle = "#ff7a1a"; x.beginPath(); x.arc(450, 430, 250, 0, Math.PI * 2); x.fill();
+    x.fillStyle = "#2b1d3a";
+    for (let i = 0; i < 5; i++) x.fillRect(200, 470 + i * 44, 500, 18);
+    x.fillStyle = "#fff"; x.beginPath(); x.ellipse(450, 350, 90, 110, 0, 0, Math.PI * 2); x.fill();
+    x.fillStyle = "#2b1d3a"; x.beginPath(); x.arc(415, 340, 14, 0, 7); x.arc(485, 340, 14, 0, 7); x.fill();
+    x.font = "bold 118px 'Bricolage Grotesque', Impact, sans-serif"; x.textAlign = "center";
+    x.fillText("SPOOKY", 450, 830); x.fillStyle = "#ff7a1a"; x.fillText("SEASON", 450, 950);
+    return c;
+  }
+  function loadSource(canvas, label) {
+    bg.src = canvas;
+    const b = $("#bgBefore");
+    b.width = canvas.width; b.height = canvas.height;
+    b.getContext("2d").drawImage(canvas, 0, 0);
+    // Köşelerden arka plan rengini tahmin et
+    const ctx = canvas.getContext("2d");
+    const pts = [[1, 1], [canvas.width - 2, 1], [1, canvas.height - 2], [canvas.width - 2, canvas.height - 2]];
+    const acc = [0, 0, 0];
+    for (const [px, py] of pts) { const d = ctx.getImageData(px, py, 1, 1).data; acc[0] += d[0]; acc[1] += d[1]; acc[2] += d[2]; }
+    setBgColor(rgb2hex(acc[0] / 4, acc[1] / 4, acc[2] / 4));
+    setText($("#bgInfo"), `${label} · ${canvas.width}×${canvas.height} px`);
+  }
+  function setBgColor(hex) {
+    $("#bgColor").value = hex.toLowerCase();
+    setText($("#bgColorTxt"), hex.toUpperCase());
+    scheduleBg();
+  }
+  const scheduleBg = () => { clearTimeout(bg.timer); bg.timer = setTimeout(processBg, 60); };
+  function processBg() {
+    if (!bg.src) return;
+    const W = bg.src.width, H = bg.src.height;
+    const img = bg.src.getContext("2d").getImageData(0, 0, W, H), d = img.data;
+    const [br, bgc, bb] = hex2rgb($("#bgColor").value);
+    const tol = Number($("#bgTol").value), soft = Number($("#bgSoft").value), lim = tol + soft;
+    const n = W * H, dist = new Float32Array(n);
+    for (let p = 0, i = 0; p < n; p++, i += 4) dist[p] = Math.hypot(d[i] - br, d[i + 1] - bgc, d[i + 2] - bb);
+    // flood: yalnızca kenardan ulaşılabilen arka plan; global: rengin tamamı
+    let region;
+    if ($("#bgMode").value === "flood") {
+      region = new Uint8Array(n);
+      const q = new Int32Array(n);
+      let head = 0, tail = 0;
+      const push = (p) => { if (!region[p] && dist[p] < lim) { region[p] = 1; q[tail++] = p; } };
+      for (let x = 0; x < W; x++) { push(x); push((H - 1) * W + x); }
+      for (let y = 0; y < H; y++) { push(y * W); push(y * W + W - 1); }
+      while (head < tail) {
+        const p = q[head++], x = p % W;
+        if (x > 0) push(p - 1);
+        if (x < W - 1) push(p + 1);
+        if (p >= W) push(p - W);
+        if (p < n - W) push(p + W);
+      }
+    }
+    let minX = W, minY = H, maxX = -1, maxY = -1;
+    for (let p = 0, i = 0; p < n; p++, i += 4) {
+      if (!region || region[p]) {
+        const a = dist[p] <= tol ? 0 : soft ? Math.min(1, (dist[p] - tol) / soft) : 1;
+        if (a < 1) {
+          // Kenar rengini arka plandan arındır (beyaz hale kalmasın)
+          if (a > 0) {
+            d[i] = Math.max(0, Math.min(255, (d[i] - br * (1 - a)) / a));
+            d[i + 1] = Math.max(0, Math.min(255, (d[i + 1] - bgc * (1 - a)) / a));
+            d[i + 2] = Math.max(0, Math.min(255, (d[i + 2] - bb * (1 - a)) / a));
+          }
+          d[i + 3] = Math.round(d[i + 3] * a);
+        }
+      }
+      if (d[i + 3] > 8) { const x = p % W, y = (p - x) / W; if (x < minX) minX = x; if (x > maxX) maxX = x; if (y < minY) minY = y; if (y > maxY) maxY = y; }
+    }
+    const cut = el("canvas", { width: W, height: H });
+    cut.getContext("2d").putImageData(img, 0, 0);
+    let sx = 0, sy = 0, sw = W, sh = H;
+    if ($("#bgTrim").checked && maxX >= 0) { sx = minX; sy = minY; sw = maxX - minX + 1; sh = maxY - minY + 1; }
+    const out = el("canvas");
+    if ($("#bgFit").checked) {
+      out.width = 4500; out.height = 5400;
+      const k = Math.min(4500 / sw, 5400 / sh);
+      const dw = sw * k, dh = sh * k;
+      const o = out.getContext("2d");
+      o.imageSmoothingEnabled = true; o.imageSmoothingQuality = "high";
+      o.drawImage(cut, sx, sy, sw, sh, (4500 - dw) / 2, 0, dw, dh);
+    } else {
+      out.width = sw; out.height = sh;
+      out.getContext("2d").drawImage(cut, sx, sy, sw, sh, 0, 0, sw, sh);
+    }
+    bg.out = out;
+    // Önizleme (küçültülmüş)
+    const pv = $("#bgAfter"), k = Math.min(1, 900 / Math.max(out.width, out.height));
+    pv.width = Math.round(out.width * k); pv.height = Math.round(out.height * k);
+    const pc = pv.getContext("2d");
+    pc.clearRect(0, 0, pv.width, pv.height);
+    pc.drawImage(out, 0, 0, pv.width, pv.height);
+    let removed = 0;
+    for (let i = 3; i < d.length; i += 4) if (d[i] < 8) removed++;
+    const pct = Math.round((removed / n) * 100);
+    const scale = $("#bgFit").checked ? Math.min(4500 / sw, 5400 / sh) : 1;
+    $("#bgStats").replaceChildren(
+      el("span", { class: "pill flat", text: `Silinen alan %${pct}` }),
+      el("span", { class: "pill flat", text: `Çıktı ${out.width}×${out.height} px` }),
+      scale > 3 ? el("span", { class: "pill warn", text: `${fmt(scale, 1)}× büyütüldü — baskıda hafif yumuşak olabilir; en yüksek çözünürlükte indir` }) : el("span", { class: "pill up", text: "Çözünürlük Printify için iyi" }));
+  }
+  function setupBg() {
+    const stages = [["checker", "Dama (şeffaf)"], ...Object.entries(GARMENT_HEX).map(([k, h]) => [h, GARMENT_COLORS[k].tr])];
+    $("#stageBar").append(...stages.map(([v, label]) => el("button", {
+      type: "button", class: `sw${v === "checker" ? " checker on" : ""}`, title: label, "aria-label": `Önizleme zemini: ${label}`,
+      style: v === "checker" ? null : `background:${v}`,
+      onclick: (e) => {
+        document.querySelectorAll("#stageBar .sw").forEach((s) => s.classList.toggle("on", s === e.currentTarget));
+        const w = $("#afterWrap");
+        w.classList.toggle("checker", v === "checker");
+        w.style.background = v === "checker" ? "" : v;
+      },
+    })));
+    const readFile = (file) => {
+      if (!file || !file.type.startsWith("image/")) { toast("Lütfen bir görsel dosyası seç"); return; }
+      const url = URL.createObjectURL(file), im = new Image();
+      im.onload = () => {
+        const c = el("canvas", { width: im.naturalWidth, height: im.naturalHeight });
+        c.getContext("2d").drawImage(im, 0, 0);
+        URL.revokeObjectURL(url);
+        bg.name = file.name.replace(/\.[^.]+$/, "");
+        loadSource(c, file.name);
+      };
+      im.onerror = () => toast("Görsel açılamadı");
+      im.src = url;
+    };
+    $("#bgFile").addEventListener("change", (e) => { readFile(e.target.files[0]); e.target.value = ""; });
+    const drop = $("#drop");
+    ["dragenter", "dragover"].forEach((t) => drop.addEventListener(t, (e) => { e.preventDefault(); drop.classList.add("over"); }));
+    ["dragleave", "drop"].forEach((t) => drop.addEventListener(t, (e) => { e.preventDefault(); drop.classList.remove("over"); }));
+    drop.addEventListener("drop", (e) => readFile(e.dataTransfer.files[0]));
+    document.addEventListener("paste", (e) => {
+      if (state.view !== "bg") return;
+      const f = [...(e.clipboardData?.files || [])].find((x) => x.type.startsWith("image/"));
+      if (f) readFile(f);
+    });
+    $("#bgColor").addEventListener("input", (e) => setBgColor(e.target.value));
+    ["#bgMode", "#bgTrim", "#bgFit"].forEach((s) => $(s).addEventListener("change", scheduleBg));
+    $("#bgTol").addEventListener("input", (e) => { setText($("#bgTolOut"), e.target.value); scheduleBg(); });
+    $("#bgSoft").addEventListener("input", (e) => { setText($("#bgSoftOut"), e.target.value); scheduleBg(); });
+    const before = $("#bgBefore");
+    $("#bgPick").addEventListener("click", (e) => {
+      bg.picking = !bg.picking;
+      e.currentTarget.classList.toggle("on", bg.picking);
+      before.classList.toggle("picking", bg.picking);
+      if (bg.picking) toast("Soldaki görselde silinecek renge tıkla");
+    });
+    before.addEventListener("click", (e) => {
+      if (!bg.picking || !bg.src) return;
+      const r = before.getBoundingClientRect();
+      const x = Math.floor((e.clientX - r.left) / r.width * before.width), y = Math.floor((e.clientY - r.top) / r.height * before.height);
+      const p = bg.src.getContext("2d").getImageData(x, y, 1, 1).data;
+      setBgColor(rgb2hex(p[0], p[1], p[2]));
+      bg.picking = false; $("#bgPick").classList.remove("on"); before.classList.remove("picking");
+    });
+    $("#bgSave").addEventListener("click", () => {
+      if (!bg.out) return;
+      bg.out.toBlob((blob) => blob ? saveFile(`${bg.name || "tasarim"}-seffaf.png`, blob) : toast("PNG oluşturulamadı"), "image/png");
+    });
+    bg.name = "ornek";
+    loadSource(sampleImage(), "Örnek görsel — kendi görselini yükle");
+    $("#toBgTool").addEventListener("click", () => { closeSheet(); showView("bg"); $("#tab-bg").scrollIntoView({ block: "start" }); });
+  }
+
   /* ---------- Sekmeler & filtreler ---------- */
   function showView(v) {
     state.view = v;
     document.querySelectorAll(".tab").forEach((b) => b.setAttribute("aria-selected", String(b.dataset.view === v)));
-    ["popular", "prep", "calendar", "sales"].forEach((k) => { $(`#view-${k}`).hidden = k !== v; });
-    const filters = v !== "sales";
+    ["popular", "prep", "calendar", "bg", "sales"].forEach((k) => { $(`#view-${k}`).hidden = k !== v; });
+    const filters = !["sales", "bg"].includes(v);
     $("#controls").hidden = !filters; $("#chips").hidden = !filters;
     store.set("trendRadar.view", v);
   }
@@ -1446,7 +1875,7 @@ const WIKI = {
     } }, key ? el("i", { style: `background:var(--c-${key})` }) : null, label);
     $("#chips").replaceChildren(chip("", "Tümü"), ...Object.entries(CATEGORIES).map(([k, v]) => chip(k, v)));
     const hash = location.hash.slice(1);
-    const saved = ["popular", "prep", "calendar", "sales"].includes(hash) ? hash : store.get("trendRadar.view", "popular");
+    const saved = ["popular", "prep", "calendar", "bg", "sales"].includes(hash) ? hash : store.get("trendRadar.view", "popular");
     showView(saved);
   }
   function renderAll() {
@@ -1460,6 +1889,8 @@ const WIKI = {
   setupFilters();
   setupSheet();
   setupSales();
+  setupWheel();
+  setupBg();
   renderEvents(new Date());
   renderSales();
   renderAll();
