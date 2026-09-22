@@ -1,36 +1,30 @@
-# ABD Trend Radarı
+# Trend Radarı
 
-Etsy + Printify ile ABD'ye giyim satanlar için: **hangi ay hangi tasarım teması popüler**,
+Etsy + Printify ile ABD'ye giyim satanlar için: **şu an ABD'de hangi tasarım teması popüler**,
 ne zaman hazırlanmalı ve **Gemini'ye tasarım yaptırmak için hazır prompt**.
 
-## Özellikler
+## Nasıl açılır
 
-- **Canlı pano**: New York / Türkiye saati, yaklaşan ABD günlerine saniye saniye geri sayım,
-  "listeleme son gün" sayaçları ve her saniye tarihe göre yeniden hesaplanan endeks.
-- **Gerçek ilgi verisi (Wikipedia)**: her trend için İngilizce Wikipedia görüntülenmeleri
-  (son 30 gün çizgisi, 7 günlük ortalama, önceki haftaya göre % değişim). Wikimedia API'den
-  15 dakikada bir çekilir; kaynak veriyi günde bir kez günceller.
+Tek dosya: **`index.html`**. İndirip çift tıkla (Chrome/Edge/Safari) — başka dosyaya gerek yok.
+İnternette yayınlamak için: GitHub → Settings → Pages → Branch seç → `/ (root)`.
 
-- **Ay / kategori / arama filtreleri**: seçilen aya göre her şey yeniden hesaplanır.
-- **Şimdi hazırla**: önümüzdeki 1–3 ayda zirve yapacak trendler (Etsy'de 6–8 hafta önceden listelemek için).
-- **Popülerlik sıralaması**: 47 trend için 0–100 puan, geçen aya göre değişim, 12 aylık mini grafik,
-  rekabet seviyesi, Google Trends (ABD) ve Etsy arama linkleri.
-- **Yıllık takvim (ısı haritası)**: hangi tema hangi ay zirve yapıyor.
-- **→ tuşu**: her trendin yanında. Gemini için İngilizce tasarım prompt'u + 13 Etsy etiketi üretir.
-  Ürün (Bella+Canvas 3001, Comfort Colors 1717, Gildan 18000/18500), stil, kumaş rengi, arka plan,
-  slogan, baskı yeri ve varyasyon sayısı seçilebilir. Prompt Printify ölçülerini (4500×5400 px) ve
-  telif uyarılarını içerir.
-- **Satış kayıtlarım**: kendi Etsy satışlarını gir; trende göre gelir grafiği, dönüşüm oranı,
-  JSON dışa/içe aktarma. Veriler tarayıcının localStorage'ında tutulur.
+## Nasıl kullanılır
 
-## Kullanım
+1. **Bir trend seç** — "Şu an popüler" sekmesinde kartlar talep puanına göre sıralı.
+2. **Turuncu "Gemini prompt'u al" butonuna bas** — ürün, stil, tişört rengi, yazı ve baskı yerini seç.
+3. **Prompt'u kopyala → Gemini'ye yapıştır.** Etsy için 13 etiket de hazır.
 
-Kurulum yok. `index.html` dosyasını tarayıcıda aç ya da GitHub Pages ile yayınla
-(Settings → Pages → Branch seç → `/ (root)`).
+## Sekmeler
+
+- **Şu an popüler**: 47 tema; canlı talep puanı, son 30 gün değişimi, 12 aylık grafik, rekabet, etkinliğe geri sayım, Google Trends / Etsy linkleri, Wikipedia ilgisi.
+- **Hazırlanma zamanı**: yaklaşan ABD günleri tarih sırasıyla; etkinliğe ve "listeleme son gün"e (45 gün önce) saniyelik sayaç.
+- **Yıllık takvim**: hangi tema hangi ay zirve yapıyor.
+- **Satışlarım**: kendi satışlarını gir, trende göre gelir; JSON yedeği kopyala / yükle.
 
 ## Veri hakkında
 
-**Endeks** pazar verisi değil, bir modeldir; ABD'de her yıl tekrarlanan alışveriş sezonlarına göre hazırlanmış
-tahmini endekslerdir. Karar vermeden önce satırdaki Google Trends / Etsy linkleriyle doğrula.
-Trend eklemek veya puanları değiştirmek için `js/data.js` dosyasını düzenle
+**Talep puanı** gerçek satış verisi değil; ABD'de her yıl tekrarlanan alışveriş sezonlarına göre kurulmuş
+bir modeldir ve tarihe göre her saniye yeniden hesaplanır. **Wikipedia ilgisi** gerçektir
+(İngilizce Wikipedia günlük görüntülenme, önceki haftaya göre değişim; 15 dakikada bir kontrol edilir).
+Trend eklemek / puan değiştirmek için `index.html` içindeki "VERİ" bölümünü düzenle
 (`peaks: [[ay, zirvePuanı, yayılım]]`, ay 0 = Ocak).
