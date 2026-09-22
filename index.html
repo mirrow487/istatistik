@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ABD Trend Radarı</title>
+  <meta name="description" content="Etsy + Printify giyim satıcıları için ABD'de döneme göre popüler tasarım temaları, talep endeksi ve Gemini tasarım prompt üreticisi.">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <div class="brand">
+        <span class="logo" aria-hidden="true">▲</span>
+        <div>
+          <h1>ABD Trend Radarı</h1>
+          <p class="sub">Etsy · Printify giyim için sezonluk talep endeksi</p>
+        </div>
+      </div>
+      <button id="themeBtn" class="ghost" type="button" aria-label="Tema değiştir">◐</button>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <!-- Filtreler: aşağıdaki her şeyi etkiler -->
+    <section class="filters" aria-label="Filtreler">
+      <label>Ay
+        <select id="monthSel"></select>
+      </label>
+      <label>Kategori
+        <select id="catSel"><option value="">Tümü</option></select>
+      </label>
+      <label class="grow">Ara
+        <input id="searchInp" type="search" placeholder="örn. halloween, teacher, dog…">
+      </label>
+    </section>
+
+    <section class="kpis" id="kpis" aria-label="Özet"></section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Şimdi hazırla <span class="muted" id="prepSub"></span></h2>
+        <p class="hint">Etsy'de sezonluk ürünler zirveden <b>6–8 hafta önce</b> listelenmeli. Bu trendler önümüzdeki 1–3 ayda yükseliyor.</p>
+      </div>
+      <div class="cards" id="prepCards"></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Popülerlik sıralaması <span class="muted" id="rankSub"></span></h2>
+        <p class="hint">Puan = seçili aydaki tahmini ABD talep endeksi (0–100). Satırın sonundaki <b>→</b> tuşu Gemini tasarım prompt'u üretir.</p>
+      </div>
+      <div class="table-scroll">
+        <table class="rank" id="rankTable">
+          <thead>
+            <tr>
+              <th>#</th><th>Trend</th><th>Puan</th><th>Geçen aya göre</th>
+              <th>12 aylık eğri</th><th>Rekabet</th><th>Doğrula</th><th><span class="sr">Prompt</span></th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Yıllık takvim</h2>
+        <p class="hint">Hangi tema hangi ay zirve yapıyor? Koyu hücre = yüksek talep. Hücrenin üzerine gelince puan görünür.</p>
+      </div>
+      <div class="table-scroll">
+        <table class="heat" id="heatTable"></table>
+      </div>
+      <div class="legend-scale" aria-hidden="true">
+        <span>0</span><div class="scale-bar"></div><span>100</span>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Satış kayıtlarım</h2>
+        <p class="hint">Etsy'deki gerçek satışlarını buraya gir; hangi trendin sana para kazandırdığını gör. Veriler bu tarayıcıda saklanır — yedek için dışa aktar.</p>
+      </div>
+      <form id="saleForm" class="sale-form">
+        <label>Tarih <input type="date" name="date" required></label>
+        <label>Trend <select name="trend" id="saleTrend" required></select></label>
+        <label>Ürün <select name="product" id="saleProduct"></select></label>
+        <label>Adet <input type="number" name="qty" min="1" value="1" required></label>
+        <label>Gelir ($) <input type="number" name="revenue" min="0" step="0.01" value="0" required></label>
+        <label>Görüntülenme <input type="number" name="views" min="0" value="0"></label>
+        <label>Favori <input type="number" name="favs" min="0" value="0"></label>
+        <button type="submit" class="primary">Kaydet</button>
+      </form>
+      <div class="sales-grid">
+        <div>
+          <h3>Trende göre gelir</h3>
+          <div id="salesChart" class="bars"></div>
+        </div>
+        <div>
+          <h3>Kayıtlar</h3>
+          <div class="table-scroll">
+            <table class="plain" id="salesTable">
+              <thead><tr><th>Tarih</th><th>Trend</th><th>Ürün</th><th>Adet</th><th>Gelir</th><th>Dönüşüm</th><th></th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <div class="row-actions">
+            <button type="button" class="ghost" id="exportBtn">Dışa aktar (JSON)</button>
+            <label class="ghost file-btn">İçe aktar<input type="file" id="importInp" accept="application/json" hidden></label>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <p class="disclaimer">
+      <b>Not:</b> Puanlar canlı veri değildir; ABD'de her yıl tekrarlanan alışveriş sezonlarına göre hazırlanmış
+      <b>tahmini endekslerdir</b>. Karar vermeden önce her satırdaki <b>Google Trends</b> ve <b>Etsy</b> linkleriyle güncel durumu kontrol et.
+      Değerleri <code>js/data.js</code> dosyasından düzenleyebilirsin. Etsy'de telif riski için takım logoları, marka adları ve film/çizgi film karakterleri kullanma.
+    </p>
+  </main>
+
+  <!-- Prompt paneli -->
+  <div class="drawer-bg" id="drawerBg" hidden></div>
+  <aside class="drawer" id="drawer" aria-hidden="true" aria-labelledby="drawerTitle" role="dialog">
+    <div class="drawer-head">
+      <div>
+        <p class="eyebrow">Gemini tasarım prompt'u</p>
+        <h2 id="drawerTitle"></h2>
+      </div>
+      <button class="ghost" id="closeDrawer" type="button" aria-label="Kapat">✕</button>
+    </div>
+    <div class="drawer-body">
+      <div class="opts">
+        <label>Ürün <select id="pProduct"></select></label>
+        <label>Stil <select id="pStyle"></select></label>
+        <label>Kumaş rengi <select id="pColor"></select></label>
+        <label>Arka plan
+          <select id="pBg">
+            <option value="auto">Otomatik (kumaşa göre düz beyaz/siyah)</option>
+            <option value="white">Düz beyaz</option>
+            <option value="transparent">Transparan iste</option>
+            <option value="black">Düz siyah</option>
+          </select>
+        </label>
+        <label class="full">Slogan fikri <select id="pIdea"></select></label>
+        <label class="full">Kendi metnin (boş bırakılırsa slogan kullanılır)
+          <input id="pText" type="text" placeholder="örn. Spooky Mama">
+        </label>
+        <label>Varyasyon sayısı
+          <select id="pVar"><option>1</option><option>2</option><option selected>3</option><option>4</option></select>
+        </label>
+        <label>Baskı yeri
+          <select id="pPlace">
+            <option value="front">Ön (büyük)</option>
+            <option value="pocket">Sol göğüs (küçük)</option>
+            <option value="back">Sırt</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="prompt-box">
+        <div class="prompt-head">
+          <b>Prompt (İngilizce)</b>
+          <button class="primary" id="copyPrompt" type="button">Kopyala</button>
+        </div>
+        <pre id="promptOut"></pre>
+      </div>
+
+      <div class="prompt-box">
+        <div class="prompt-head">
+          <b>Etsy etiketleri (13)</b>
+          <button class="ghost" id="copyTags" type="button">Kopyala</button>
+        </div>
+        <p id="tagsOut" class="tags"></p>
+      </div>
+
+      <div class="tips">
+        <b>Printify ipuçları</b>
+        <ul>
+          <li>Gemini çıktısını <b>4500×5400 px, 300 DPI PNG</b> olarak büyüt (upscale) ve arka planı sil.</li>
+          <li>Açık kumaşa koyu tasarım, koyu kumaşa açık tasarım koy; ince çizgiler DTG'de kaybolur.</li>
+          <li>Yazım hatası için metni mutlaka kontrol et — AI bazen harfleri bozar.</li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+  <div class="tooltip" id="tooltip" role="tooltip" hidden></div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
