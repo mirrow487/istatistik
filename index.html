@@ -1,201 +1,425 @@
-<!doctype html>
-<html lang="tr">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ABD Trend Radarı</title>
-  <meta name="description" content="Etsy + Printify giyim satıcıları için ABD'de döneme göre popüler tasarım temaları, canlı talep endeksi, geri sayımlar ve Gemini tasarım prompt üreticisi.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
-  <header class="topbar">
-    <div class="wrap topbar-inner">
-      <a class="brand" href="#top">
-        <span class="logo" aria-hidden="true">
-          <svg viewBox="0 0 24 24" width="20" height="20"><path d="M3 17l5-6 4 4 8-10" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </span>
-        <span>
-          <b>Trend Radarı</b>
-          <small>ABD · Etsy · Printify</small>
-        </span>
-      </a>
-      <nav class="nav" aria-label="Bölümler">
-        <a href="#hazirla">Hazırla</a>
-        <a href="#siralama">Sıralama</a>
-        <a href="#takvim">Takvim</a>
-        <a href="#satislar">Satışlarım</a>
-      </nav>
-      <button id="themeBtn" class="icon-btn" type="button" aria-label="Açık/koyu tema">
-        <svg viewBox="0 0 24 24" width="18" height="18"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" fill="currentColor"/></svg>
-      </button>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Trend Radarı</title>
+<meta name="description" content="ABD'de döneme göre popüler giyim temaları, canlı talep puanı, geri sayımlar ve Gemini tasarım prompt üreticisi.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+:root {
+  color-scheme: dark;
+  --ink: #12141f;
+  --panel: #1a1d2b;
+  --panel-2: #222637;
+  --panel-3: #2a2f43;
+  --line: #2f3449;
+  --text: #f4f1ea;
+  --text-2: #bdbacd;
+  --muted: #8b89a1;
+  --accent: #ff8a3d;
+  --accent-2: #ffb07a;
+  --accent-ink: #1d0f04;
+  --good: #45d38a;
+  --good-bg: rgba(69, 211, 138, .13);
+  --bad: #ff6470;
+  --bad-bg: rgba(255, 100, 112, .13);
+  --warn: #f5c542;
+  --warn-bg: rgba(245, 197, 66, .13);
+  --bar: #3a4059;
+  --c-holiday: #ff8a3d;
+  --c-season: #f5c542;
+  --c-event: #3987e5;
+  --c-awareness: #d55181;
+  --c-profession: #19b27d;
+  --c-family: #e66767;
+  --c-hobby: #9085e9;
+  --c-humor: #5cc8e8;
+  --f-display: "Bricolage Grotesque", "Trebuchet MS", system-ui, sans-serif;
+  --f-body: "Figtree", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { background: var(--ink); }
+body {
+  margin: 0; color: var(--text); font: 15px/1.55 var(--f-body);
+  -webkit-font-smoothing: antialiased; padding-inline: 16px;
+  background-image: radial-gradient(rgba(255, 138, 61, .09) 1.2px, transparent 1.3px);
+  background-size: 14px 14px; background-attachment: fixed;
+}
+.page { max-width: 1180px; margin: 0 auto; padding-block: 18px 48px; }
+h1, h2, h3 { font-family: var(--f-display); margin: 0; line-height: 1.12; letter-spacing: -.015em; text-wrap: balance; }
+a { color: var(--accent-2); }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+.mono { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+button, select, input, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* ---------- Header ---------- */
+.top { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 18px; }
+.brand { display: flex; align-items: center; gap: 12px; }
+.mark { width: 46px; height: 46px; border-radius: 14px; background: var(--accent); color: var(--accent-ink); display: grid; place-items: center; transform: rotate(-4deg); box-shadow: 0 6px 24px rgba(255, 138, 61, .35); }
+.brand h1 { font-size: 1.55rem; font-weight: 800; }
+.brand p { margin: 0; color: var(--muted); font-size: .86rem; }
+.live {
+  display: inline-flex; align-items: center; gap: 10px; background: var(--panel); border: 1px solid var(--line);
+  border-radius: 999px; padding: 7px 14px 7px 10px; font-size: .84rem; color: var(--text-2);
+}
+.live .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--good); box-shadow: 0 0 0 0 rgba(69, 211, 138, .6); animation: pulse 1.6s infinite; }
+.live b { color: var(--text); font-family: var(--f-mono); font-weight: 500; }
+.live .tag { font-weight: 800; letter-spacing: .12em; font-size: .7rem; color: var(--good); }
+@keyframes pulse { 70% { box-shadow: 0 0 0 9px rgba(69, 211, 138, 0); } 100% { box-shadow: 0 0 0 0 rgba(69, 211, 138, 0); } }
+
+/* ---------- How-to ---------- */
+.how { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 18px; }
+.how li { list-style: none; display: flex; gap: 12px; align-items: center; background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 12px 14px; }
+.how .n { flex: none; width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; font-family: var(--f-display); font-weight: 800; background: var(--panel-3); color: var(--accent); }
+.how li:nth-child(2) .n { background: var(--accent); color: var(--accent-ink); }
+.how b { display: block; font-size: .95rem; }
+.how span { color: var(--muted); font-size: .82rem; }
+.how { padding: 0; margin-top: 0; }
+
+/* ---------- Spotlight ---------- */
+.spot {
+  display: grid; grid-template-columns: 1.25fr 1fr; gap: 18px; margin-bottom: 20px;
+  background: linear-gradient(135deg, #2a1d17 0%, var(--panel) 55%); border: 1px solid #4a3326; border-radius: 22px; padding: 22px;
+}
+.eyebrow { font-size: .72rem; text-transform: uppercase; letter-spacing: .12em; font-weight: 700; color: var(--accent-2); margin: 0 0 8px; }
+.spot h2 { font-size: clamp(1.7rem, 4vw, 2.6rem); font-weight: 800; }
+.spot .en { color: var(--muted); margin: 4px 0 14px; }
+.spot-score { display: flex; align-items: flex-end; gap: 14px; flex-wrap: wrap; }
+.spot-score .num { font-family: var(--f-display); font-weight: 800; font-size: clamp(3rem, 8vw, 4.6rem); line-height: .9; letter-spacing: -.03em; }
+.spot-score .num small { font-family: var(--f-mono); font-size: .26em; font-weight: 500; color: var(--muted); letter-spacing: 0; margin-left: 2px; }
+.spot-score .lbl { color: var(--text-2); font-size: .86rem; padding-bottom: 6px; }
+.spot-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+.events { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.events li { display: grid; grid-template-columns: 52px 1fr auto; gap: 12px; align-items: center; background: rgba(0, 0, 0, .22); border: 1px solid var(--line); border-radius: 14px; padding: 9px 12px; }
+.cal { text-align: center; border-radius: 10px; background: var(--panel-3); padding: 4px 0; line-height: 1.1; }
+.cal b { display: block; font-family: var(--f-display); font-size: 1.25rem; }
+.cal span { font-size: .66rem; text-transform: uppercase; letter-spacing: .06em; color: var(--accent-2); font-weight: 700; }
+.events .ev b { display: block; }
+.events .ev span { font-size: .78rem; }
+.events .cd { text-align: right; font-family: var(--f-mono); font-size: .92rem; }
+.events .cd small { display: block; font-family: var(--f-body); font-size: .72rem; color: var(--muted); }
+
+/* ---------- Buttons & pills ---------- */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; border-radius: 12px; padding: 10px 16px; font-weight: 700; border: 1px solid var(--line); background: var(--panel-2); text-decoration: none; color: var(--text); }
+.btn:hover { background: var(--panel-3); }
+.btn.cta { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.btn.cta:hover { background: var(--accent-2); }
+.btn.cta svg { transition: transform .15s; }
+.btn.cta:hover svg { transform: translateX(3px); }
+.pill { display: inline-flex; align-items: center; gap: 5px; border-radius: 999px; padding: 3px 10px; font-size: .78rem; font-weight: 700; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.pill.up { color: var(--good); background: var(--good-bg); }
+.pill.down { color: var(--bad); background: var(--bad-bg); }
+.pill.flat { color: var(--muted); background: var(--panel-3); }
+.pill.warn { color: var(--warn); background: var(--warn-bg); }
+
+/* ---------- Tabs & controls ---------- */
+.tabs {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; gap: 6px; overflow-x: auto;
+  background: rgba(18, 20, 31, .92); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  padding: 10px 0; margin-bottom: 8px; border-bottom: 1px solid var(--line);
+}
+.tab { flex: none; border: 1px solid var(--line); background: var(--panel); color: var(--text-2); border-radius: 12px; padding: 9px 16px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
+.tab .count { font-size: .72rem; background: var(--panel-3); color: var(--text-2); border-radius: 999px; padding: 1px 8px; }
+.tab[aria-selected="true"] { background: var(--text); color: var(--ink); border-color: var(--text); }
+.tab[aria-selected="true"] .count { background: var(--accent); color: var(--accent-ink); }
+.controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 14px 0 10px; }
+.seg { display: flex; align-items: center; gap: 4px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 4px; }
+.seg button { white-space: nowrap; border: 0; background: transparent; color: var(--text-2); padding: 6px 12px; border-radius: 9px; font-weight: 700; cursor: pointer; }
+.seg button.on { background: var(--good); color: #05210f; }
+.seg select { border: 0; background: transparent; padding: 6px 8px; cursor: pointer; }
+select option { background: var(--panel); color: var(--text); }
+.search { flex: 1; min-width: 200px; position: relative; }
+.search svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--muted); }
+input[type=search], input[type=text], input[type=number], input[type=date], select, textarea {
+  background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; width: 100%; min-width: 0;
+}
+.search input { padding-left: 38px; }
+input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); }
+.chips { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 14px; }
+.chip { flex: none; display: inline-flex; align-items: center; gap: 7px; border: 1px solid var(--line); background: transparent; color: var(--text-2); padding: 6px 12px; border-radius: 999px; cursor: pointer; font-size: .85rem; font-weight: 600; }
+.chip i { width: 9px; height: 9px; border-radius: 50%; }
+.chip.on { background: var(--panel-3); color: var(--text); border-color: var(--text-2); }
+.view-note { color: var(--muted); font-size: .85rem; margin: 0 0 14px; }
+
+/* ---------- Trend cards ---------- */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+.tcard { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 16px; display: flex; flex-direction: column; gap: 12px; transition: border-color .15s, transform .15s; }
+.tcard:hover { border-color: #4a5070; transform: translateY(-2px); }
+.tc-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.cat { display: inline-flex; align-items: center; gap: 7px; font-size: .75rem; font-weight: 700; color: var(--text-2); text-transform: uppercase; letter-spacing: .05em; }
+.cat i { width: 9px; height: 9px; border-radius: 3px; }
+.rank { font-family: var(--f-display); font-weight: 800; color: var(--muted); font-size: .95rem; }
+.rank.top { color: var(--accent); }
+.tcard h3 { font-size: 1.22rem; font-weight: 700; }
+.tcard .en { margin: 2px 0 0; color: var(--muted); font-size: .82rem; }
+.tc-score { display: flex; align-items: flex-end; justify-content: space-between; gap: 10px; }
+.tc-score .num { font-family: var(--f-display); font-weight: 800; font-size: 2.4rem; line-height: .95; letter-spacing: -.02em; }
+.tc-score .num small { font-family: var(--f-mono); font-weight: 500; font-size: .36em; color: var(--muted); letter-spacing: 0; }
+.tc-score .lbl { display: block; font-size: .72rem; color: var(--muted); margin-top: 4px; }
+.tc-score .right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+.tc-score .right small { font-size: .7rem; color: var(--muted); }
+.meter { height: 6px; border-radius: 3px; background: var(--panel-3); overflow: hidden; }
+.meter i { display: block; height: 100%; background: var(--accent); border-radius: 0 3px 3px 0; transition: width .6s ease; }
+.months { display: block; width: 100%; height: auto; }
+.months rect.bar { fill: var(--bar); }
+.months rect.bar.cur { fill: var(--accent); }
+.months text { fill: var(--muted); font-size: 8px; font-family: var(--f-body); text-anchor: middle; }
+.months text.cur { fill: var(--accent-2); font-weight: 700; }
+.months .hit { fill: transparent; }
+.facts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.facts div { background: var(--panel-2); border-radius: 10px; padding: 7px 10px; min-width: 0; }
+.facts small { display: block; font-size: .68rem; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; font-weight: 700; }
+.facts b { font-size: .86rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
+.facts .mono { font-weight: 500; }
+.comp-1 { color: var(--good); } .comp-2 { color: var(--warn); } .comp-3 { color: var(--bad); }
+.tcard .btn.cta { width: 100%; padding: 12px; font-size: .98rem; }
+.links { display: flex; gap: 14px; font-size: .8rem; flex-wrap: wrap; }
+.links a { color: var(--text-2); text-decoration: none; }
+.links a:hover { color: var(--accent-2); }
+.links .wk { color: var(--muted); margin-left: auto; }
+.empty { color: var(--muted); padding: 30px 0; text-align: center; }
+
+/* ---------- Prep list ---------- */
+.prep { display: grid; gap: 10px; }
+.prow { display: grid; grid-template-columns: 62px 1.4fr 1fr 1.2fr auto; gap: 14px; align-items: center; background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 12px 14px; }
+.prow .cal { padding: 6px 0; }
+.prow h3 { font-size: 1.05rem; }
+.prow .sub { color: var(--muted); font-size: .8rem; }
+.prow .k { display: block; font-size: .68rem; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; font-weight: 700; }
+.prow .mono { font-size: .95rem; }
+.prow .btn { padding: 10px 14px; }
+
+/* ---------- Heatmap ---------- */
+.scroll { overflow-x: auto; }
+.heat { border-collapse: separate; border-spacing: 3px; min-width: 720px; width: 100%; }
+.heat th { font-size: .74rem; color: var(--muted); font-weight: 600; padding: 4px; }
+.heat th.cur { color: var(--accent); }
+.heat th.row { text-align: left; color: var(--text-2); font-weight: 600; white-space: nowrap; padding-right: 12px; font-size: .84rem; }
+.heat td { padding: 0; }
+.cell { height: 26px; border-radius: 6px; }
+.cell:hover, .cell:focus { outline: 2px solid var(--text); outline-offset: 1px; }
+.heat td.cur .cell { box-shadow: 0 0 0 2px var(--accent); }
+.scale { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: .76rem; margin: 0 0 12px; }
+.scale div { width: 180px; height: 8px; border-radius: 4px; background: linear-gradient(90deg, #1d2742, #1c5cab, #3987e5, #86b6ef, #cde2fb); }
+
+/* ---------- Sales ---------- */
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 18px; }
+.sale-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; align-items: end; margin-bottom: 18px; }
+label { display: flex; flex-direction: column; gap: 6px; font-size: .78rem; color: var(--text-2); font-weight: 600; }
+.sales { display: grid; grid-template-columns: 1fr 1.4fr; gap: 18px; }
+.sales > * { min-width: 0; }
+.sales h3 { font-size: 1rem; margin-bottom: 12px; }
+.bars .row { display: grid; grid-template-columns: 130px 1fr 64px; gap: 10px; align-items: center; margin-bottom: 8px; font-size: .86rem; }
+.bars .row span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text-2); }
+.bars .track { height: 14px; border-radius: 4px; background: var(--panel-3); overflow: hidden; }
+.bars .fill { height: 100%; background: var(--accent); border-radius: 0 4px 4px 0; }
+.bars b { text-align: right; font-family: var(--f-mono); font-weight: 500; }
+table.plain { border-collapse: collapse; width: 100%; }
+.plain th { text-align: left; font-size: .72rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); padding: 8px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+.plain td { padding: 9px 8px; border-bottom: 1px solid var(--line); font-size: .88rem; white-space: nowrap; }
+.del { border: 0; background: transparent; color: var(--muted); cursor: pointer; }
+.del:hover { color: var(--bad); }
+.row-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+
+.note { margin-top: 26px; color: var(--muted); font-size: .82rem; border-top: 1px solid var(--line); padding-top: 16px; max-width: 900px; }
+.note b { color: var(--text-2); }
+
+/* ---------- Prompt sheet ---------- */
+.scrim { position: fixed; inset: 0; background: rgba(5, 6, 12, .6); backdrop-filter: blur(3px); z-index: 20; }
+.sheet {
+  position: fixed; top: 0; right: 0; bottom: 0; width: min(600px, 100%); z-index: 21; background: var(--panel);
+  border-left: 1px solid var(--line); display: flex; flex-direction: column; animation: slide .25s cubic-bezier(.2, .8, .2, 1);
+  padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+@keyframes slide { from { transform: translateX(100%); } }
+.sheet-head { padding: 18px 20px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; gap: 12px; }
+.sheet-head h2 { font-size: 1.5rem; }
+.sheet-head p { margin: 6px 0 0; color: var(--text-2); font-size: .84rem; }
+.x { width: 40px; height: 40px; flex: none; border-radius: 12px; border: 1px solid var(--line); background: var(--panel-2); cursor: pointer; font-size: 1rem; }
+.sheet-body { overflow-y: auto; padding: 18px 20px 28px; display: flex; flex-direction: column; gap: 18px; }
+.sheet-body > * { flex-shrink: 0; }
+.step-h { display: flex; align-items: center; gap: 10px; font-family: var(--f-display); font-weight: 700; font-size: 1.05rem; margin-bottom: 10px; }
+.step-h .n { width: 26px; height: 26px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); display: grid; place-items: center; font-size: .85rem; font-weight: 800; }
+.opts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.opts .full { grid-column: 1 / -1; }
+.prompt { border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+.prompt pre { margin: 0; padding: 14px; white-space: pre-wrap; word-break: break-word; font: 12.5px/1.6 var(--f-mono); color: var(--text-2); max-height: 320px; overflow-y: auto; background: var(--ink); }
+.prompt-bar { display: flex; gap: 8px; padding: 10px; background: var(--panel-2); flex-wrap: wrap; }
+.prompt-bar .btn { flex: 1; }
+.tags { margin: 0; padding: 12px 14px; font-size: .85rem; color: var(--text-2); background: var(--ink); }
+.tips { background: var(--panel-2); border-radius: 14px; padding: 12px 16px; font-size: .86rem; color: var(--text-2); }
+.tips ul { margin: 6px 0 0; padding-left: 18px; }
+
+.tip { position: fixed; z-index: 30; pointer-events: none; background: var(--text); color: var(--ink); padding: 6px 10px; border-radius: 8px; font-size: .78rem; line-height: 1.35; }
+.tip b { font-family: var(--f-mono); font-size: .9rem; }
+.toast { position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); transform: translate(-50%, 20px); opacity: 0; transition: .25s; z-index: 40; background: var(--good); color: #05210f; padding: 10px 18px; border-radius: 999px; font-weight: 700; pointer-events: none; }
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+@media (max-width: 900px) {
+  .spot { grid-template-columns: 1fr; }
+  .how { grid-template-columns: 1fr; }
+  .prow { grid-template-columns: 56px 1fr auto; }
+  .prow .c3, .prow .c4 { grid-column: 2 / -1; }
+}
+@media (max-width: 640px) {
+  .sales { grid-template-columns: 1fr; }
+  .opts { grid-template-columns: 1fr; }
+  .spot { padding: 18px; }
+  .seg { width: 100%; }
+  .seg select { flex: 1; }
+  .sheet { width: 100%; }
+}
+</style>
+
+<div class="page">
+  <header class="top">
+    <div class="brand">
+      <span class="mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="26" height="26"><path d="M8 3l-5 3 2 4 2-1v12h10V9l2 1 2-4-5-3c-.5 1.5-2 2.5-4 2.5S8.5 4.5 8 3z" fill="currentColor"/></svg>
+      </span>
+      <div>
+        <h1>Trend Radarı</h1>
+        <p>ABD'de ne satıyor? · Etsy + Printify giyim</p>
+      </div>
+    </div>
+    <div class="live" aria-live="off">
+      <span class="dot" aria-hidden="true"></span><span class="tag">CANLI</span>
+      <span>New York <b id="nyClock">--:--:--</b></span>
+      <span>TR <b id="trClock">--:--:--</b></span>
     </div>
   </header>
 
-  <main class="wrap" id="top">
-    <!-- Canlı özet -->
-    <section class="hero" aria-label="Canlı özet">
-      <div class="hero-main">
-        <div class="live-row">
-          <span class="live"><i></i>CANLI</span>
-          <span class="hero-clock">New York <b id="nyClock">--:--:--</b></span>
-          <span class="hero-clock">Türkiye <b id="trClock">--:--:--</b></span>
-        </div>
-        <p class="hero-label">Şu an ABD'de en sıcak tema</p>
-        <h1 id="heroTop">—</h1>
-        <div class="hero-score">
-          <span class="big"><span id="heroScore">0,00</span><span id="heroFine" class="fine" title="Saniyelik değişimi gösteren hassas basamaklar"></span></span>
-          <span class="hero-unit">/ 100 endeks</span>
-          <span id="heroDelta" class="pill"></span>
-        </div>
-        <p class="hero-note">Endeks her saniye tarihe göre yeniden hesaplanır · Wikipedia ilgi verisi <span id="wikiStatus">yükleniyor…</span></p>
-      </div>
-      <div class="hero-side">
-        <p class="hero-label">Yaklaşan ABD günleri</p>
-        <ol class="countdowns" id="heroEvents"></ol>
-      </div>
-    </section>
+  <ol class="how" aria-label="Nasıl kullanılır">
+    <li><span class="n">1</span><div><b>Bir trend seç</b><span>Puanı yüksek ve yükselen temalar kazandırır</span></div></li>
+    <li><span class="n">→</span><div><b>Turuncu butona bas</b><span>"Gemini prompt'u al" tasarım talimatını hazırlar</span></div></li>
+    <li><span class="n">3</span><div><b>Kopyala, Gemini'ye yapıştır</b><span>Çıkan görseli Printify'a yükle</span></div></li>
+  </ol>
 
-    <!-- Filtreler: aşağıdaki her şeyi etkiler -->
-    <section class="filters" aria-label="Filtreler">
-      <div class="seg" role="group" aria-label="Zaman">
-        <button type="button" id="liveBtn" class="seg-btn active">● Canlı</button>
-        <select id="monthSel" aria-label="Ay seç"></select>
+  <section class="spot" aria-label="Şu an en popüler">
+    <div>
+      <p class="eyebrow">Şu an ABD'de 1 numara</p>
+      <h2 id="spotName">—</h2>
+      <p class="en" id="spotEn"></p>
+      <div class="spot-score">
+        <span class="num" id="spotNum">0</span>
+        <span class="lbl">talep puanı / 100<br><span id="spotDelta" class="pill flat"></span></span>
       </div>
-      <select id="catSel" aria-label="Kategori"><option value="">Tüm kategoriler</option></select>
-      <div class="search">
-        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-        <input id="searchInp" type="search" placeholder="Ara: halloween, teacher, dog…" aria-label="Ara">
+      <div class="spot-actions">
+        <button class="btn cta" id="spotBtn" type="button">Gemini prompt'u al <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
       </div>
-    </section>
+    </div>
+    <div>
+      <p class="eyebrow">Yaklaşan ABD günleri · canlı geri sayım</p>
+      <ol class="events" id="events"></ol>
+    </div>
+  </section>
 
-    <section class="kpis" id="kpis" aria-label="Özet"></section>
+  <nav class="tabs" role="tablist" aria-label="Bölümler">
+    <button class="tab" role="tab" id="tab-popular" aria-selected="true" aria-controls="view-popular" data-view="popular">Şu an popüler <span class="count" id="cntPopular"></span></button>
+    <button class="tab" role="tab" id="tab-prep" aria-selected="false" aria-controls="view-prep" data-view="prep">Hazırlanma zamanı <span class="count" id="cntPrep"></span></button>
+    <button class="tab" role="tab" id="tab-calendar" aria-selected="false" aria-controls="view-calendar" data-view="calendar">Yıllık takvim</button>
+    <button class="tab" role="tab" id="tab-sales" aria-selected="false" aria-controls="view-sales" data-view="sales">Satışlarım</button>
+  </nav>
 
-    <section class="panel" id="hazirla">
-      <div class="panel-head">
-        <div>
-          <h2>Şimdi hazırla</h2>
-          <p class="hint">Etsy'de sezonluk ürünler etkinlikten <b>~45 gün önce</b> yayında olmalı. Sayaçlar canlı.</p>
-        </div>
-        <span class="chip" id="prepSub"></span>
-      </div>
-      <div class="cards" id="prepCards"></div>
-    </section>
+  <div class="controls" id="controls">
+    <div class="seg" role="group" aria-label="Zaman">
+      <button type="button" id="liveBtn" class="on">● Şimdi</button>
+      <select id="monthSel" aria-label="Başka bir ayı gör"></select>
+    </div>
+    <div class="search">
+      <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <input id="searchInp" type="search" placeholder="Ara: halloween, teacher, dog, noel…" aria-label="Trend ara">
+    </div>
+  </div>
+  <div class="chips" id="chips" role="group" aria-label="Kategori"></div>
 
-    <section class="panel" id="siralama">
-      <div class="panel-head">
-        <div>
-          <h2>Popülerlik sıralaması</h2>
-          <p class="hint">Endeks = tahmini ABD talebi (0–100). <b>Wikipedia</b> sütunu gerçek ilgi verisidir (son 7 gün ort., önceki haftaya göre). <b>→</b> Gemini prompt'u üretir.</p>
-        </div>
-        <span class="chip" id="rankSub"></span>
-      </div>
-      <div class="table-scroll">
-        <table class="rank" id="rankTable">
-          <thead>
-            <tr>
-              <th>#</th><th>Trend</th><th>Endeks</th><th>30 gün</th>
-              <th class="hide-sm">12 ay</th><th>Wikipedia ilgisi</th><th class="hide-sm">Rekabet</th><th class="hide-sm">Doğrula</th><th><span class="sr">Prompt</span></th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
-    </section>
+  <section id="view-popular" role="tabpanel" aria-labelledby="tab-popular">
+    <p class="view-note" id="popularNote"></p>
+    <div class="grid" id="cards"></div>
+  </section>
 
-    <section class="panel" id="takvim">
-      <div class="panel-head">
-        <div>
-          <h2>Yıllık takvim</h2>
-          <p class="hint">Hangi tema hangi ay zirve yapıyor? Koyu hücre = yüksek talep. Çerçeveli sütun = seçili ay.</p>
-        </div>
-        <div class="legend-scale" aria-hidden="true"><span>0</span><div class="scale-bar"></div><span>100</span></div>
-      </div>
-      <div class="table-scroll">
-        <table class="heat" id="heatTable"></table>
-      </div>
-    </section>
+  <section id="view-prep" role="tabpanel" aria-labelledby="tab-prep" hidden>
+    <p class="view-note">Etsy'de sezonluk ürünler etkinlikten <b>~45 gün önce</b> yayında olmalı. Tarihe göre sıralı; sayaçlar saniye saniye akar.</p>
+    <div class="prep" id="prepList"></div>
+  </section>
 
-    <section class="panel" id="satislar">
-      <div class="panel-head">
-        <div>
-          <h2>Satış kayıtlarım</h2>
-          <p class="hint">Etsy'deki gerçek satışlarını gir; hangi trendin kazandırdığını gör. Veriler bu tarayıcıda saklanır — yedek için dışa aktar.</p>
-        </div>
-      </div>
+  <section id="view-calendar" role="tabpanel" aria-labelledby="tab-calendar" hidden>
+    <p class="view-note">Hangi tema hangi ay zirve yapıyor? Açık renk = yüksek talep. Turuncu çerçeve = seçili ay. Bir satıra tıkla → prompt açılır.</p>
+    <div class="scale" aria-hidden="true"><span>düşük</span><div></div><span>yüksek</span></div>
+    <div class="scroll"><table class="heat" id="heat"></table></div>
+  </section>
+
+  <section id="view-sales" role="tabpanel" aria-labelledby="tab-sales" hidden>
+    <div class="panel">
+      <p class="view-note">Etsy'deki satışlarını gir; hangi trendin kazandırdığını gör. Kayıtlar yalnızca bu tarayıcıda durur.</p>
       <form id="saleForm" class="sale-form">
-        <label>Tarih <input type="date" name="date" required></label>
-        <label>Trend <select name="trend" id="saleTrend" required></select></label>
-        <label>Ürün <select name="product" id="saleProduct"></select></label>
-        <label>Adet <input type="number" name="qty" min="1" value="1" required></label>
-        <label>Gelir ($) <input type="number" name="revenue" min="0" step="0.01" value="0" required></label>
-        <label>Görüntülenme <input type="number" name="views" min="0" value="0"></label>
-        <label>Favori <input type="number" name="favs" min="0" value="0"></label>
-        <button type="submit" class="btn primary">Kaydet</button>
+        <label>Tarih <input type="date" name="date" id="fDate" required></label>
+        <label>Trend <select name="trend" id="fTrend" required></select></label>
+        <label>Ürün <select name="product" id="fProduct"></select></label>
+        <label>Adet <input type="number" name="qty" id="fQty" min="1" value="1" required></label>
+        <label>Gelir ($) <input type="number" name="revenue" id="fRev" min="0" step="0.01" value="0" required></label>
+        <label>Görüntülenme <input type="number" name="views" id="fViews" min="0" value="0"></label>
+        <button type="submit" class="btn cta">Satışı kaydet</button>
       </form>
-      <div class="sales-grid">
-        <div>
-          <h3>Trende göre gelir</h3>
-          <div id="salesChart" class="bars"></div>
-        </div>
+      <div class="sales">
+        <div><h3>Trende göre gelir</h3><div class="bars" id="salesBars"></div></div>
         <div>
           <h3>Kayıtlar</h3>
-          <div class="table-scroll">
+          <div class="scroll">
             <table class="plain" id="salesTable">
-              <thead><tr><th>Tarih</th><th>Trend</th><th>Ürün</th><th>Adet</th><th>Gelir</th><th>Dönüşüm</th><th></th></tr></thead>
+              <thead><tr><th>Tarih</th><th>Trend</th><th>Ürün</th><th>Adet</th><th>Gelir</th><th>Dönüşüm</th><th><span class="sr">Sil</span></th></tr></thead>
               <tbody></tbody>
             </table>
           </div>
           <div class="row-actions">
-            <button type="button" class="btn" id="exportBtn">Dışa aktar (JSON)</button>
-            <label class="btn file-btn">İçe aktar<input type="file" id="importInp" accept="application/json" hidden></label>
+            <button type="button" class="btn" id="copyJson">Yedeği kopyala (JSON)</button>
+            <label class="btn" for="importInp">Yedek dosyası yükle</label>
+            <input type="file" id="importInp" accept="application/json" hidden>
           </div>
         </div>
       </div>
-    </section>
-
-    <footer class="disclaimer">
-      <b>Veri hakkında:</b> <b>Endeks</b>, ABD'de her yıl tekrarlanan alışveriş sezonlarına göre kurulmuş bir modeldir;
-      tarihe göre saniye saniye yeniden hesaplanır ama pazar verisi değildir. <b>Wikipedia ilgisi</b> gerçek veridir
-      (İngilizce Wikipedia görüntülenmeleri, Wikimedia günde bir kez günceller; site 15 dakikada bir kontrol eder).
-      Etsy ve Google Trends'in herkese açık canlı API'si yok — karar vermeden önce satırdaki linklerle doğrula.
-      Telif riski için takım logoları, marka adları ve film/çizgi film karakterleri kullanma.
-    </footer>
-  </main>
-
-  <!-- Prompt paneli -->
-  <div class="drawer-bg" id="drawerBg" hidden></div>
-  <aside class="drawer" id="drawer" aria-hidden="true" aria-labelledby="drawerTitle" role="dialog">
-    <div class="drawer-head">
-      <div>
-        <p class="eyebrow">Gemini tasarım prompt'u</p>
-        <h2 id="drawerTitle"></h2>
-        <p class="drawer-meta" id="drawerMeta"></p>
-      </div>
-      <button class="icon-btn" id="closeDrawer" type="button" aria-label="Kapat">✕</button>
     </div>
-    <div class="drawer-body">
+  </section>
+
+  <p class="note">
+    <b>Puanlar nereden geliyor?</b> Talep puanı, ABD'de her yıl tekrarlanan alışveriş sezonlarına (bayramlar, okul takvimi, futbol sezonu, hediye dönemi) göre kurulmuş bir modeldir ve tarihe göre her saniye yeniden hesaplanır — gerçek satış verisi değildir.
+    Kartlardaki <b>Wikipedia</b> sayısı gerçektir (günlük görüntülenme, önceki haftaya göre değişim). Karar vermeden önce kartlardaki <b>Google Trends</b> ve <b>Etsy</b> linkleriyle kontrol et.
+    Telif riski için takım logosu, marka adı ve film/çizgi film karakteri kullanma.
+  </p>
+</div>
+
+<div class="scrim" id="scrim" hidden></div>
+<aside class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle" hidden>
+  <div class="sheet-head">
+    <div>
+      <p class="eyebrow">Gemini tasarım prompt'u</p>
+      <h2 id="sheetTitle"></h2>
+      <p id="sheetMeta" class="mono"></p>
+    </div>
+    <button class="x" id="closeSheet" type="button" aria-label="Kapat">✕</button>
+  </div>
+  <div class="sheet-body">
+    <div>
+      <div class="step-h"><span class="n">1</span>Seçenekleri ayarla</div>
       <div class="opts">
         <label>Ürün <select id="pProduct"></select></label>
-        <label>Stil <select id="pStyle"></select></label>
-        <label>Kumaş rengi <select id="pColor"></select></label>
+        <label>Tasarım stili <select id="pStyle"></select></label>
+        <label>Tişört rengi <select id="pColor"></select></label>
         <label>Arka plan
           <select id="pBg">
-            <option value="auto">Otomatik (kumaşa göre düz beyaz/siyah)</option>
+            <option value="auto">Otomatik (tişört rengine göre)</option>
             <option value="white">Düz beyaz</option>
-            <option value="transparent">Transparan iste</option>
             <option value="black">Düz siyah</option>
+            <option value="transparent">Transparan</option>
           </select>
         </label>
-        <label class="full">Slogan fikri <select id="pIdea"></select></label>
-        <label class="full">Kendi metnin (boş bırakılırsa slogan kullanılır)
-          <input id="pText" type="text" placeholder="örn. Spooky Mama">
-        </label>
-        <label>Varyasyon sayısı
-          <select id="pVar"><option>1</option><option>2</option><option selected>3</option><option>4</option></select>
-        </label>
+        <label class="full">Tişörtteki yazı <select id="pIdea"></select></label>
+        <label class="full">…ya da kendi yazın <input id="pText" type="text" placeholder="örn. Spooky Mama"></label>
+        <label>Kaç farklı tasarım <select id="pVar"><option>1</option><option>2</option><option selected>3</option><option>4</option></select></label>
         <label>Baskı yeri
           <select id="pPlace">
             <option value="front">Ön (büyük)</option>
@@ -204,38 +428,1045 @@
           </select>
         </label>
       </div>
-
-      <div class="prompt-box">
-        <div class="prompt-head">
-          <b>Prompt (İngilizce)</b>
-          <button class="btn primary" id="copyPrompt" type="button">Kopyala</button>
-        </div>
+    </div>
+    <div>
+      <div class="step-h"><span class="n">2</span>Kopyala ve Gemini'ye yapıştır</div>
+      <div class="prompt">
         <pre id="promptOut"></pre>
-      </div>
-
-      <div class="prompt-box">
-        <div class="prompt-head">
-          <b>Etsy etiketleri (13)</b>
-          <button class="btn" id="copyTags" type="button">Kopyala</button>
+        <div class="prompt-bar">
+          <button class="btn cta" id="copyPrompt" type="button">Prompt'u kopyala</button>
+          <a class="btn" href="https://gemini.google.com/app" target="_blank" rel="noopener">Gemini'yi aç ↗</a>
         </div>
-        <p id="tagsOut" class="tags"></p>
-      </div>
-
-      <div class="tips">
-        <b>Printify ipuçları</b>
-        <ul>
-          <li>Gemini çıktısını <b>4500×5400 px, 300 DPI PNG</b> olarak büyüt (upscale) ve arka planı sil.</li>
-          <li>Açık kumaşa koyu tasarım, koyu kumaşa açık tasarım koy; ince çizgiler DTG'de kaybolur.</li>
-          <li>Yazım hatası için metni mutlaka kontrol et — AI bazen harfleri bozar.</li>
-        </ul>
       </div>
     </div>
-  </aside>
+    <div>
+      <div class="step-h"><span class="n">3</span>Etsy etiketleri (13 adet)</div>
+      <div class="prompt">
+        <p class="tags" id="tagsOut"></p>
+        <div class="prompt-bar"><button class="btn" id="copyTags" type="button">Etiketleri kopyala</button></div>
+      </div>
+    </div>
+    <div class="tips">
+      <b>Printify'a yüklemeden önce</b>
+      <ul>
+        <li>Görseli <b>4500×5400 px</b> boyutuna büyüt ve arka planı sil.</li>
+        <li>Yazıyı harf harf kontrol et — yapay zekâ bazen harfleri bozar.</li>
+        <li>Açık tişörte koyu, koyu tişörte açık tasarım koy.</li>
+      </ul>
+    </div>
+  </div>
+</aside>
 
-  <div class="tooltip" id="tooltip" role="tooltip" hidden></div>
-  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="tip" id="tip" role="tooltip" hidden></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-  <script src="js/data.js"></script>
-  <script src="js/app.js"></script>
-</body>
-</html>
+<script>
+/* ===== VERİ: trendleri ve puanları buradan düzenleyebilirsin ===== */
+/*
+ * ABD giyim (POD) trend verisi.
+ *
+ * Buradaki puanlar CANLI VERİ DEĞİLDİR: ABD'de her yıl tekrarlanan alışveriş
+ * sezonlarına (bayramlar, okul takvimi, spor sezonu, hediye dönemleri) göre
+ * hazırlanmış 0-100 arası TAHMİNİ talep endeksleridir. Her trendin yanındaki
+ * Google Trends / Etsy linkleriyle güncel durumu doğrulayın ve gerekirse bu
+ * dosyadaki değerleri düzenleyin.
+ *
+ * Alanlar:
+ *   peaks   : [[ayIndex(0=Ocak), zirvePuanı, yayılım(ay)], ...]
+ *   base    : sezon dışı taban puan
+ *   gift    : true ise Kasım-Aralık hediye sezonunda ek artış alır
+ *   comp    : rekabet seviyesi (1=düşük, 2=orta, 3=yüksek)
+ *   style   : prompt'ta varsayılan stil anahtarı (bkz. STYLES)
+ *   ideas   : İngilizce slogan / tasarım fikirleri (baskıya girecek metin)
+ */
+
+const MONTHS = ["Oca", "Şub", "Mar", "Nis", "May", "Haz", "Tem", "Ağu", "Eyl", "Eki", "Kas", "Ara"];
+const MONTHS_LONG = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
+
+const CATEGORIES = {
+  holiday: "Bayram & Özel Gün",
+  season: "Mevsim",
+  event: "Etkinlik & Grup",
+  awareness: "Farkındalık",
+  profession: "Meslek",
+  family: "Aile",
+  hobby: "Hobi & Yaşam Tarzı",
+  humor: "Mizah & Aesthetic",
+};
+
+const PRODUCTS = {
+  tee: "Unisex T-shirt (Bella+Canvas 3001)",
+  cc: "Comfort Colors 1717 T-shirt",
+  sweat: "Crewneck Sweatshirt (Gildan 18000)",
+  hoodie: "Hoodie (Gildan 18500)",
+  kids: "Çocuk / Bebek body",
+};
+
+const STYLES = {
+  retro: { tr: "Retro / Vintage 70'ler", en: "retro vintage 1970s style, groovy bold rounded lettering, sunset stripes, subtle distressed grain texture" },
+  minimal: { tr: "Minimalist çizgi", en: "minimalist single-line art illustration with clean, simple typography and generous negative space" },
+  typo: { tr: "Sadece tipografi", en: "bold modern typography-only layout, stacked lettering with strong hierarchy and high contrast" },
+  watercolor: { tr: "Suluboya", en: "soft watercolor illustration with an elegant hand-lettered script font" },
+  cute: { tr: "Sevimli / Kawaii", en: "cute kawaii cartoon illustration with thick clean outlines and a playful rounded font" },
+  western: { tr: "Western / Kovboy", en: "western cowgirl aesthetic, rope-style lettering, desert and horseshoe elements, vintage rodeo poster feel" },
+  badge: { tr: "Vintage rozet / Park posteri", en: "vintage outdoor badge emblem in the style of retro national-park posters, limited flat colors" },
+  varsity: { tr: "Varsity / Kolej", en: "collegiate varsity arch lettering with a faded, puff-print look, trendy Comfort Colors aesthetic" },
+  doodle: { tr: "El çizimi doodle", en: "hand-drawn doodle illustration with marker-style lines and quirky handwritten font" },
+  distressed: { tr: "Eskitilmiş / Grunge", en: "distressed grunge texture, worn vintage print effect, bold condensed type" },
+};
+
+const GARMENT_COLORS = {
+  white: { tr: "Beyaz", en: "white" },
+  black: { tr: "Siyah", en: "black" },
+  ivory: { tr: "Ivory / Natural", en: "ivory (natural cream)" },
+  pepper: { tr: "Pepper (koyu gri)", en: "pepper (faded dark charcoal)" },
+  sand: { tr: "Sand (bej)", en: "sand beige" },
+  heather: { tr: "Açık gri melanj", en: "light heather grey" },
+  navy: { tr: "Lacivert", en: "navy blue" },
+  green: { tr: "Orman yeşili", en: "forest green" },
+  maroon: { tr: "Bordo", en: "maroon" },
+  pink: { tr: "Açık pembe", en: "light pink" },
+};
+
+const TRENDS = [
+  // ---------- Bayram & özel günler ----------
+  { id: "newyear", tr: "Yılbaşı / Yeni Yıl", en: "New Year's Eve & New Year", cat: "holiday",
+    peaks: [[11, 70, 0.6], [0, 45, 0.5]], base: 8, comp: 2, style: "typo",
+    products: ["tee", "sweat"], colors: ["black", "white"],
+    audience: "party-goers, couples, families celebrating the new year",
+    ideas: ["Hello {NEXT_YEAR}", "New Year Same Me", "Cheers to {NEXT_YEAR}", "Resolution: More Naps"],
+    tags: ["new years shirt", "new year eve tee", "hello new year", "nye party shirt", "cheers shirt", "holiday party tee", "new year gift", "funny resolution", "celebration shirt", "family nye shirt", "glitter new year", "countdown shirt", "happy new year"] },
+
+  { id: "fitness", tr: "Yeni yıl spor motivasyonu", en: "Gym & Fitness Motivation", cat: "hobby",
+    peaks: [[0, 75, 0.9]], base: 35, comp: 3, style: "distressed",
+    products: ["tee", "hoodie"], colors: ["black", "heather"],
+    audience: "gym-goers, runners and people starting New Year fitness goals",
+    ideas: ["Lift Heavy Pet Dogs", "Just Here For The Snacks", "Sweat Now Glow Later", "Leg Day Survivor"],
+    tags: ["gym shirt", "workout tee", "fitness gift", "funny gym shirt", "lifting shirt", "pump cover", "gym hoodie", "weightlifting tee", "running shirt", "motivation shirt", "gym rat", "fitness lover", "leg day"] },
+
+  { id: "valentine", tr: "Sevgililer Günü", en: "Valentine's Day", cat: "holiday",
+    peaks: [[1, 92, 0.55], [0, 55, 0.4]], base: 6, comp: 3, style: "retro",
+    products: ["sweat", "cc", "tee"], colors: ["pink", "white", "ivory"],
+    audience: "women 18-45, couples, teachers and moms buying for Valentine's Day",
+    ideas: ["Lover Era", "XOXO", "Valentine Vibes", "Cupid's Favorite", "Teaching Sweethearts"],
+    tags: ["valentine sweatshirt", "valentine shirt", "xoxo sweatshirt", "lover shirt", "cute valentine tee", "teacher valentine", "valentines gift", "retro heart shirt", "love sweatshirt", "galentines day", "valentine day tee", "pink heart shirt", "womens valentine"] },
+
+  { id: "galentine", tr: "Galentine's / Anti-Valentine", en: "Galentine's & Anti-Valentine", cat: "humor",
+    peaks: [[1, 60, 0.5]], base: 5, comp: 1, style: "doodle",
+    products: ["tee", "sweat"], colors: ["pink", "black"],
+    audience: "single women and friend groups who celebrate Galentine's Day",
+    ideas: ["Galentine's Squad", "Single And Snacking", "Love Stinks", "My Dog Is My Valentine"],
+    tags: ["galentines shirt", "anti valentine", "single shirt", "funny valentine", "galentines gift", "best friend shirt", "girls night tee", "dog valentine", "love stinks", "sarcastic valentine", "squad shirt", "bff gift", "self love shirt"] },
+
+  { id: "bhm", tr: "Siyahi Tarih Ayı (Şubat)", en: "Black History Month", cat: "awareness",
+    peaks: [[1, 70, 0.6]], base: 10, comp: 2, style: "typo",
+    products: ["tee", "sweat"], colors: ["black", "ivory"],
+    audience: "adults and educators celebrating Black History Month",
+    ideas: ["Black History Is American History", "Melanin Magic", "Proud Legacy", "Educated Black Woman"],
+    tags: ["black history month", "bhm shirt", "melanin shirt", "black pride tee", "juneteenth gift", "african american", "black owned", "black teacher", "history shirt", "black queen", "culture shirt", "heritage tee", "empowerment shirt"] },
+
+  { id: "stpatrick", tr: "St. Patrick's Day", en: "St. Patrick's Day", cat: "holiday",
+    peaks: [[2, 88, 0.45]], base: 4, comp: 3, style: "retro",
+    products: ["tee", "cc"], colors: ["green", "white"],
+    audience: "adults going to St. Patrick's Day parades, parties and bar crawls",
+    ideas: ["Lucky Vibes", "Feeling Lucky", "Shenanigans Coordinator", "One Lucky Mama", "Irish Today"],
+    tags: ["st patricks shirt", "lucky shirt", "st pattys day", "shamrock tee", "irish shirt", "green shirt", "funny st patrick", "lucky mama", "bar crawl shirt", "clover shirt", "drinking shirt", "retro lucky", "teacher st patricks"] },
+
+  { id: "basketball", tr: "Basketbol / Mart sezonu (takım logosuz)", en: "Basketball Season (generic)", cat: "event",
+    peaks: [[2, 60, 0.6]], base: 15, comp: 2, style: "varsity",
+    products: ["tee", "hoodie"], colors: ["white", "black"],
+    audience: "basketball moms, dads and fans (no team or league branding)",
+    ideas: ["Basketball Mom", "Hoop Dreams", "Loud & Proud Basketball Mama", "Game Day Vibes"],
+    tags: ["basketball mom", "basketball shirt", "hoops tee", "sports mom", "game day shirt", "basketball gift", "team mom shirt", "court shirt", "basketball dad", "bball mom", "sports fan tee", "youth basketball", "custom basketball"] },
+
+  { id: "easter", tr: "Paskalya", en: "Easter", cat: "holiday",
+    peaks: [[3, 78, 0.5], [2, 45, 0.4]], base: 5, comp: 2, style: "cute",
+    products: ["tee", "kids", "sweat"], colors: ["white", "pink", "ivory"],
+    audience: "moms, kids and Christian families celebrating Easter",
+    ideas: ["Hoppy Easter", "He Is Risen", "Some Bunny Loves You", "Egg Hunt Squad"],
+    tags: ["easter shirt", "easter bunny tee", "he is risen", "kids easter shirt", "christian easter", "egg hunt shirt", "cute easter tee", "family easter", "spring shirt", "bunny shirt", "easter gift", "toddler easter", "easter mama"] },
+
+  { id: "earthday", tr: "Dünya Günü / Doğa", en: "Earth Day & Nature", cat: "awareness",
+    peaks: [[3, 55, 0.5]], base: 18, comp: 1, style: "badge",
+    products: ["cc", "tee"], colors: ["sand", "green", "ivory"],
+    audience: "eco-conscious millennials and Gen Z, nature lovers, teachers",
+    ideas: ["There Is No Planet B", "Protect Our Planet", "Earth Day Every Day", "Grow Positive Thoughts"],
+    tags: ["earth day shirt", "nature shirt", "planet b", "environment tee", "eco friendly", "climate shirt", "save the earth", "botanical shirt", "outdoor tee", "earth day teacher", "hippie shirt", "sustainability", "plant shirt"] },
+
+  { id: "autism", tr: "Otizm Farkındalığı", en: "Autism Acceptance", cat: "awareness",
+    peaks: [[3, 65, 0.5]], base: 12, comp: 2, style: "doodle",
+    products: ["tee", "sweat"], colors: ["white", "heather"],
+    audience: "parents, special education teachers and autism advocates",
+    ideas: ["Different Not Less", "Autism Mom", "Acceptance Matters", "Be Kind To Every Kind Of Mind"],
+    tags: ["autism awareness", "autism mom", "acceptance shirt", "neurodiversity", "sped teacher", "autism shirt", "infinity symbol", "different not less", "autism support", "special education", "inclusion shirt", "be kind shirt", "neurodivergent"] },
+
+  { id: "mothers", tr: "Anneler Günü / Mama", en: "Mother's Day & Mama", cat: "family",
+    peaks: [[4, 90, 0.5]], base: 35, gift: true, comp: 3, style: "retro",
+    products: ["sweat", "cc", "tee"], colors: ["ivory", "sand", "pink"],
+    audience: "mothers aged 25-50 and people buying gifts for moms",
+    ideas: ["Mama", "Blessed Mama", "Mom Life", "Custom Mama With Kids Names", "Grandma Est. {YEAR}"],
+    tags: ["mama sweatshirt", "mothers day gift", "mom shirt", "custom mama", "mama shirt", "new mom gift", "grandma shirt", "retro mama", "mom life", "gift for mom", "personalized mom", "mama est", "boy mom"] },
+
+  { id: "teacherapp", tr: "Öğretmenler Haftası & okul sonu", en: "Teacher Appreciation & Last Day of School", cat: "profession",
+    peaks: [[4, 70, 0.5]], base: 10, comp: 2, style: "doodle",
+    products: ["tee", "cc"], colors: ["white", "ivory"],
+    audience: "elementary teachers and parents gifting teachers",
+    ideas: ["Schools Out For Summer", "Teacher Off Duty", "Last Day Vibes", "Thank You For Helping Me Grow"],
+    tags: ["last day of school", "teacher off duty", "schools out", "teacher appreciation", "teacher gift", "end of year teacher", "summer teacher", "teacher summer tee", "field day shirt", "teacher squad", "retro teacher", "teacher vacation", "class shirt"] },
+
+  { id: "nurseweek", tr: "Hemşireler Haftası (Mayıs)", en: "Nurses Week", cat: "profession",
+    peaks: [[4, 60, 0.4]], base: 30, comp: 3, style: "doodle",
+    products: ["tee", "sweat"], colors: ["white", "pink"],
+    audience: "registered nurses, nursing students and hospital staff",
+    ideas: ["Nurse Life", "Future Nurse", "ER Nurse Squad", "Coffee Scrubs And Rubber Gloves"],
+    tags: ["nurse shirt", "nurse week gift", "rn shirt", "nursing student", "er nurse", "icu nurse", "nurse life", "nurse sweatshirt", "future nurse", "nurse gift", "l&d nurse", "nicu nurse", "nurse squad"] },
+
+  { id: "graduation", tr: "Mezuniyet (Class of {NEXT_YEAR})", en: "Graduation Class Of {NEXT_YEAR}", cat: "event",
+    peaks: [[4, 80, 0.6], [5, 60, 0.4]], base: 6, comp: 2, style: "varsity",
+    products: ["tee", "hoodie"], colors: ["black", "white"],
+    audience: "high school and college seniors and their proud families",
+    ideas: ["Senior {NEXT_YEAR}", "Class Of {NEXT_YEAR}", "Proud Mom Of A {NEXT_YEAR} Graduate", "Done With School Stuff"],
+    tags: ["senior {NEXT_YEAR}", "class of {NEXT_YEAR}", "graduation shirt", "proud graduate mom", "grad gift", "senior shirt", "college grad", "high school grad", "graduation family", "grad party tee", "senior mom", "graduate shirt", "custom graduation"] },
+
+  { id: "pride", tr: "Pride Ayı (Haziran)", en: "Pride Month", cat: "awareness",
+    peaks: [[5, 78, 0.5]], base: 12, comp: 3, style: "retro",
+    products: ["tee", "cc"], colors: ["white", "black"],
+    audience: "LGBTQ+ adults and allies",
+    ideas: ["Love Is Love", "Proud Ally", "Be You", "Free Mom Hugs"],
+    tags: ["pride shirt", "lgbtq shirt", "love is love", "ally shirt", "rainbow shirt", "pride month", "gay pride tee", "equality shirt", "queer shirt", "free mom hugs", "pride gift", "be you shirt", "trans pride"] },
+
+  { id: "fathers", tr: "Babalar Günü / Dad", en: "Father's Day & Dad", cat: "family",
+    peaks: [[5, 88, 0.5]], base: 28, gift: true, comp: 3, style: "distressed",
+    products: ["tee", "hoodie"], colors: ["heather", "black", "navy"],
+    audience: "dads aged 28-60 and families buying gifts for dad",
+    ideas: ["Dad Joke Loading", "Girl Dad", "Custom Dad With Kids Names", "The Man The Myth The Legend", "Reel Cool Dad"],
+    tags: ["fathers day gift", "dad shirt", "girl dad", "funny dad shirt", "dad joke tee", "new dad gift", "custom dad shirt", "papa shirt", "grandpa shirt", "gift for dad", "best dad ever", "dad est", "fishing dad"] },
+
+  { id: "juneteenth", tr: "Juneteenth", en: "Juneteenth", cat: "holiday",
+    peaks: [[5, 60, 0.4]], base: 4, comp: 1, style: "typo",
+    products: ["tee"], colors: ["black", "white"],
+    audience: "African American families and communities celebrating Juneteenth",
+    ideas: ["Juneteenth 1865", "Free-ish Since 1865", "Celebrate Freedom", "Black And Proud"],
+    tags: ["juneteenth shirt", "1865 shirt", "freeish", "black history", "freedom day", "juneteenth tee", "african american", "black pride", "juneteenth family", "celebrate freedom", "melanin", "black culture", "june 19"] },
+
+  { id: "july4", tr: "4 Temmuz / Americana", en: "4th of July & Americana", cat: "holiday",
+    peaks: [[6, 90, 0.45], [5, 70, 0.45]], base: 12, comp: 3, style: "retro",
+    products: ["cc", "tee", "kids"], colors: ["white", "ivory", "navy"],
+    audience: "American families, moms and patriots preparing for Independence Day parties",
+    ideas: ["Party In The USA", "America Vibes", "All American Mama", "Red White & Booze", "Land Of The Free"],
+    tags: ["4th of july shirt", "america shirt", "patriotic tee", "usa shirt", "fourth of july", "retro america", "red white blue", "independence day", "american mama", "family july 4th", "merica shirt", "usa flag tee", "party in the usa"] },
+
+  { id: "summer", tr: "Yaz / Plaj / Tatil", en: "Summer, Beach & Vacation", cat: "season",
+    peaks: [[6, 75, 1.0]], base: 12, comp: 3, style: "retro",
+    products: ["cc", "tee"], colors: ["ivory", "white", "pink"],
+    audience: "women and families going on beach vacations, cruises and lake trips",
+    ideas: ["Salty Soul", "Beach Please", "Lake Life", "Vitamin Sea", "Cruise Squad {YEAR}"],
+    tags: ["beach shirt", "summer tee", "vacation shirt", "lake life", "cruise shirt", "salty shirt", "tropical tee", "coastal shirt", "summer vibes", "girls trip", "family vacation", "boho beach", "sunset shirt"] },
+
+  { id: "reunion", tr: "Aile buluşması / Grup tişörtü", en: "Family Reunion & Group Trips", cat: "event",
+    peaks: [[6, 70, 1.2]], base: 15, comp: 2, style: "typo",
+    products: ["tee"], colors: ["white", "heather"],
+    audience: "extended families and friend groups ordering matching custom shirts",
+    ideas: ["Family Reunion {YEAR}", "Girls Trip {YEAR}", "Making Memories Together", "Custom Family Name Est."],
+    tags: ["family reunion shirt", "matching family tee", "custom group shirt", "girls trip shirt", "family vacation tee", "reunion tee", "bulk shirts", "friends trip", "custom family", "road trip shirt", "cousin crew", "group tee", "trip {YEAR}"] },
+
+  { id: "bachelorette", tr: "Bekarlığa veda (Bachelorette)", en: "Bachelorette & Bridal Party", cat: "event",
+    peaks: [[5, 70, 2.0]], base: 20, comp: 3, style: "western",
+    products: ["tee", "cc"], colors: ["white", "pink", "black"],
+    audience: "brides and bridesmaids planning bachelorette weekends",
+    ideas: ["Last Rodeo", "Let's Go Girls", "Bride Squad", "Nashville Bachelorette", "Last Disco"],
+    tags: ["bachelorette shirt", "bride shirt", "last rodeo", "bridal party tee", "bride squad", "nashville bach", "last disco", "bridesmaid gift", "bach party", "western bachelorette", "custom bride", "lets go girls", "wedding party"] },
+
+  { id: "backtoschool", tr: "Okula dönüş / Öğretmen", en: "Back To School", cat: "profession",
+    peaks: [[7, 88, 0.55], [6, 50, 0.4]], base: 10, comp: 3, style: "doodle",
+    products: ["tee", "sweat", "kids"], colors: ["white", "ivory", "sand"],
+    audience: "teachers, school staff, kids and parents at the start of the school year",
+    ideas: ["First Day Of School", "Teach Love Inspire", "Kindergarten Here I Come", "Retro Teacher Vibes"],
+    tags: ["back to school", "teacher shirt", "first day of school", "kindergarten shirt", "teacher tee", "school shirt", "retro teacher", "teacher gift", "kids school tee", "grade level shirt", "teaching team", "first grade", "teacher squad"] },
+
+  { id: "football", tr: "Futbol sezonu / Game day (logosuz)", en: "Football Season Game Day (generic)", cat: "event",
+    peaks: [[9, 80, 1.3]], base: 10, comp: 3, style: "varsity",
+    products: ["cc", "sweat", "tee"], colors: ["ivory", "black", "maroon"],
+    audience: "football moms, girlfriends and fans at high school and college games (no team logos)",
+    ideas: ["Game Day", "Football Mom", "Friday Night Lights", "In My Football Mom Era", "Touchdown Season"],
+    tags: ["game day shirt", "football mom", "football season", "friday night lights", "football sweatshirt", "sunday football", "football tee", "sports mom", "tailgate shirt", "custom football", "football girlfriend", "fall football", "touchdown shirt"] },
+
+  { id: "fall", tr: "Sonbahar / Balkabağı / Cozy", en: "Fall, Pumpkin Spice & Cozy Season", cat: "season",
+    peaks: [[9, 82, 1.0]], base: 8, comp: 3, style: "retro",
+    products: ["sweat", "cc"], colors: ["sand", "ivory", "maroon"],
+    audience: "women 20-45 who love autumn, pumpkin patches and cozy vibes",
+    ideas: ["Hello Fall", "Pumpkin Spice Season", "Cozy Season", "Fall Y'all", "Sweater Weather"],
+    tags: ["fall sweatshirt", "pumpkin shirt", "autumn tee", "fall vibes", "pumpkin spice", "cozy season", "thanksgiving shirt", "fall yall", "fall shirt women", "retro fall", "sweater weather", "pumpkin patch", "hello fall"] },
+
+  { id: "halloween", tr: "Cadılar Bayramı", en: "Halloween", cat: "holiday",
+    peaks: [[9, 98, 0.5], [8, 60, 0.4]], base: 5, comp: 3, style: "retro",
+    products: ["sweat", "tee", "kids"], colors: ["black", "ivory", "sand"],
+    audience: "women, teachers, moms and kids who love spooky season (no copyrighted movie characters)",
+    ideas: ["Spooky Season", "Stay Spooky", "Ghost Squad", "Boo Crew", "Teacher Of Little Monsters"],
+    tags: ["halloween shirt", "spooky season", "ghost sweatshirt", "halloween sweatshirt", "retro halloween", "stay spooky", "teacher halloween", "cute ghost tee", "boo shirt", "halloween party", "witchy shirt", "pumpkin ghost", "halloween gift"] },
+
+  { id: "breastcancer", tr: "Meme kanseri farkındalığı (Ekim)", en: "Breast Cancer Awareness", cat: "awareness",
+    peaks: [[9, 70, 0.45]], base: 12, comp: 2, style: "typo",
+    products: ["tee", "sweat"], colors: ["pink", "white", "black"],
+    audience: "survivors, supporters, teams and walk groups in October",
+    ideas: ["In October We Wear Pink", "Fight Like A Girl", "Survivor", "Pink Out Team"],
+    tags: ["breast cancer shirt", "pink ribbon", "we wear pink", "cancer survivor", "awareness shirt", "pink out shirt", "fight like a girl", "october pink", "cancer support", "team shirt", "breast cancer gift", "survivor tee", "walk shirt"] },
+
+  { id: "thanksgiving", tr: "Şükran Günü", en: "Thanksgiving", cat: "holiday",
+    peaks: [[10, 82, 0.45]], base: 4, comp: 2, style: "retro",
+    products: ["sweat", "tee"], colors: ["sand", "ivory", "maroon"],
+    audience: "families, moms and friends gathering for Thanksgiving dinner",
+    ideas: ["Thankful Grateful Blessed", "Gobble Gobble", "Turkey Trot {YEAR}", "Eat Drink And Be Thankful"],
+    tags: ["thanksgiving shirt", "thankful shirt", "gobble gobble", "turkey shirt", "family thanksgiving", "grateful tee", "fall sweatshirt", "friendsgiving", "turkey trot", "blessed shirt", "thanksgiving gift", "pumpkin pie shirt", "funny turkey"] },
+
+  { id: "veterans", tr: "Gaziler Günü / Asker ailesi", en: "Veterans & Military Family", cat: "awareness",
+    peaks: [[10, 60, 0.4], [4, 40, 0.3]], base: 18, comp: 2, style: "distressed",
+    products: ["tee", "hoodie"], colors: ["black", "heather", "green"],
+    audience: "veterans, military spouses and proud military families",
+    ideas: ["Proud Army Mom", "Veteran", "Home Of The Free Because Of The Brave", "Military Wife"],
+    tags: ["veteran shirt", "military mom", "army mom shirt", "veterans day", "proud veteran", "military wife", "patriotic tee", "usa veteran", "navy mom", "air force mom", "marine mom", "military gift", "freedom shirt"] },
+
+  { id: "christmas", tr: "Noel / Christmas", en: "Christmas", cat: "holiday",
+    peaks: [[11, 100, 0.55], [10, 85, 0.45]], base: 6, comp: 3, style: "retro",
+    products: ["sweat", "tee", "hoodie"], colors: ["green", "maroon", "ivory", "white"],
+    audience: "women, moms, teachers and families shopping for Christmas outfits and gifts",
+    ideas: ["Merry And Bright", "Christmas Vibes", "Most Likely To... (family set)", "Retro Santa", "Teacher Christmas Crew"],
+    tags: ["christmas sweatshirt", "christmas shirt", "merry christmas", "retro christmas", "christmas tree shirt", "holiday sweatshirt", "teacher christmas", "cute christmas", "santa shirt", "christmas gift", "winter sweatshirt", "merry and bright", "xmas tee"] },
+
+  { id: "xmasfamily", tr: "Aile eşleşen Noel tişörtleri", en: "Matching Family Christmas", cat: "family",
+    peaks: [[11, 90, 0.5], [10, 75, 0.4]], base: 3, comp: 3, style: "typo",
+    products: ["tee", "kids", "sweat"], colors: ["white", "maroon", "green"],
+    audience: "families ordering matching shirts for Christmas photos and pajama parties",
+    ideas: ["Most Likely To Eat All The Cookies", "Family Christmas {YEAR}", "Christmas Crew", "Custom Family Name Christmas"],
+    tags: ["matching xmas shirt", "family xmas shirt", "most likely to", "christmas crew", "christmas {YEAR}", "family pajama", "custom christmas", "group christmas", "christmas matching", "kids christmas", "christmas photo", "funny christmas", "family xmas"] },
+
+  { id: "uglysweater", tr: "Çirkin Noel kazağı (baskı)", en: "Ugly Christmas Sweater Print", cat: "humor",
+    peaks: [[11, 80, 0.45]], base: 3, comp: 2, style: "doodle",
+    products: ["sweat"], colors: ["green", "maroon", "black"],
+    audience: "adults attending office and friends ugly-sweater parties",
+    ideas: ["Ugly Sweater Pattern With Funny Twist", "Meowy Christmas", "Pugs And Kisses", "Sleigh All Day"],
+    tags: ["ugly xmas sweater", "funny christmas", "ugly sweater party", "meowy christmas", "office party", "christmas sweatshirt", "dog christmas", "cat christmas", "sleigh all day", "tacky sweater", "holiday party", "christmas humor", "gag gift"] },
+
+  { id: "winter", tr: "Kış / Kayak / Cozy", en: "Winter, Ski & Snow", cat: "season",
+    peaks: [[0, 60, 1.0]], base: 10, comp: 1, style: "badge",
+    products: ["sweat", "hoodie"], colors: ["ivory", "navy", "heather"],
+    audience: "skiers, snowboarders and people who love cozy winter vibes",
+    ideas: ["Apres Ski Club", "Snow Day", "Mountain Mama", "Hot Cocoa Season"],
+    tags: ["ski sweatshirt", "apres ski", "winter sweatshirt", "snow shirt", "mountain shirt", "snowboard tee", "winter vibes", "hot cocoa", "cozy winter", "ski trip", "ski club", "retro ski", "snow day"] },
+
+  // ---------- Evergreen (her mevsim) ----------
+  { id: "dogmom", tr: "Köpek annesi / Evcil hayvan", en: "Dog Mom & Pet Lovers", cat: "hobby",
+    peaks: [[4, 55, 0.6]], base: 50, gift: true, comp: 3, style: "minimal",
+    products: ["tee", "sweat", "cc"], colors: ["ivory", "sand", "heather"],
+    audience: "dog owners, especially women 25-45, and people buying pet-lover gifts",
+    ideas: ["Dog Mama", "Custom Dog Ears Name", "Dogs Before Dudes", "Life Is Better With A Dog"],
+    tags: ["dog mom shirt", "dog mama", "custom dog shirt", "dog lover gift", "pet mom", "dog ears shirt", "fur mama", "dog sweatshirt", "dog owner gift", "dog dad", "pet portrait", "funny dog tee", "rescue dog"] },
+
+  { id: "cat", tr: "Kedi sever", en: "Cat Lovers", cat: "hobby",
+    peaks: [], base: 48, gift: true, comp: 3, style: "cute",
+    products: ["tee", "sweat"], colors: ["black", "ivory"],
+    audience: "cat owners and introverts who love cats",
+    ideas: ["Cat Mom", "I'm Just Here For The Cats", "Meowdy", "Purrfectly Fine"],
+    tags: ["cat shirt", "cat mom", "cat lover gift", "funny cat tee", "cat sweatshirt", "meowdy", "black cat", "cat lady", "kitten shirt", "cat dad", "cute cat", "pet lover", "introvert cat"] },
+
+  { id: "bookish", tr: "Kitap kurdu / Bookish", en: "Bookish & Reading", cat: "hobby",
+    peaks: [[9, 55, 1.2]], base: 45, gift: true, comp: 2, style: "minimal",
+    products: ["sweat", "cc"], colors: ["ivory", "sand", "green"],
+    audience: "readers, BookTok fans, librarians and English teachers",
+    ideas: ["Just One More Chapter", "Book Club", "Reading Is My Cardio", "Romance Reader Era", "Bookish Floral"],
+    tags: ["book lover shirt", "bookish sweatshirt", "reading shirt", "librarian gift", "booktok", "book club shirt", "one more chapter", "romance reader", "reader gift", "book nerd", "english teacher", "literary shirt", "book sweatshirt"] },
+
+  { id: "nurse", tr: "Hemşire / Sağlık (evergreen)", en: "Nurse & Healthcare", cat: "profession",
+    peaks: [[4, 60, 0.5]], base: 45, gift: true, comp: 3, style: "doodle",
+    products: ["tee", "sweat"], colors: ["white", "pink", "heather"],
+    audience: "nurses, CNAs, nursing students and healthcare workers",
+    ideas: ["Nurse Life", "Heartbeat Nurse", "Nursing School Survivor", "Custom Nurse Title"],
+    tags: ["nurse shirt", "nurse gift", "nursing student", "rn shirt", "cna shirt", "nurse life", "er nurse", "nurse sweatshirt", "medical shirt", "healthcare worker", "nurse graduation", "pediatric nurse", "nicu nurse"] },
+
+  { id: "teacher", tr: "Öğretmen (evergreen)", en: "Teachers", cat: "profession",
+    peaks: [[7, 70, 0.8], [4, 55, 0.5]], base: 35, gift: true, comp: 3, style: "doodle",
+    products: ["tee", "sweat", "cc"], colors: ["ivory", "white", "sand"],
+    audience: "teachers, paraprofessionals and school counselors",
+    ideas: ["Teach Love Inspire", "In My Teacher Era", "Kindness Matters", "Custom Grade Level Teacher"],
+    tags: ["teacher shirt", "teacher gift", "teacher sweatshirt", "teacher era", "cute teacher", "retro teacher", "kindergarten teacher", "teacher appreciation", "teacher life", "school shirt", "teacher tee", "grade level", "sped teacher"] },
+
+  { id: "mentalhealth", tr: "Ruh sağlığı / Pozitif söz", en: "Mental Health & Positive Quotes", cat: "humor",
+    peaks: [[4, 55, 0.5]], base: 45, comp: 3, style: "minimal",
+    products: ["cc", "sweat"], colors: ["ivory", "sand", "pink"],
+    audience: "Gen Z and millennial women interested in self-care and therapy culture",
+    ideas: ["Mental Health Matters", "You Are Enough", "Be Kind To Your Mind", "Dear Person Behind Me"],
+    tags: ["mental health shirt", "self care", "you are enough", "positive shirt", "aesthetic sweatshirt", "person behind me", "be kind", "therapy shirt", "anxiety shirt", "trendy sweatshirt", "words on back", "inspirational", "kindness shirt"] },
+
+  { id: "faith", tr: "Hristiyan inanç", en: "Christian Faith", cat: "humor",
+    peaks: [[3, 55, 0.5], [11, 55, 0.5]], base: 45, comp: 3, style: "minimal",
+    products: ["cc", "sweat", "tee"], colors: ["ivory", "sand", "white"],
+    audience: "Christian women and church groups",
+    ideas: ["Faith Over Fear", "Jesus Is King", "Blessed", "Wildflower Bible Verse"],
+    tags: ["christian shirt", "faith shirt", "jesus shirt", "bible verse", "church shirt", "religious gift", "blessed shirt", "faith over fear", "christian sweatshirt", "god shirt", "boho christian", "prayer shirt", "worship tee"] },
+
+  { id: "western", tr: "Western / Kovboy / Coastal cowgirl", en: "Western & Cowgirl", cat: "hobby",
+    peaks: [[5, 55, 1.5]], base: 40, comp: 3, style: "western",
+    products: ["cc", "tee"], colors: ["sand", "ivory", "black"],
+    audience: "country-music fans and women who love western and cowgirl aesthetics",
+    ideas: ["Howdy", "Rodeo Babe", "Coastal Cowgirl", "Wild West", "Space Cowgirl"],
+    tags: ["western shirt", "cowgirl shirt", "howdy shirt", "rodeo tee", "country shirt", "coastal cowgirl", "retro western", "boho western", "country music", "cowboy shirt", "desert shirt", "nashville shirt", "yeehaw"] },
+
+  { id: "outdoors", tr: "Kamp / Doğa / Milli parklar", en: "Camping, Hiking & National Parks", cat: "hobby",
+    peaks: [[6, 70, 1.5]], base: 25, gift: true, comp: 2, style: "badge",
+    products: ["tee", "hoodie", "cc"], colors: ["sand", "green", "heather"],
+    audience: "hikers, campers and road-trippers (avoid official NPS logos)",
+    ideas: ["Camp Crew", "Take A Hike", "Mountains Are Calling", "Happy Camper", "Vintage Park Poster Style"],
+    tags: ["camping shirt", "hiking tee", "national park shirt", "outdoor shirt", "mountain tee", "adventure shirt", "camp crew", "happy camper", "nature lover", "road trip shirt", "hiker gift", "vintage park", "wanderlust"] },
+
+  { id: "fishing", tr: "Balıkçılık / Avcılık", en: "Fishing & Hunting", cat: "hobby",
+    peaks: [[5, 65, 1.3]], base: 30, gift: true, comp: 2, style: "distressed",
+    products: ["tee", "hoodie"], colors: ["heather", "green", "sand"],
+    audience: "men 30-65 who fish or hunt, and people buying gifts for them",
+    ideas: ["Reel Cool Dad", "Fishing Is My Therapy", "Hooked On Fishing", "Bass Whisperer"],
+    tags: ["fishing shirt", "fishing gift", "funny fishing", "fisherman tee", "bass fishing", "fishing dad", "hunting shirt", "outdoor gift", "lake shirt", "grandpa fishing", "fishing hoodie", "reel cool", "angler shirt"] },
+
+  { id: "pickleball", tr: "Pickleball (yükselen)", en: "Pickleball", cat: "hobby",
+    peaks: [[5, 65, 1.5]], base: 30, gift: true, comp: 2, style: "retro",
+    products: ["tee", "cc"], colors: ["white", "ivory"],
+    audience: "pickleball players aged 35-70 and their clubs",
+    ideas: ["Dink Responsibly", "Pickleball Is My Therapy", "Kitchen Rules", "Retro Pickleball Club"],
+    tags: ["pickleball shirt", "pickleball gift", "dink responsibly", "funny pickleball", "pickleball club", "pickleball player", "retro pickleball", "sports shirt", "paddle shirt", "grandma pickleball", "pickleball team", "kitchen shirt", "pickleball tee"] },
+
+  { id: "humor", tr: "Komik / Sarkastik / İntrovert", en: "Funny, Sarcastic & Introvert", cat: "humor",
+    peaks: [], base: 55, gift: true, comp: 3, style: "typo",
+    products: ["tee", "sweat"], colors: ["black", "white", "heather"],
+    audience: "adults who like sarcastic humor, introverts and meme culture",
+    ideas: ["I Paused My Game To Be Here", "Introverted But Willing To Discuss Dogs", "Emotionally Unavailable", "Cool Aunt Club"],
+    tags: ["funny shirt", "sarcastic shirt", "introvert shirt", "funny gift", "humor tee", "meme shirt", "cool aunt", "gamer shirt", "sassy shirt", "novelty shirt", "funny sayings", "trendy tee", "gift for friend"] },
+
+  { id: "coffee", tr: "Kahve sever", en: "Coffee Lovers", cat: "humor",
+    peaks: [[0, 55, 1.0]], base: 40, gift: true, comp: 2, style: "retro",
+    products: ["cc", "sweat"], colors: ["ivory", "sand", "black"],
+    audience: "coffee lovers, busy moms and teachers",
+    ideas: ["But First Coffee", "Iced Coffee Addict", "Powered By Coffee", "Coffee And Chaos"],
+    tags: ["coffee shirt", "coffee lover gift", "iced coffee", "funny coffee tee", "coffee sweatshirt", "mom coffee", "but first coffee", "caffeine shirt", "coffee addict", "latte shirt", "coffee teacher", "retro coffee", "espresso tee"] },
+
+  { id: "birthday", tr: "Doğum günü / Milestone", en: "Birthday & Milestone", cat: "event",
+    peaks: [], base: 50, comp: 2, style: "typo",
+    products: ["tee"], colors: ["white", "black", "pink"],
+    audience: "people celebrating 30th, 40th, 50th birthdays and their friend groups",
+    ideas: ["Birthday Squad", "Vintage 1986 Limited Edition", "It's My Birthday", "40 And Fabulous"],
+    tags: ["birthday shirt", "birthday squad", "40th birthday", "50th birthday", "30th birthday", "vintage birthday", "birthday girl", "birthday gift", "custom birthday", "milestone birthday", "birthday crew", "limited edition", "birthday party"] },
+
+  { id: "aunt", tr: "Teyze / Hala / Büyükanne", en: "Aunt, Grandma & Extended Family", cat: "family",
+    peaks: [[4, 60, 0.6]], base: 35, gift: true, comp: 2, style: "retro",
+    products: ["sweat", "tee"], colors: ["ivory", "pink", "sand"],
+    audience: "aunts, grandmas and relatives; pregnancy-announcement gift buyers",
+    ideas: ["Cool Aunt Club", "Auntie Est. {YEAR}", "Promoted To Grandma", "Nana Custom Grandkids Names"],
+    tags: ["aunt shirt", "auntie sweatshirt", "cool aunt", "grandma shirt", "nana shirt", "pregnancy reveal", "promoted to aunt", "custom grandma", "aunt gift", "gigi shirt", "grandkids names", "new aunt", "family gift"] },
+];
+
+/*
+ * ABD etkinlik tarihleri (geri sayım için).
+ *   fixed: [ay, gün]            → her yıl aynı gün
+ *   nth:   [ay, haftaGünü, n]   → ayın n. haftaGünü (0=Pazar, 4=Perşembe); n=-1 son
+ *   easter: true                → Paskalya Pazarı
+ * Etkinliği olmayan trendlerde zirve ayının ortası kullanılır.
+ */
+const EVENTS = {
+  newyear: { name: "Yılbaşı gecesi", fixed: [11, 31] },
+  valentine: { name: "Sevgililer Günü", fixed: [1, 14] },
+  galentine: { name: "Galentine's Day", fixed: [1, 13] },
+  bhm: { name: "Siyahi Tarih Ayı", fixed: [1, 1] },
+  stpatrick: { name: "St. Patrick's Day", fixed: [2, 17] },
+  easter: { name: "Paskalya", easter: true },
+  earthday: { name: "Dünya Günü", fixed: [3, 22] },
+  autism: { name: "Otizm Farkındalık Günü", fixed: [3, 2] },
+  mothers: { name: "Anneler Günü", nth: [4, 0, 2] },
+  teacherapp: { name: "Öğretmenler Haftası", nth: [4, 1, 1] },
+  nurseweek: { name: "Hemşireler Haftası", fixed: [4, 6] },
+  graduation: { name: "Mezuniyet sezonu", fixed: [4, 15] },
+  pride: { name: "Pride Ayı", fixed: [5, 1] },
+  fathers: { name: "Babalar Günü", nth: [5, 0, 3] },
+  juneteenth: { name: "Juneteenth", fixed: [5, 19] },
+  july4: { name: "4 Temmuz", fixed: [6, 4] },
+  backtoschool: { name: "Okulların açılışı", fixed: [7, 15] },
+  football: { name: "Futbol sezonu açılışı", nth: [8, 4, 1] },
+  halloween: { name: "Cadılar Bayramı", fixed: [9, 31] },
+  breastcancer: { name: "Pembe Ekim", fixed: [9, 1] },
+  veterans: { name: "Gaziler Günü", fixed: [10, 11] },
+  thanksgiving: { name: "Şükran Günü", nth: [10, 4, 4] },
+  christmas: { name: "Noel", fixed: [11, 25] },
+  xmasfamily: { name: "Noel", fixed: [11, 25] },
+  uglysweater: { name: "Ugly Sweater Day", nth: [11, 5, 3] },
+};
+
+/*
+ * Gerçek ilgi sinyali: İngilizce Wikipedia sayfa görüntülenmeleri (Wikimedia API, günlük güncellenir).
+ * Etsy/Google Trends'in herkese açık tarayıcı API'si olmadığı için en yakın ücretsiz canlı kaynak budur.
+ */
+const WIKI = {
+  newyear: "New_Year's_Eve", fitness: "Physical_fitness", valentine: "Valentine's_Day",
+  galentine: "Galentine's_Day", bhm: "Black_History_Month", stpatrick: "Saint_Patrick's_Day",
+  basketball: "Basketball", easter: "Easter", earthday: "Earth_Day", autism: "Autism",
+  mothers: "Mother's_Day", teacherapp: "Teachers'_Day", nurseweek: "International_Nurses_Day",
+  graduation: "Graduation", pride: "Pride_Month", fathers: "Father's_Day", juneteenth: "Juneteenth",
+  july4: "Independence_Day_(United_States)", summer: "Summer", reunion: "Family_reunion",
+  bachelorette: "Bachelor_party", backtoschool: "School_supplies", football: "American_football",
+  fall: "Autumn", halloween: "Halloween", breastcancer: "Breast_Cancer_Awareness_Month",
+  thanksgiving: "Thanksgiving_(United_States)", veterans: "Veterans_Day", christmas: "Christmas",
+  xmasfamily: "Christmas_and_holiday_season", uglysweater: "Christmas_jumper", winter: "Skiing",
+  dogmom: "Dog", cat: "Cat", bookish: "BookTok", nurse: "Nursing", teacher: "Teacher",
+  mentalhealth: "Mental_health", faith: "Christianity", western: "Rodeo", outdoors: "Camping",
+  fishing: "Fishing", pickleball: "Pickleball", humor: "Sarcasm", coffee: "Coffee",
+  birthday: "Birthday", aunt: "Grandparent",
+};
+
+</script>
+<script>
+(() => {
+  "use strict";
+
+  const $ = (s) => document.querySelector(s);
+  const DAY = 86400000;
+  const LEAD_DAYS = 45;
+  const WIKI_REFRESH_MS = 15 * 60 * 1000;
+  const WIKI_CACHE_MS = 60 * 60 * 1000;
+  const COMP = { 1: "Düşük", 2: "Orta", 3: "Yüksek" };
+  const MONTHS_EN = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  const DARK_GARMENTS = ["black", "pepper", "navy", "green", "maroon"];
+  // Koyu zeminde sıralı mavi rampa: düşük = zemine yakın, yüksek = açık
+  const RAMP = ["#1d2742", "#1a3462", "#184f95", "#1c5cab", "#256abf", "#2a78d6", "#3987e5", "#5598e7", "#6da7ec", "#86b6ef", "#9ec5f4", "#b7d3f6", "#cde2fb"];
+
+  const state = { live: true, month: new Date().getMonth(), cat: "", q: "", view: "popular", trendId: null, wiki: {}, wikiAt: 0 };
+
+  const store = {
+    get(k, f) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : f; } catch { return f; } },
+    set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch { /* depolama kapalı */ } },
+  };
+
+  /* ---------- DOM yardımcıları ---------- */
+  function el(tag, attrs = {}, ...kids) {
+    const n = document.createElement(tag);
+    for (const [k, v] of Object.entries(attrs)) {
+      if (v == null || v === false) continue;
+      if (k === "class") n.className = v;
+      else if (k === "text") n.textContent = v;
+      else if (k.startsWith("on")) n.addEventListener(k.slice(2), v);
+      else n.setAttribute(k, v === true ? "" : v);
+    }
+    for (const c of kids.flat()) if (c != null) n.append(c instanceof Node ? c : document.createTextNode(String(c)));
+    return n;
+  }
+  const svg = (tag, attrs = {}) => {
+    const n = document.createElementNS("http://www.w3.org/2000/svg", tag);
+    for (const [k, v] of Object.entries(attrs)) n.setAttribute(k, v);
+    return n;
+  };
+  const arrow = () => {
+    const s = svg("svg", { viewBox: "0 0 24 24", width: 18, height: 18, "aria-hidden": "true" });
+    s.append(svg("path", { d: "M5 12h14M13 6l6 6-6 6", fill: "none", stroke: "currentColor", "stroke-width": 2.6, "stroke-linecap": "round", "stroke-linejoin": "round" }));
+    return s;
+  };
+  const setText = (n, t) => { if (n && n.textContent !== t) n.textContent = t; };
+  const mod = (n, m) => ((n % m) + m) % m;
+  const pad = (n) => String(n).padStart(2, "0");
+  const fmt = (n, d = 1) => n.toLocaleString("tr-TR", { minimumFractionDigits: d, maximumFractionDigits: d });
+  const fmtInt = (n) => Math.round(n).toLocaleString("tr-TR");
+  function countdown(ms) {
+    if (ms <= 0) return "bugün";
+    const s = Math.floor(ms / 1000), d = Math.floor(s / 86400);
+    return `${d}g ${pad(Math.floor((s % 86400) / 3600))}:${pad(Math.floor((s % 3600) / 60))}:${pad(s % 60)}`;
+  }
+  const shortDate = (d) => d.toLocaleDateString("tr-TR", { day: "numeric", month: "long" });
+  // Tam sayı kısmı büyük, hassas ondalıklar küçük gösterilir (saniyelik değişim görünsün diye)
+  function setScore(node, v) {
+    const s = fmt(v, 4);
+    const [i, dec] = s.split(",");
+    if (!node._i) { node._i = document.createTextNode(""); node._d = el("small"); node.replaceChildren(node._i, node._d); }
+    setText(node._i, i);
+    setText(node._d, "," + dec);
+  }
+
+  /* ---------- Talep modeli ---------- */
+  const rawCache = new Map();
+  function rawCurve(t) {
+    if (rawCache.has(t.id)) return rawCache.get(t.id);
+    const v = MONTHS.map((_, m) => {
+      let x = t.base;
+      for (const [pm, amp, w] of t.peaks) {
+        const d = Math.min(Math.abs(m - pm), 12 - Math.abs(m - pm));
+        x = Math.max(x, t.base + (amp - t.base) * Math.exp(-(d * d) / (2 * w * w)));
+      }
+      if (t.gift) x += m === 10 ? 8 : m === 11 ? 12 : 0;
+      return Math.max(0, Math.min(100, x));
+    });
+    rawCache.set(t.id, v);
+    return v;
+  }
+  const curve = (t) => rawCurve(t).map(Math.round);
+  const peakMonth = (t) => { const c = rawCurve(t); return c.indexOf(Math.max(...c)); };
+  const evergreen = (t) => Math.max(...rawCurve(t)) - Math.min(...rawCurve(t)) < 25;
+  // Ay ortası değerleri arasında gün/saat/saniye hassasiyetinde enterpolasyon
+  function scoreAt(t, date) {
+    const raw = rawCurve(t);
+    const dim = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+    const frac = (date.getDate() - 1 + (date.getHours() * 3600 + date.getMinutes() * 60 + date.getSeconds() + date.getMilliseconds() / 1000) / 86400) / dim;
+    const pos = date.getMonth() + frac - 0.5;
+    const i0 = Math.floor(pos), f = pos - i0;
+    return raw[mod(i0, 12)] * (1 - f) + raw[mod(i0 + 1, 12)] * f;
+  }
+  function refDate(now = new Date()) {
+    if (state.live) return now;
+    return new Date(now.getFullYear() + (state.month < now.getMonth() ? 1 : 0), state.month, 15, 12);
+  }
+  const delta30 = (t, d) => scoreAt(t, d) - scoreAt(t, new Date(d.getTime() - 30 * DAY));
+
+  /* ---------- ABD etkinlik tarihleri ---------- */
+  function easter(y) {
+    const a = y % 19, b = Math.floor(y / 100), c = y % 100, d = Math.floor(b / 4), e = b % 4;
+    const f = Math.floor((b + 8) / 25), g = Math.floor((b - f + 1) / 3);
+    const h = (19 * a + b - d - g + 15) % 30, i = Math.floor(c / 4), k = c % 4;
+    const l = (32 + 2 * e + 2 * i - h - k) % 7, m = Math.floor((a + 11 * h + 22 * l) / 451);
+    return new Date(y, Math.floor((h + l - 7 * m + 114) / 31) - 1, ((h + l - 7 * m + 114) % 31) + 1);
+  }
+  function eventIn(t, y) {
+    const ev = EVENTS[t.id];
+    if (!ev) return new Date(y, peakMonth(t), 15);
+    if (ev.easter) return easter(y);
+    if (ev.fixed) return new Date(y, ev.fixed[0], ev.fixed[1]);
+    const [mon, wd, n] = ev.nth;
+    if (n > 0) { const first = new Date(y, mon, 1); return new Date(y, mon, 1 + mod(wd - first.getDay(), 7) + (n - 1) * 7); }
+    const last = new Date(y, mon + 1, 0);
+    return new Date(y, mon, last.getDate() - mod(last.getDay() - wd, 7));
+  }
+  function nextEvent(t, from) {
+    const sod = new Date(from.getFullYear(), from.getMonth(), from.getDate());
+    let d = eventIn(t, from.getFullYear());
+    if (d < sod) d = eventIn(t, from.getFullYear() + 1);
+    return d;
+  }
+  const eventName = (t) => EVENTS[t.id]?.name ?? `${MONTHS_LONG[peakMonth(t)]} zirvesi`;
+
+  function fill(str, t) {
+    const now = new Date();
+    const pm = t.peaks.length ? t.peaks[0][0] : now.getMonth();
+    const year = now.getFullYear() + (pm < now.getMonth() ? 1 : 0);
+    const next = now.getFullYear() + (now.getMonth() >= 6 ? 1 : 0);
+    return str.replaceAll("{YEAR}", year).replaceAll("{NEXT_YEAR}", next);
+  }
+  const byId = (id) => TRENDS.find((t) => t.id === id);
+  function filtered() {
+    const q = state.q.trim().toLocaleLowerCase("tr");
+    return TRENDS.filter((t) => (!state.cat || t.cat === state.cat) &&
+      (!q || [t.tr, t.en, t.audience, ...t.tags, ...t.ideas].join(" ").toLocaleLowerCase("tr").includes(q)));
+  }
+  function deltaPill(d, suffix = "") {
+    const cls = d > 0.5 ? "up" : d < -0.5 ? "down" : "flat";
+    const sym = d > 0.5 ? "▲" : d < -0.5 ? "▼" : "■";
+    return { cls: `pill ${cls}`, text: `${sym} ${d > 0 ? "+" : ""}${fmt(d, 1)}${suffix}` };
+  }
+
+  /* ---------- Tooltip & toast ---------- */
+  const tip = $("#tip");
+  function withTip(node, value, label) {
+    const show = (e) => {
+      tip.replaceChildren(el("b", { text: value }), el("br"), label);
+      tip.hidden = false;
+      const r = node.getBoundingClientRect();
+      const x = e.clientX ?? r.left + r.width / 2, y = e.clientY ?? r.top;
+      tip.style.left = Math.max(8, Math.min(innerWidth - tip.offsetWidth - 8, x + 12)) + "px";
+      tip.style.top = Math.max(8, y - tip.offsetHeight - 10) + "px";
+    };
+    node.addEventListener("pointermove", show);
+    node.addEventListener("focus", show);
+    node.addEventListener("pointerleave", () => { tip.hidden = true; });
+    node.addEventListener("blur", () => { tip.hidden = true; });
+    return node;
+  }
+  function toast(msg) {
+    const t = $("#toast");
+    t.textContent = msg; t.classList.add("show");
+    clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove("show"), 1900);
+  }
+  async function copy(text, msg) {
+    try { await navigator.clipboard.writeText(text); toast(msg); }
+    catch {
+      const ta = el("textarea", { style: "position:fixed;opacity:0" }, text);
+      document.body.append(ta); ta.select();
+      let ok = false;
+      try { ok = document.execCommand("copy"); } catch { /* yok say */ }
+      ta.remove();
+      toast(ok ? msg : "Kopyalanamadı — metni seçip elle kopyala");
+    }
+  }
+
+  /* ---------- Canlı referanslar ---------- */
+  const live = { cards: [], prep: [], events: [] };
+
+  /* ---------- 12 aylık mini grafik ---------- */
+  function monthsChart(t, curMonth) {
+    const c = curve(t), W = 240, H = 58, bw = W / 12, top = 4, base = H - 12;
+    const s = svg("svg", { class: "months", viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": `${t.tr}: ` + c.map((v, i) => `${MONTHS_LONG[i]} ${v}`).join(", ") });
+    c.forEach((v, i) => {
+      const h = Math.max(2, (v / 100) * (base - top));
+      s.append(svg("rect", { class: `bar${i === curMonth ? " cur" : ""}`, x: i * bw + 2, y: base - h, width: bw - 4, height: h, rx: 2 }));
+      const lbl = svg("text", { x: i * bw + bw / 2, y: H - 2, class: i === curMonth ? "cur" : "" });
+      lbl.textContent = MONTHS[i].slice(0, 1);
+      s.append(lbl);
+      const hit = svg("rect", { class: "hit", x: i * bw, y: 0, width: bw, height: H });
+      withTip(hit, String(v), `${MONTHS_LONG[i]} talep puanı`);
+      s.append(hit);
+    });
+    return s;
+  }
+
+  /* ---------- Spotlight + etkinlikler ---------- */
+  function renderEvents(now) {
+    const seen = new Set();
+    const list = TRENDS.filter((t) => EVENTS[t.id]).map((t) => ({ t, d: nextEvent(t, now) }))
+      .sort((a, b) => a.d - b.d).filter((x) => { const n = EVENTS[x.t.id].name; if (seen.has(n)) return false; seen.add(n); return true; }).slice(0, 4);
+    live.events = list.map(({ t, d }) => {
+      const cd = el("span"), sub = el("small");
+      const li = el("li", {},
+        el("div", { class: "cal" }, el("b", { text: String(d.getDate()) }), el("span", { text: MONTHS[d.getMonth()] })),
+        el("div", { class: "ev" }, el("b", { text: EVENTS[t.id].name }), el("span", { class: "muted", text: fill(t.tr, t) })),
+        el("div", { class: "cd" }, cd, sub));
+      return { li, cd, sub, d };
+    });
+    $("#events").replaceChildren(...live.events.map((x) => x.li));
+  }
+
+  /* ---------- Popüler kartlar ---------- */
+  function renderCards(list) {
+    const d = refDate();
+    const cm = d.getMonth();
+    const ranked = [...list].sort((a, b) => scoreAt(b, d) - scoreAt(a, d));
+    setText($("#popularNote"), state.live
+      ? "Talep puanına göre sıralı (yüksekten düşüğe). Puanlar ve sayaçlar canlı güncellenir."
+      : `${MONTHS_LONG[state.month]} ayının ortasındaki tahmini talep. Canlı görünüm için "● Şimdi"ye bas.`);
+    setText($("#cntPopular"), String(list.length));
+    live.cards = [];
+    if (!ranked.length) { $("#cards").replaceChildren(el("p", { class: "empty", text: "Aramana uyan trend yok. Filtreyi temizle." })); return; }
+    $("#cards").replaceChildren(...ranked.map((t, i) => {
+      const num = el("span", { class: "num" });
+      const meter = el("i");
+      const dl = el("span", { class: "pill flat" });
+      const evCd = el("b", { class: "mono" });
+      const wk = el("span", { class: "wk" });
+      const q = encodeURIComponent(fill(t.tags[0], t));
+      live.cards.push({ t, num, meter, dl, evCd, wk });
+      return el("article", { class: "tcard" },
+        el("div", { class: "tc-top" },
+          el("span", { class: "cat" }, el("i", { style: `background:var(--c-${t.cat})` }), CATEGORIES[t.cat]),
+          el("span", { class: `rank${i < 3 ? " top" : ""}`, text: `#${i + 1}` })),
+        el("div", {}, el("h3", { text: fill(t.tr, t) }), el("p", { class: "en", text: fill(t.en, t) })),
+        el("div", { class: "tc-score" },
+          el("div", {}, num, el("span", { class: "lbl", text: "talep puanı / 100" })),
+          el("div", { class: "right" }, dl, el("small", { text: "son 30 gün" }))),
+        el("div", { class: "meter" }, meter),
+        monthsChart(t, cm),
+        el("div", { class: "facts" },
+          el("div", {}, el("small", { text: evergreen(t) ? "Sezon" : "Zirve ayı" }), el("b", { text: evergreen(t) ? "Her mevsim satar" : MONTHS_LONG[peakMonth(t)] })),
+          el("div", {}, el("small", { text: "Rekabet" }), el("b", { class: `comp-${t.comp}`, text: COMP[t.comp] })),
+          el("div", { style: "grid-column:1/-1" }, el("small", { text: `${eventName(t)} için kalan` }), evCd)),
+        el("button", { class: "btn cta", type: "button", onclick: () => openSheet(t.id) }, "Gemini prompt'u al", arrow()),
+        el("div", { class: "links" },
+          el("a", { href: `https://trends.google.com/trends/explore?geo=US&date=today%203-m&q=${q}`, target: "_blank", rel: "noopener", text: "Google Trends ↗" }),
+          el("a", { href: `https://www.etsy.com/search?q=${q}`, target: "_blank", rel: "noopener", text: "Etsy'de ara ↗" }),
+          wk));
+    }));
+    updateWikiLinks();
+  }
+
+  function updateWikiLinks() {
+    for (const c of live.cards) {
+      const w = state.wiki[c.t.id];
+      if (!w) { setText(c.wk, ""); continue; }
+      const p = deltaPill(w.change, "%");
+      c.wk.replaceChildren(`Wikipedia ${fmtInt(w.avg7)}/gün `, el("span", { class: p.cls, text: p.text }));
+    }
+  }
+
+  /* ---------- Hazırlanma listesi ---------- */
+  function renderPrep(list) {
+    const now = new Date();
+    const items = list.filter((t) => !evergreen(t) || EVENTS[t.id])
+      .map((t) => ({ t, d: nextEvent(t, now) }))
+      .filter((x) => x.d - now < 150 * DAY)
+      .sort((a, b) => a.d - b.d);
+    setText($("#cntPrep"), String(items.length));
+    live.prep = [];
+    if (!items.length) { $("#prepList").replaceChildren(el("p", { class: "empty", text: "Önümüzdeki 5 ayda bu filtreye uyan etkinlik yok." })); return; }
+    $("#prepList").replaceChildren(...items.map(({ t, d }) => {
+      const evCd = el("span", { class: "mono" });
+      const st = el("span", { class: "pill" });
+      const stCd = el("span", { class: "mono" });
+      live.prep.push({ t, d, evCd, st, stCd });
+      return el("div", { class: "prow" },
+        el("div", { class: "cal" }, el("b", { text: String(d.getDate()) }), el("span", { text: MONTHS[d.getMonth()] })),
+        el("div", {}, el("h3", { text: fill(t.tr, t) }), el("span", { class: "sub", text: `${eventName(t)} · ${shortDate(d)}` })),
+        el("div", { class: "c3" }, el("span", { class: "k", text: "Etkinliğe kalan" }), evCd),
+        el("div", { class: "c4" }, el("span", { class: "k", text: "Listeleme durumu" }), st, " ", stCd),
+        el("button", { class: "btn cta", type: "button", "aria-label": `${t.tr} için prompt al`, onclick: () => openSheet(t.id) }, "Prompt", arrow()));
+    }));
+  }
+
+  /* ---------- Takvim ---------- */
+  function renderHeat(list) {
+    const m = refDate().getMonth();
+    const rows = [...list].sort((a, b) => (evergreen(a) - evergreen(b)) || (peakMonth(a) - peakMonth(b)));
+    const head = el("tr", {}, el("th", {}), ...MONTHS.map((n, i) => el("th", { class: i === m ? "cur" : null, text: n })));
+    $("#heat").replaceChildren(el("thead", {}, head), el("tbody", {}, ...rows.map((t) => el("tr", {},
+      el("th", { class: "row", scope: "row" }, el("button", { class: "chip", type: "button", onclick: () => openSheet(t.id), title: "Prompt'u aç" }, el("i", { style: `background:var(--c-${t.cat})` }), fill(t.tr, t))),
+      ...curve(t).map((v, i) => {
+        const cell = el("div", { class: "cell", tabindex: "0", style: `background:${RAMP[Math.round((v / 100) * (RAMP.length - 1))]}`, "aria-label": `${t.tr}, ${MONTHS_LONG[i]}: ${v}` });
+        withTip(cell, String(v), `${MONTHS_LONG[i]} · ${t.tr}`);
+        return el("td", { class: i === m ? "cur" : null }, cell);
+      })))));
+  }
+
+  /* ---------- Saniyelik tick ---------- */
+  function tick() {
+    const now = new Date();
+    const d = refDate(now);
+    setText($("#nyClock"), now.toLocaleTimeString("tr-TR", { timeZone: "America/New_York", hour12: false }));
+    setText($("#trClock"), now.toLocaleTimeString("tr-TR", { timeZone: "Europe/Istanbul", hour12: false }));
+
+    // Spotlight: filtrelenmiş listenin 1 numarası
+    const list = filtered();
+    const top = [...list].sort((a, b) => scoreAt(b, d) - scoreAt(a, d))[0];
+    if (top) {
+      setText($("#spotName"), fill(top.tr, top));
+      setText($("#spotEn"), `${fill(top.en, top)} · ${CATEGORIES[top.cat]} · rekabet ${COMP[top.comp].toLowerCase()}`);
+      setScore($("#spotNum"), scoreAt(top, d));
+      const p = deltaPill(delta30(top, d), " son 30 günde");
+      const sd = $("#spotDelta"); sd.className = p.cls; setText(sd, p.text);
+      $("#spotBtn").dataset.id = top.id;
+    }
+
+    for (const x of live.events) {
+      setText(x.cd, countdown(x.d - now));
+      const lb = x.d - LEAD_DAYS * DAY - now;
+      setText(x.sub, lb > 0 ? `listelemeye ${Math.ceil(lb / DAY)} gün` : "listeleme geç kaldı");
+    }
+    if (live.events.some((x) => x.d.getTime() + DAY < now.getTime())) renderEvents(now);
+
+    for (const c of live.cards) {
+      const s = scoreAt(c.t, d);
+      setScore(c.num, s);
+      c.meter.style.width = `${s}%`;
+      const p = deltaPill(delta30(c.t, d));
+      if (c.dl.className !== p.cls) c.dl.className = p.cls;
+      setText(c.dl, p.text);
+      setText(c.evCd, countdown(nextEvent(c.t, now) - now));
+    }
+
+    for (const r of live.prep) {
+      setText(r.evCd, countdown(r.d - now));
+      const lb = r.d - LEAD_DAYS * DAY - now;
+      const [cls, label] = lb <= 0 ? ["pill warn", "Geç — hemen listele"] : lb < 14 * DAY ? ["pill down", "Acil"] : ["pill up", "Zaman var"];
+      if (r.st.className !== cls) r.st.className = cls;
+      setText(r.st, label);
+      setText(r.stCd, lb > 0 ? countdown(lb) : "");
+    }
+
+    if (state.trendId) {
+      const t = byId(state.trendId);
+      setText($("#sheetMeta"), `Talep ${fmt(scoreAt(t, d), 2)} · ${eventName(t)}: ${countdown(nextEvent(t, now) - now)}`);
+    }
+  }
+
+  /* ---------- Wikipedia (gerçek ilgi) ---------- */
+  const ymd = (d) => `${d.getUTCFullYear()}${pad(d.getUTCMonth() + 1)}${pad(d.getUTCDate())}`;
+  async function fetchWiki(t, start, end) {
+    const res = await fetch(`https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia/all-access/user/${encodeURIComponent(WIKI[t.id])}/daily/${start}/${end}`);
+    if (!res.ok) throw new Error(res.status);
+    const views = (await res.json()).items.map((i) => i.views);
+    if (views.length < 14) throw new Error("az veri");
+    const avg = (a) => a.reduce((s, v) => s + v, 0) / a.length;
+    const a7 = avg(views.slice(-7)), p7 = avg(views.slice(-14, -7));
+    return { avg7: a7, change: p7 ? ((a7 - p7) / p7) * 100 : 0 };
+  }
+  async function loadWiki(force = false) {
+    const cached = store.get("trendRadar.wiki2", null);
+    if (!force && cached && Date.now() - cached.at < WIKI_CACHE_MS) { state.wiki = cached.data; updateWikiLinks(); return; }
+    const end = new Date(Date.now() - DAY), start = new Date(end - 30 * DAY);
+    const queue = [...TRENDS], out = {};
+    let ok = 0;
+    const worker = async () => { while (queue.length) { const t = queue.shift(); try { out[t.id] = await fetchWiki(t, ymd(start), ymd(end)); ok++; } catch { /* veri yok */ } } };
+    await Promise.all(Array.from({ length: 6 }, worker));
+    if (ok) { state.wiki = out; store.set("trendRadar.wiki2", { at: Date.now(), data: out }); }
+    else if (cached) state.wiki = cached.data;
+    updateWikiLinks();
+  }
+
+  /* ---------- Satışlar ---------- */
+  function renderSales() {
+    const sales = store.get("trendRadar.sales", []);
+    const agg = {};
+    for (const s of sales) { const a = (agg[s.trend] ||= { id: s.trend, rev: 0, qty: 0 }); a.rev += Number(s.revenue || 0); a.qty += Number(s.qty || 0); }
+    const rows = Object.values(agg).sort((a, b) => b.rev - a.rev);
+    const max = Math.max(1, ...rows.map((r) => r.rev));
+    $("#salesBars").replaceChildren(...(rows.length ? rows.slice(0, 12).map((r) => {
+      const name = byId(r.id)?.tr ?? r.id;
+      return withTip(el("div", { class: "row", tabindex: "0" }, el("span", { text: name }),
+        el("div", { class: "track" }, el("div", { class: "fill", style: `width:${(r.rev / max) * 100}%` })),
+        el("b", { text: `$${r.rev.toFixed(0)}` })), `$${r.rev.toFixed(2)}`, `${name} · ${r.qty} adet`);
+    }) : [el("p", { class: "empty", text: "Henüz satış yok. Yukarıdaki formdan ilk satışını ekle." })]));
+    $("#salesTable tbody").replaceChildren(...(sales.length ? sales.map((s, idx) => ({ s, idx })).sort((a, b) => (b.s.date || "").localeCompare(a.s.date || "")).map(({ s, idx }) => el("tr", {},
+      el("td", { text: s.date }), el("td", { text: byId(s.trend)?.tr ?? s.trend }),
+      el("td", { text: (PRODUCTS[s.product] || s.product).split(" (")[0] }),
+      el("td", { text: String(s.qty) }), el("td", { class: "mono", text: `$${Number(s.revenue).toFixed(2)}` }),
+      el("td", { text: Number(s.views) > 0 ? `%${((s.qty / s.views) * 100).toFixed(1)}` : "—" }),
+      el("td", {}, el("button", { class: "del", type: "button", "aria-label": "Kaydı sil", onclick: () => { const all = store.get("trendRadar.sales", []); all.splice(idx, 1); store.set("trendRadar.sales", all); renderSales(); } }, "✕"))))
+      : [el("tr", {}, el("td", { colspan: 7, class: "muted", text: "Kayıt yok." }))]));
+  }
+  function setupSales() {
+    const f = $("#saleForm"), now = new Date();
+    $("#fDate").value = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
+    $("#fTrend").replaceChildren(...[...TRENDS].sort((a, b) => a.tr.localeCompare(b.tr, "tr")).map((t) => el("option", { value: t.id, text: fill(t.tr, t) })));
+    $("#fProduct").replaceChildren(...Object.entries(PRODUCTS).map(([k, v]) => el("option", { value: k, text: v })));
+    f.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const r = Object.fromEntries(new FormData(f).entries());
+      r.qty = Number(r.qty); r.revenue = Number(r.revenue); r.views = Number(r.views || 0);
+      const all = store.get("trendRadar.sales", []); all.push(r); store.set("trendRadar.sales", all);
+      toast("Satış kaydedildi"); renderSales();
+    });
+    $("#copyJson").addEventListener("click", () => copy(JSON.stringify(store.get("trendRadar.sales", []), null, 2), "Yedek kopyalandı — bir not dosyasına yapıştır"));
+    $("#importInp").addEventListener("change", async (e) => {
+      const file = e.target.files[0]; if (!file) return;
+      try { const data = JSON.parse(await file.text()); if (!Array.isArray(data)) throw 0; store.set("trendRadar.sales", data); toast(`${data.length} kayıt yüklendi`); renderSales(); }
+      catch { toast("Bu dosya okunamadı — JSON yedeği seç"); }
+      e.target.value = "";
+    });
+  }
+
+  /* ---------- Prompt paneli ---------- */
+  const PRODUCT_EN = { tee: "unisex t-shirt", cc: "garment-dyed Comfort Colors style t-shirt", sweat: "crewneck sweatshirt", hoodie: "pullover hoodie", kids: "kids t-shirt / baby bodysuit" };
+  const PLACE_EN = {
+    front: "large front chest print on a 4500 x 5400 px portrait canvas (4:5 ratio, 300 DPI equivalent)",
+    pocket: "small left-chest pocket print on a square 1:1 canvas; keep it simple and legible at about 4 inches wide",
+    back: "large back print on a 4500 x 5400 px portrait canvas (4:5 ratio, 300 DPI equivalent)",
+  };
+  function options(sel, entries, first) {
+    const keys = [...first.filter((k) => entries[k]), ...Object.keys(entries).filter((k) => !first.includes(k))];
+    sel.replaceChildren(...keys.map((k) => el("option", { value: k, text: typeof entries[k] === "string" ? entries[k] : entries[k].tr })));
+    sel.value = keys[0];
+  }
+  let lastFocus = null;
+  function openSheet(id) {
+    const t = byId(id); if (!t) return;
+    lastFocus = document.activeElement;
+    state.trendId = id;
+    setText($("#sheetTitle"), fill(t.tr, t));
+    options($("#pProduct"), PRODUCTS, t.products);
+    options($("#pStyle"), STYLES, [t.style]);
+    options($("#pColor"), GARMENT_COLORS, t.colors);
+    $("#pIdea").replaceChildren(...t.ideas.map((i) => el("option", { value: fill(i, t), text: fill(i, t) })), el("option", { value: "", text: "Yazısız (sadece çizim)" }));
+    $("#pText").value = "";
+    setText($("#tagsOut"), t.tags.map((x) => fill(x, t)).join(", "));
+    updatePrompt();
+    $("#scrim").hidden = false; $("#sheet").hidden = false;
+    document.body.style.overflow = "hidden";
+    tick();
+    $("#closeSheet").focus();
+  }
+  function closeSheet() {
+    if (!state.trendId) return;
+    state.trendId = null;
+    $("#scrim").hidden = true; $("#sheet").hidden = true;
+    document.body.style.overflow = "";
+    lastFocus?.focus?.();
+  }
+  function buildPrompt() {
+    const t = byId(state.trendId);
+    const colorKey = $("#pColor").value, dark = DARK_GARMENTS.includes(colorKey);
+    const text = $("#pText").value.trim() || $("#pIdea").value;
+    const n = Number($("#pVar").value);
+    let bg = $("#pBg").value;
+    const contrast = dark
+      ? "use light, bright and saturated colors so the design pops on a dark fabric; do not use black or very dark elements."
+      : "use darker, saturated colors so the design reads clearly on a light fabric; do not use white or very pale elements.";
+    let bgLine;
+    if (bg === "transparent") bgLine = "transparent background (PNG with alpha channel), no background color or scenery at all.";
+    else {
+      if (bg === "auto") bg = dark ? "black" : "white";
+      bgLine = `plain, solid pure ${bg} (${bg === "white" ? "#FFFFFF" : "#000000"}) background with no shadows, gradients, textures or scenery, so it can be removed cleanly.`;
+    }
+    const season = evergreen(t) ? "right now" : `for the ${MONTHS_EN[peakMonth(t)]} season`;
+    return [
+      `Create an original, print-ready graphic design for a ${PRODUCT_EN[$("#pProduct").value]} that will be sold on Etsy to customers in the United States.`,
+      "",
+      `THEME: ${fill(t.en, t)}.`,
+      text ? `MAIN TEXT: "${text}" — spell it exactly like this in English and make it the focal point of the design.` : "MAIN TEXT: none — illustration only, no words or letters anywhere.",
+      `STYLE: ${STYLES[$("#pStyle").value].en}.`,
+      `AUDIENCE: ${t.audience}.`,
+      `GARMENT COLOR: ${GARMENT_COLORS[colorKey].en} — ${contrast}`,
+      `COLORS: limit the palette to 3–5 flat, harmonious colors that feel on-trend in the US ${season}.`,
+      `LAYOUT: ${PLACE_EN[$("#pPlace").value]}. One single, centered, isolated artwork; nothing touching the canvas edges; no lines thinner than 2 mm when printed; bold, clean shapes suitable for DTG printing.`,
+      `BACKGROUND: ${bgLine}`,
+      "AVOID: t-shirt mockups, models, garments, frames, borders, watermarks, signatures, extra or misspelled text, trademarked characters, brand names, sports team or league logos, celebrity likenesses and copyrighted quotes.",
+      `OUTPUT: ${n === 1 ? "1 design" : `${n} clearly different variations (different composition and typography)`} at the highest resolution possible.`,
+    ].join("\n");
+  }
+  const updatePrompt = () => { if (state.trendId) setText($("#promptOut"), buildPrompt()); };
+  function setupSheet() {
+    ["#pProduct", "#pStyle", "#pColor", "#pBg", "#pIdea", "#pVar", "#pPlace"].forEach((s) => $(s).addEventListener("change", updatePrompt));
+    $("#pText").addEventListener("input", updatePrompt);
+    $("#closeSheet").addEventListener("click", closeSheet);
+    $("#scrim").addEventListener("click", closeSheet);
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeSheet(); });
+    $("#copyPrompt").addEventListener("click", () => copy($("#promptOut").textContent, "Prompt kopyalandı — Gemini'ye yapıştır"));
+    $("#copyTags").addEventListener("click", () => copy($("#tagsOut").textContent, "Etiketler kopyalandı"));
+    $("#spotBtn").addEventListener("click", (e) => openSheet(e.currentTarget.dataset.id));
+  }
+
+  /* ---------- Sekmeler & filtreler ---------- */
+  function showView(v) {
+    state.view = v;
+    document.querySelectorAll(".tab").forEach((b) => b.setAttribute("aria-selected", String(b.dataset.view === v)));
+    ["popular", "prep", "calendar", "sales"].forEach((k) => { $(`#view-${k}`).hidden = k !== v; });
+    const filters = v !== "sales";
+    $("#controls").hidden = !filters; $("#chips").hidden = !filters;
+    store.set("trendRadar.view", v);
+  }
+  function setupFilters() {
+    document.querySelectorAll(".tab").forEach((b) => b.addEventListener("click", () => showView(b.dataset.view)));
+    const now = new Date(), ms = $("#monthSel"), lb = $("#liveBtn");
+    ms.replaceChildren(el("option", { value: "", text: "Başka ay…" }), ...MONTHS_LONG.map((n, i) => el("option", { value: i, text: n + (i === now.getMonth() ? " (bu ay)" : "") })));
+    ms.addEventListener("change", () => {
+      state.live = ms.value === "";
+      if (!state.live) state.month = Number(ms.value);
+      lb.classList.toggle("on", state.live);
+      renderAll();
+    });
+    lb.addEventListener("click", () => { state.live = true; ms.value = ""; lb.classList.add("on"); renderAll(); });
+    $("#searchInp").addEventListener("input", (e) => { state.q = e.target.value; renderAll(); });
+    const chip = (key, label) => el("button", { class: `chip${state.cat === key ? " on" : ""}`, type: "button", "data-cat": key, onclick: () => {
+      state.cat = key;
+      document.querySelectorAll("#chips .chip").forEach((c) => c.classList.toggle("on", c.dataset.cat === key));
+      renderAll();
+    } }, key ? el("i", { style: `background:var(--c-${key})` }) : null, label);
+    $("#chips").replaceChildren(chip("", "Tümü"), ...Object.entries(CATEGORIES).map(([k, v]) => chip(k, v)));
+    const hash = location.hash.slice(1);
+    const saved = ["popular", "prep", "calendar", "sales"].includes(hash) ? hash : store.get("trendRadar.view", "popular");
+    showView(saved);
+  }
+  function renderAll() {
+    const list = filtered();
+    renderCards(list);
+    renderPrep(list);
+    renderHeat(list);
+    tick();
+  }
+
+  setupFilters();
+  setupSheet();
+  setupSales();
+  renderEvents(new Date());
+  renderSales();
+  renderAll();
+  setInterval(tick, 1000);
+  // Sıralama yavaş değişir: dakikada bir kartları yeniden sırala
+  setInterval(() => { if (state.live && !state.trendId && !document.activeElement?.closest?.(".tcard")) renderCards(filtered()); }, 60000);
+  loadWiki();
+  setInterval(() => loadWiki(true), WIKI_REFRESH_MS);
+})();
+</script>
