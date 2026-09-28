@@ -4,7 +4,7 @@
 <meta name="description" content="ABD'de döneme göre popüler giyim temaları, canlı talep puanı, geri sayımlar ve Gemini tasarım prompt üreticisi.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@500&family=Shrikhand&family=Bungee&family=Alfa+Slab+One&family=Rye&family=Pacifico&family=Bebas+Neue&family=Abril+Fatface&family=Caveat:wght@700&display=swap">
 <style>
 :root {
   color-scheme: dark;
@@ -329,6 +329,34 @@ table.plain { border-collapse: collapse; width: 100%; }
   .compare { grid-template-columns: minmax(0, 1fr); }
 }
 
+
+/* ---------- Fikir atölyesi ---------- */
+.card-actions { display: grid; grid-template-columns: 1fr 1.25fr; gap: 8px; }
+.card-actions .btn { padding: 12px 10px; font-size: .92rem; }
+.btn.idea-btn { background: transparent; border-color: var(--accent); color: var(--accent-2); }
+.btn.idea-btn:hover { background: rgba(255, 138, 61, .1); }
+.studio-bar { display: grid; grid-template-columns: 1.2fr 1.2fr 1.2fr 1fr auto; gap: 10px; align-items: end; background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 14px; margin-bottom: 16px; }
+.studio-bar .btn { padding: 11px 16px; white-space: nowrap; }
+.studio-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
+.idea { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; overflow: hidden; display: flex; flex-direction: column; }
+.idea .mock { background: radial-gradient(circle at 50% 40%, #2d3350, #1b1f2e 70%); padding: 18px 18px 6px; }
+.idea .mock > svg { display: block; width: 100%; height: auto; }
+.idea-body { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 10px; }
+.idea-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.idea-head h3 { font-size: 1.08rem; }
+.font-row, .sw-row { display: flex; gap: 6px; flex-wrap: wrap; }
+.font-chip { background: var(--panel-2); border: 1px solid var(--line); border-radius: 8px; padding: 3px 9px; font-size: .95rem; color: var(--text); }
+.hex { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); background: var(--panel-2); border-radius: 999px; padding: 3px 9px 3px 3px; font: 500 .74rem var(--f-mono); color: var(--text-2); cursor: pointer; }
+.hex:hover { border-color: var(--text-2); color: var(--text); }
+.hex i { width: 18px; height: 18px; border-radius: 50%; border: 1px solid rgba(255,255,255,.2); }
+.idea details { background: var(--panel-2); border-radius: 12px; padding: 8px 12px; font-size: .86rem; color: var(--text-2); }
+.idea summary { cursor: pointer; font-weight: 700; color: var(--text); }
+.idea ol { margin: 8px 0 2px; padding-left: 18px; display: grid; gap: 5px; }
+.idea-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.idea-actions .btn { padding: 9px; font-size: .85rem; }
+@media (max-width: 900px) { .studio-bar { grid-template-columns: 1fr 1fr; } .studio-bar .btn { grid-column: 1 / -1; } }
+@media (max-width: 640px) { .studio-bar { grid-template-columns: 1fr; } .studio-grid { grid-template-columns: minmax(0, 1fr); } }
+
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
 @media (max-width: 900px) {
   .spot { grid-template-columns: 1fr; }
@@ -366,8 +394,8 @@ table.plain { border-collapse: collapse; width: 100%; }
 
   <ol class="how" aria-label="Nasıl kullanılır">
     <li><span class="n">1</span><div><b>Bir trend seç</b><span>Puanı yüksek ve yükselen temalar kazandırır</span></div></li>
-    <li><span class="n">→</span><div><b>Turuncu butona bas</b><span>"Gemini prompt'u al" tasarım talimatını hazırlar</span></div></li>
-    <li><span class="n">3</span><div><b>Kopyala, Gemini'ye yapıştır</b><span>Çıkan görseli Printify'a yükle</span></div></li>
+    <li><span class="n">2</span><div><b>Örneklere bak</b><span>"Örnek tasarımlar" Kittl'da yapabileceğin fikirler gösterir</span></div></li>
+    <li><span class="n">3</span><div><b>Kittl'da yap ya da Gemini'ye yaptır</b><span>Tarifi takip et, sonra Printify'a yükle</span></div></li>
   </ol>
 
   <section class="spot" aria-label="Şu an en popüler">
@@ -380,6 +408,7 @@ table.plain { border-collapse: collapse; width: 100%; }
         <span class="lbl">talep puanı / 100<br><span id="spotDelta" class="pill flat"></span></span>
       </div>
       <div class="spot-actions">
+        <button class="btn idea-btn" id="spotIdeaBtn" type="button">Örnek tasarımlar gör</button>
         <button class="btn cta" id="spotBtn" type="button">Gemini prompt'u al <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
       </div>
     </div>
@@ -391,6 +420,7 @@ table.plain { border-collapse: collapse; width: 100%; }
 
   <nav class="tabs" role="tablist" aria-label="Bölümler">
     <button class="tab" role="tab" id="tab-popular" aria-selected="true" aria-controls="view-popular" data-view="popular">Şu an popüler <span class="count" id="cntPopular"></span></button>
+    <button class="tab" role="tab" id="tab-studio" aria-selected="false" aria-controls="view-studio" data-view="studio">Fikir atölyesi</button>
     <button class="tab" role="tab" id="tab-prep" aria-selected="false" aria-controls="view-prep" data-view="prep">Hazırlanma zamanı <span class="count" id="cntPrep"></span></button>
     <button class="tab" role="tab" id="tab-calendar" aria-selected="false" aria-controls="view-calendar" data-view="calendar">Yıllık takvim</button>
     <button class="tab" role="tab" id="tab-bg" aria-selected="false" aria-controls="view-bg" data-view="bg">Arka plan sil</button>
@@ -412,6 +442,19 @@ table.plain { border-collapse: collapse; width: 100%; }
   <section id="view-popular" role="tabpanel" aria-labelledby="tab-popular">
     <p class="view-note" id="popularNote"></p>
     <div class="grid" id="cards"></div>
+  </section>
+
+  <section id="view-studio" role="tabpanel" aria-labelledby="tab-studio" hidden>
+    <p class="view-note"><b>Yapay zekâ değil:</b> seçtiğin trend ve yazı için kodla çizilmiş örnek tişört tasarımları. Beğendiğini Kittl'da tarifiyle kendin yap — fontlar, renk kodları ve adımlar her örneğin altında.</p>
+    <div class="studio-bar">
+      <label>Trend <select id="sTrend"></select></label>
+      <label>Yazı <select id="sIdea"></select></label>
+      <label>…ya da kendi yazın <input id="sText" type="text" placeholder="örn. Spooky Mama"></label>
+      <label>Tişört rengi <select id="sColor"></select></label>
+      <button type="button" class="btn cta" id="sShuffle">Yeni fikirler ↻</button>
+    </div>
+    <div class="studio-grid" id="studioGrid"></div>
+    <p class="hint" style="margin-top:14px">Kittl'daki menü adları değişebilir. Bir font Kittl'da yoksa Google Fonts'tan indirip yükleyebilirsin. Renk çarkında 3+ renklik paletin varsa ilk örnek senin paletinle çizilir.</p>
   </section>
 
   <section id="view-prep" role="tabpanel" aria-labelledby="tab-prep" hidden>
@@ -567,7 +610,7 @@ table.plain { border-collapse: collapse; width: 100%; }
       </div>
     </div>
     <div>
-      <div class="step-h"><span class="n">2</span>Kopyala ve Gemini'ye yapıştır</div>
+      <div class="step-h"><span class="n">2</span>Kopyala ve Gemini'ye yapıştır <button type="button" class="btn idea-btn" id="toStudio" style="margin-left:auto;padding:5px 10px;font-size:.78rem">Kittl için örnekler</button></div>
       <div class="prompt">
         <pre id="promptOut"></pre>
         <div class="prompt-bar">
@@ -1302,7 +1345,9 @@ const WIKI = {
           el("div", {}, el("small", { text: evergreen(t) ? "Sezon" : "Zirve ayı" }), el("b", { text: evergreen(t) ? "Her mevsim satar" : MONTHS_LONG[peakMonth(t)] })),
           el("div", {}, el("small", { text: "Rekabet" }), el("b", { class: `comp-${t.comp}`, text: COMP[t.comp] })),
           el("div", { style: "grid-column:1/-1" }, el("small", { text: `${eventName(t)} için kalan` }), evCd)),
-        el("button", { class: "btn cta", type: "button", onclick: () => openSheet(t.id) }, "Gemini prompt'u al", arrow()),
+        el("div", { class: "card-actions" },
+          el("button", { class: "btn idea-btn", type: "button", onclick: () => openStudio(t.id) }, "Örnek tasarımlar"),
+          el("button", { class: "btn cta", type: "button", onclick: () => openSheet(t.id) }, "Gemini prompt'u", arrow())),
         el("div", { class: "links" },
           el("a", { href: `https://trends.google.com/trends/explore?geo=US&date=today%203-m&q=${q}`, target: "_blank", rel: "noopener", text: "Google Trends ↗" }),
           el("a", { href: `https://www.etsy.com/search?q=${q}`, target: "_blank", rel: "noopener", text: "Etsy'de ara ↗" }),
@@ -1556,6 +1601,7 @@ const WIKI = {
     $("#copyPrompt").addEventListener("click", () => copy($("#promptOut").textContent, "Prompt kopyalandı — Gemini'ye yapıştır"));
     $("#copyTags").addEventListener("click", () => copy($("#tagsOut").textContent, "Etiketler kopyalandı"));
     $("#spotBtn").addEventListener("click", (e) => openSheet(e.currentTarget.dataset.id));
+    $("#spotIdeaBtn").addEventListener("click", () => openStudio($("#spotBtn").dataset.id));
   }
 
   /* ---------- Dosya kaydetme: Claude görünümünde downloads, yerelde normal indirme ---------- */
@@ -1847,12 +1893,417 @@ const WIKI = {
     $("#toBgTool").addEventListener("click", () => { closeSheet(); showView("bg"); $("#tab-bg").scrollIntoView({ block: "start" }); });
   }
 
+  /* ---------- Fikir atölyesi: kodla çizilen örnek tasarımlar (yapay zekâ değil) ---------- */
+  const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+  // Fontlar: Google Fonts (Kittl'da da aranabilir; yoksa Google Fonts'tan indirip yüklenebilir)
+  const FONT = {
+    shrikhand: { css: "'Shrikhand', cursive", name: "Shrikhand", w: 0.66 },
+    bungee: { css: "'Bungee', sans-serif", name: "Bungee", w: 0.74 },
+    alfa: { css: "'Alfa Slab One', serif", name: "Alfa Slab One", w: 0.7 },
+    rye: { css: "'Rye', serif", name: "Rye", w: 0.78 },
+    pacifico: { css: "'Pacifico', cursive", name: "Pacifico", w: 0.56 },
+    bebas: { css: "'Bebas Neue', sans-serif", name: "Bebas Neue", w: 0.42 },
+    abril: { css: "'Abril Fatface', serif", name: "Abril Fatface", w: 0.6 },
+    caveat: { css: "'Caveat', cursive", name: "Caveat (Bold)", w: 0.46 },
+    figtree: { css: "'Figtree', sans-serif", name: "Figtree (Bold)", w: 0.62 },
+  };
+  // Metnin verilen genişliğe sığacağı font boyutu
+  const fit = (text, font, width, max) => Math.max(14, Math.min(max, width / (Math.max(3, text.length) * FONT[font].w)));
+  // Metni en fazla n dengeli satıra böl
+  function lines(text, n) {
+    const words = text.split(/\s+/).filter(Boolean);
+    if (words.length <= 1 || n <= 1) return [text];
+    const out = [];
+    let per = Math.ceil(text.length / Math.min(n, words.length)), cur = "";
+    for (const w of words) {
+      if (cur && (cur + " " + w).length > per && out.length < n - 1) { out.push(cur); cur = w; }
+      else cur = cur ? cur + " " + w : w;
+    }
+    out.push(cur);
+    return out;
+  }
+
+  const PALETTES = {
+    sunset: { name: "Retro gün batımı", c: ["#F6B042", "#EE7B30", "#D9483B", "#8C2F39", "#2E1F27"] },
+    halloween: { name: "Cadılar", c: ["#FF7A1A", "#F6B042", "#8E5CC4", "#2B1D3A", "#EDE6D6"] },
+    autumn: { name: "Sonbahar", c: ["#C8553D", "#E3A857", "#8F9A5B", "#5B3A29", "#F2E3C6"] },
+    xmas: { name: "Noel", c: ["#C8102E", "#1F7A4D", "#F2C14E", "#F6F1E7", "#0F3D2A"] },
+    patriotic: { name: "Americana", c: ["#B22234", "#3C3B6E", "#F2E8D5", "#E4A53A", "#1B1F3B"] },
+    valentine: { name: "Sevgililer", c: ["#E63B6F", "#FF9EB5", "#FFD6E0", "#8A1538", "#FFF4F4"] },
+    clover: { name: "Yonca", c: ["#1F9D55", "#7BC96F", "#F2C14E", "#0F5132", "#F4F1E6"] },
+    pastel: { name: "Pastel bahar", c: ["#F7A8B8", "#8EC5E0", "#F4D35E", "#9BD19B", "#5B4B8A"] },
+    earthy: { name: "Doğa", c: ["#D08C60", "#6B8F71", "#E9C46A", "#264653", "#F4EBD0"] },
+    bright: { name: "Canlı", c: ["#FF5E5B", "#FFB400", "#00B894", "#3A86FF", "#8338EC"] },
+    cool: { name: "Kış", c: ["#4F7CAC", "#C0D6DF", "#E07A5F", "#1B2A4A", "#F5F2EA"] },
+    pink: { name: "Pembe pop", c: ["#FF4F8B", "#FFB3C7", "#FFD166", "#6A2C70", "#FFF1F4"] },
+  };
+  const TREND_PALETTE = {
+    newyear: ["cool", "bright"], fitness: ["bright", "cool"], valentine: ["valentine", "pink"], galentine: ["pink", "valentine"],
+    bhm: ["sunset", "earthy"], stpatrick: ["clover", "sunset"], basketball: ["sunset", "patriotic"], easter: ["pastel", "pink"],
+    earthday: ["earthy", "clover"], autism: ["bright", "pastel"], mothers: ["pink", "pastel"], teacherapp: ["bright", "sunset"],
+    nurseweek: ["pink", "cool"], graduation: ["patriotic", "bright"], pride: ["bright", "pink"], fathers: ["earthy", "cool"],
+    juneteenth: ["sunset", "bright"], july4: ["patriotic", "sunset"], summer: ["sunset", "bright"], reunion: ["sunset", "earthy"],
+    bachelorette: ["pink", "sunset"], backtoschool: ["bright", "sunset"], football: ["autumn", "sunset"], fall: ["autumn", "sunset"],
+    halloween: ["halloween", "sunset"], breastcancer: ["pink", "valentine"], thanksgiving: ["autumn", "earthy"], veterans: ["patriotic", "earthy"],
+    christmas: ["xmas", "cool"], xmasfamily: ["xmas", "valentine"], uglysweater: ["xmas", "bright"], winter: ["cool", "xmas"],
+    dogmom: ["earthy", "sunset"], cat: ["halloween", "pastel"], bookish: ["earthy", "autumn"], nurse: ["pink", "cool"],
+    teacher: ["bright", "sunset"], mentalhealth: ["pastel", "earthy"], faith: ["earthy", "pastel"], western: ["sunset", "earthy"],
+    outdoors: ["earthy", "sunset"], fishing: ["earthy", "cool"], pickleball: ["bright", "sunset"], humor: ["bright", "sunset"],
+    coffee: ["autumn", "earthy"], birthday: ["bright", "pink"], aunt: ["pink", "sunset"],
+  };
+
+  /* İkonlar: 100×100 kutuda basit şekiller. f = dolgu, k = zemin (göz, detay) rengi */
+  const star = (cx, cy, r, f) => {
+    const p = [];
+    for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? r * 0.45 : r; p.push(`${(cx + Math.cos(a) * rr).toFixed(1)},${(cy + Math.sin(a) * rr).toFixed(1)}`); }
+    return `<polygon points="${p.join(" ")}" fill="${f}"/>`;
+  };
+  const ICONS = {
+    heart: (f) => `<path d="M50 88C20 66 6 48 6 30A21 21 0 0 1 50 22A21 21 0 0 1 94 30C94 48 80 66 50 88Z" fill="${f}"/>`,
+    star: (f) => star(50, 52, 46, f),
+    sun: (f) => { let s = `<circle cx="50" cy="50" r="24" fill="${f}"/>`; for (let i = 0; i < 12; i++) { const a = i * Math.PI / 6; s += `<line x1="${50 + Math.cos(a) * 32}" y1="${50 + Math.sin(a) * 32}" x2="${50 + Math.cos(a) * 46}" y2="${50 + Math.sin(a) * 46}" stroke="${f}" stroke-width="6" stroke-linecap="round"/>`; } return s; },
+    ghost: (f, k) => `<path d="M20 92V45A30 30 0 0 1 80 45V92L70 82L60 92L50 82L40 92L30 82Z" fill="${f}"/><ellipse cx="39" cy="46" rx="6" ry="9" fill="${k}"/><ellipse cx="61" cy="46" rx="6" ry="9" fill="${k}"/>`,
+    pumpkin: (f, k) => `<rect x="46" y="8" width="9" height="18" rx="3" fill="${k === "#FFFFFF" ? "#3b5d2a" : "#6B8F3A"}"/><ellipse cx="30" cy="58" rx="22" ry="32" fill="${f}"/><ellipse cx="70" cy="58" rx="22" ry="32" fill="${f}"/><ellipse cx="50" cy="58" rx="22" ry="34" fill="${f}" stroke="${k}" stroke-width="3"/>`,
+    clover: (f) => `<circle cx="50" cy="30" r="17" fill="${f}"/><circle cx="31" cy="54" r="17" fill="${f}"/><circle cx="69" cy="54" r="17" fill="${f}"/><path d="M50 55Q52 80 64 95" stroke="${f}" stroke-width="6" fill="none" stroke-linecap="round"/>`,
+    snow: (f) => { let s = ""; for (let i = 0; i < 6; i++) { const a = i * Math.PI / 3, x = 50 + Math.cos(a) * 44, y = 50 + Math.sin(a) * 44; s += `<line x1="50" y1="50" x2="${x}" y2="${y}" stroke="${f}" stroke-width="6" stroke-linecap="round"/><circle cx="${x}" cy="${y}" r="5" fill="${f}"/>`; } return s; },
+    tree: (f) => `<polygon points="50,6 78,40 64,40 86,68 66,68 92,94 8,94 34,68 14,68 36,40 22,40" fill="${f}"/>${star(50, 10, 9, "#F2C14E")}`,
+    paw: (f) => `<ellipse cx="50" cy="66" rx="24" ry="20" fill="${f}"/><ellipse cx="24" cy="40" rx="9" ry="12" fill="${f}"/><ellipse cx="40" cy="26" rx="9" ry="12" fill="${f}"/><ellipse cx="60" cy="26" rx="9" ry="12" fill="${f}"/><ellipse cx="76" cy="40" rx="9" ry="12" fill="${f}"/>`,
+    book: (f, k) => `<path d="M6 24Q28 14 50 26Q72 14 94 24V84Q72 74 50 86Q28 74 6 84Z" fill="${f}"/><path d="M50 26V86" stroke="${k}" stroke-width="3"/>`,
+    cup: (f, k) => `<path d="M18 40H72V70A20 20 0 0 1 52 90H38A20 20 0 0 1 18 70Z" fill="${f}"/><path d="M72 48H80A10 10 0 0 1 80 68H72" fill="none" stroke="${f}" stroke-width="6"/><path d="M34 30Q28 22 34 12M48 30Q42 22 48 12M62 30Q56 22 62 12" stroke="${f}" stroke-width="4" fill="none" stroke-linecap="round"/>`,
+    mountain: (f, k) => `<polygon points="4,90 38,30 56,58 68,42 96,90" fill="${f}"/><polygon points="38,30 30,44 38,40 46,44" fill="${k}"/>${`<circle cx="76" cy="20" r="9" fill="${f}"/>`}`,
+    fish: (f, k) => `<ellipse cx="44" cy="50" rx="34" ry="20" fill="${f}"/><polygon points="72,50 96,30 96,70" fill="${f}"/><circle cx="26" cy="46" r="4" fill="${k}"/>`,
+    flower: (f, k) => { let s = ""; for (let i = 0; i < 6; i++) { const a = i * Math.PI / 3; s += `<ellipse cx="${50 + Math.cos(a) * 24}" cy="${50 + Math.sin(a) * 24}" rx="17" ry="17" fill="${f}"/>`; } return s + `<circle cx="50" cy="50" r="15" fill="${k}"/>`; },
+    cross: (f) => `<rect x="42" y="6" width="16" height="88" rx="3" fill="${f}"/><rect x="18" y="28" width="64" height="16" rx="3" fill="${f}"/>`,
+    ball: (f, k) => `<circle cx="50" cy="50" r="42" fill="${f}"/><path d="M8 50H92M50 8V92M20 20Q40 50 20 80M80 20Q60 50 80 80" stroke="${k}" stroke-width="3" fill="none"/>`,
+    football: (f, k) => `<ellipse cx="50" cy="50" rx="44" ry="26" fill="${f}" transform="rotate(-30 50 50)"/><path d="M36 58L64 42M42 46l6 6M48 42l6 6M54 38l6 6" stroke="${k}" stroke-width="3" transform="rotate(0)"/>`,
+    cake: (f, k) => `<rect x="14" y="48" width="72" height="40" rx="6" fill="${f}"/><path d="M14 60Q26 70 38 60T62 60T86 60" stroke="${k}" stroke-width="4" fill="none"/><rect x="47" y="26" width="6" height="22" fill="${f}"/><path d="M50 10Q58 20 50 24Q42 20 50 10Z" fill="#F6B042"/>`,
+    cap: (f) => `<polygon points="50,14 96,36 50,58 4,36" fill="${f}"/><path d="M24 46V66Q50 82 76 66V46L50 58Z" fill="${f}"/><path d="M90 38V66" stroke="${f}" stroke-width="4"/><circle cx="90" cy="70" r="5" fill="${f}"/>`,
+    ribbon: (f) => `<path d="M50 60C30 36 30 12 50 12S70 36 50 60L28 92H40L50 74L60 92H72Z" fill="none" stroke="${f}" stroke-width="10" stroke-linejoin="round"/>`,
+    leaf: (f, k) => `<path d="M50 6C84 20 92 60 50 94C8 60 16 20 50 6Z" fill="${f}"/><path d="M50 20V94" stroke="${k}" stroke-width="3"/>`,
+    wave: (f) => `<path d="M4 60Q20 44 36 60T68 60T100 60V96H4Z" fill="${f}"/>${`<circle cx="70" cy="28" r="14" fill="${f}"/>`}`,
+    horseshoe: (f) => `<path d="M24 90V50A26 26 0 0 1 76 50V90" fill="none" stroke="${f}" stroke-width="14" stroke-linecap="round"/>`,
+    bunny: (f, k) => `<ellipse cx="38" cy="26" rx="9" ry="22" fill="${f}"/><ellipse cx="62" cy="26" rx="9" ry="22" fill="${f}"/><circle cx="50" cy="64" r="28" fill="${f}"/><circle cx="41" cy="60" r="3.5" fill="${k}"/><circle cx="59" cy="60" r="3.5" fill="${k}"/>`,
+    dumbbell: (f) => `<rect x="8" y="34" width="14" height="32" rx="3" fill="${f}"/><rect x="78" y="34" width="14" height="32" rx="3" fill="${f}"/><rect x="22" y="42" width="8" height="16" fill="${f}"/><rect x="70" y="42" width="8" height="16" fill="${f}"/><rect x="30" y="46" width="40" height="8" fill="${f}"/>`,
+    smile: (f, k) => `<circle cx="50" cy="50" r="44" fill="${f}"/><circle cx="36" cy="40" r="6" fill="${k}"/><circle cx="64" cy="40" r="6" fill="${k}"/><path d="M28 58Q50 82 72 58" stroke="${k}" stroke-width="6" fill="none" stroke-linecap="round"/>`,
+    cat: (f, k) => `<path d="M18 94V40L10 10L36 28H64L90 10L82 40V94Z" fill="${f}"/><ellipse cx="38" cy="54" rx="5" ry="8" fill="${k}"/><ellipse cx="62" cy="54" rx="5" ry="8" fill="${k}"/>`,
+  };
+  const TREND_ICON = {
+    newyear: "star", fitness: "dumbbell", valentine: "heart", galentine: "heart", bhm: "star", stpatrick: "clover", basketball: "ball",
+    easter: "bunny", earthday: "leaf", autism: "heart", mothers: "flower", teacherapp: "book", nurseweek: "heart", graduation: "cap",
+    pride: "heart", fathers: "star", juneteenth: "star", july4: "star", summer: "wave", reunion: "sun", bachelorette: "horseshoe",
+    backtoschool: "book", football: "football", fall: "leaf", halloween: "ghost", breastcancer: "ribbon", thanksgiving: "pumpkin",
+    veterans: "star", christmas: "tree", xmasfamily: "tree", uglysweater: "snow", winter: "snow", dogmom: "paw", cat: "cat",
+    bookish: "book", nurse: "heart", teacher: "book", mentalhealth: "smile", faith: "cross", western: "horseshoe", outdoors: "mountain",
+    fishing: "fish", pickleball: "ball", humor: "smile", coffee: "cup", birthday: "cake", aunt: "heart",
+  };
+  const icon = (name, x, y, size, f, k) => `<g transform="translate(${x - size / 2} ${y - size / 2}) scale(${size / 100})">${(ICONS[name] || ICONS.star)(f, k)}</g>`;
+  const txt = (s, x, y, font, size, fill, extra = "") => `<text x="${x}" y="${y}" text-anchor="middle" font-family="${FONT[font].css}" font-size="${size.toFixed(1)}" fill="${fill}" ${extra}>${esc(s)}</text>`;
+
+  /* Şablonlar: 500×600 tasarım alanı. c = mürekkep renkleri (tişörte göre sıralı), k = tişört rengi */
+  let uid = 0;
+  const TEMPLATES = {
+    sunset: {
+      name: "Retro gün batımı", fonts: ["shrikhand", "figtree"],
+      draw(d) {
+        const id = `sun${uid++}`, [a, b, c2, e] = d.c, k = d.k;
+        let s = `<clipPath id="${id}"><circle cx="250" cy="210" r="150"/></clipPath><g clip-path="url(#${id})">`;
+        [a, b, c2, e, a].forEach((col, i) => { s += `<rect x="90" y="${60 + i * 60}" width="320" height="61" fill="${col}"/>`; });
+        for (let i = 0; i < 6; i++) s += `<rect x="90" y="${232 + i * 22}" width="320" height="${3 + i * 2}" fill="${k}"/>`;
+        s += "</g>";
+        const L = lines(d.text, 2);
+        L.forEach((l, i) => {
+          const fs = fit(l, "shrikhand", 440, 78), y = 432 + i * (fs * 1.02);
+          s += txt(l, 254, y + 4, "shrikhand", fs, e) + txt(l, 250, y, "shrikhand", fs, a);
+        });
+        s += txt(d.sub, 250, 575, "figtree", 22, b, 'font-weight="800" letter-spacing="6"');
+        return s;
+      },
+      steps: (d) => [
+        "Elements → daire ekle (tasarım genişliğinin ~%60'ı).",
+        `Daireyi 5 yatay şeritle doldur (${d.c.slice(0, 4).join(", ")}): şerit dikdörtgenlerini çiz, daireyle maskele (Clip/Mask).`,
+        "Dairenin alt yarısına tişört renginde, aşağı doğru kalınlaşan 6 ince çizgi koy (gün batımı çizgileri).",
+        `Yazıyı ${FONT.shrikhand.name} ile yaz; aynı yazıyı kopyalayıp ${d.c[3]} renkte 4px sağa-aşağı kaydırarak arkaya koy (gölge).`,
+        `En alta küçük, harf aralığı geniş ${FONT.figtree.name} ile "${d.sub}" ekle.`,
+      ],
+    },
+    echo: {
+      name: "Groovy yankı yazı", fonts: ["shrikhand", "figtree"],
+      draw(d) {
+        const L = lines(d.text, 2);
+        let s = "";
+        const sizes = L.map((l) => fit(l, "shrikhand", 450, 110));
+        const total = sizes.reduce((x, y) => x + y * 0.95, 0), y0 = 300 - total / 2 + sizes[0] * 0.75;
+        [3, 2, 1, 0].forEach((j) => {
+          let y = y0;
+          L.forEach((l, i) => { s += txt(l, 250, y + j * 12, "shrikhand", sizes[i], d.c[j]); y += sizes[i] * 0.95; });
+        });
+        s += icon(d.icon, 250, 105, 90, d.c[1], d.k);
+        s += txt(d.sub, 250, 560, "figtree", 22, d.c[0], 'font-weight="800" letter-spacing="6"');
+        return s;
+      },
+      steps: (d) => [
+        `Yazıyı ${FONT.shrikhand.name} ile büyük yaz, renk ${d.c[0]}.`,
+        `Yazıyı 3 kez çoğalt; her kopyayı 12px aşağı kaydır ve sırayla ${d.c[1]}, ${d.c[2]}, ${d.c[3]} yap (en açık üstte). Kittl'daki hazır yankı/tekrar efektiyle de yapılabilir.`,
+        `Üste küçük bir ikon (${d.iconTr}) koy, renk ${d.c[1]}.`,
+        `Alta harf aralığı geniş "${d.sub}".`,
+      ],
+    },
+    varsity: {
+      name: "Varsity kemer", fonts: ["alfa", "figtree"],
+      draw(d) {
+        const id = `arc${uid++}`, main = d.text.toUpperCase();
+        const fs = Math.min(76, 560 / (main.length * FONT.alfa.w));
+        let s = `<path id="${id}" d="M50 270 A200 200 0 0 1 450 270" fill="none"/>`;
+        s += `<text text-anchor="middle" font-family="${FONT.alfa.css}" font-size="${fs.toFixed(1)}" fill="${d.c[0]}" stroke="${d.c[1]}" stroke-width="9" paint-order="stroke" stroke-linejoin="round"><textPath href="#${id}" startOffset="50%">${esc(main)}</textPath></text>`;
+        s += icon(d.icon, 250, 330, 150, d.c[2], d.k);
+        s += star(90, 470, 16, d.c[1]) + star(410, 470, 16, d.c[1]);
+        s += txt(d.sub, 250, 485, "alfa", 38, d.c[0], `stroke="${d.c[1]}" stroke-width="5" paint-order="stroke"`);
+        return s;
+      },
+      steps: (d) => [
+        `Yazıyı BÜYÜK HARF ${FONT.alfa.name} ile yaz; Transform menüsünden Arch/kemer uygula.`,
+        `Dolgu ${d.c[0]}, kalın dış çizgi (Outline) ${d.c[1]}.`,
+        `Kemerin altına büyük ikon (${d.iconTr}), renk ${d.c[2]}.`,
+        `En alta "${d.sub}" ve iki yanına küçük yıldızlar.`,
+      ],
+    },
+    badge: {
+      name: "Vintage rozet", fonts: ["bebas", "figtree"],
+      draw(d) {
+        const t = `t${uid++}`, b = `b${uid++}`, main = d.text.toUpperCase();
+        const fs = Math.min(44, 470 / (main.length * FONT.bebas.w));
+        let s = `<circle cx="250" cy="300" r="205" fill="${d.c[0]}"/><circle cx="250" cy="300" r="140" fill="${d.k}"/><circle cx="250" cy="300" r="196" fill="none" stroke="${d.k}" stroke-width="3" stroke-dasharray="2 7"/>`;
+        s += `<path id="${t}" d="M90 300 A160 160 0 0 1 410 300" fill="none"/><path id="${b}" d="M66 300 A184 184 0 0 0 434 300" fill="none"/>`;
+        s += `<text text-anchor="middle" font-family="${FONT.bebas.css}" font-size="${fs.toFixed(1)}" fill="${d.k}" letter-spacing="3"><textPath href="#${t}" startOffset="50%">${esc(main)}</textPath></text>`;
+        s += `<text text-anchor="middle" font-family="${FONT.bebas.css}" font-size="30" fill="${d.k}" letter-spacing="6"><textPath href="#${b}" startOffset="50%">${esc(d.sub)}</textPath></text>`;
+        s += star(62, 300, 12, d.k) + star(438, 300, 12, d.k);
+        s += icon(d.icon, 250, 300, 170, d.c[1], d.k);
+        return s;
+      },
+      steps: (d) => [
+        `Dolgulu büyük daire (${d.c[0]}), içine tişört renginde daha küçük daire → halka oluşur.`,
+        `Üst yazı: ${FONT.bebas.name}, Transform → Circle (daire etrafı), tişört renginde.`,
+        `Alt yazı "${d.sub}": aynı şekilde daireye oturt, ters yönde.`,
+        `Ortaya ikon (${d.iconTr}) ${d.c[1]} renkte; yanlara küçük yıldızlar; halkaya noktalı iç çizgi.`,
+      ],
+    },
+    script: {
+      name: "Minimal script", fonts: ["pacifico", "figtree"],
+      draw(d) {
+        const L = lines(d.text, 2);
+        let s = icon(d.icon, 250, 150, 110, d.c[1], d.k), y = 300;
+        L.forEach((l) => { const fs = fit(l, "pacifico", 420, 84); s += txt(l, 250, y, "pacifico", fs, d.c[0]); y += fs * 1.15; });
+        s += `<path d="M110 ${y - 20} Q250 ${y + 20} 390 ${y - 20}" stroke="${d.c[2]}" stroke-width="6" fill="none" stroke-linecap="round"/>`;
+        s += txt(d.sub, 250, y + 50, "figtree", 22, d.c[1], 'font-weight="800" letter-spacing="8"');
+        return s;
+      },
+      steps: (d) => [
+        `Yazıyı el yazısı fontla (${FONT.pacifico.name}) yaz, renk ${d.c[0]}.`,
+        `Altına kalem aracıyla hafif kavisli bir çizgi (${d.c[2]}).`,
+        `Üste sade bir ikon (${d.iconTr}), renk ${d.c[1]}.`,
+        `En alta küçük, harf aralığı geniş "${d.sub}".`,
+      ],
+    },
+    block: {
+      name: "Eskitilmiş blok yazı", fonts: ["bebas", "figtree"],
+      draw(d) {
+        const f = `ds${uid++}`, words = d.text.toUpperCase().split(/\s+/).filter(Boolean);
+        const L = words.length > 4 ? lines(d.text.toUpperCase(), 4) : words;
+        let s = `<filter id="${f}"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="4" result="n"/><feColorMatrix in="n" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -2.4 0 0 0 1.75" result="m"/><feComposite in="SourceGraphic" in2="m" operator="in"/></filter><g filter="url(#${f})">`;
+        const sizes = L.map((l) => Math.min(170, 420 / (l.length * FONT.bebas.w)));
+        const total = sizes.reduce((a, b) => a + b * 0.86, 0);
+        let y = 300 - total / 2 + sizes[0] * 0.78;
+        L.forEach((l, i) => { s += txt(l, 250, y, "bebas", sizes[i], d.c[i % 2 ? 1 : 0]); y += sizes[i] * 0.86; });
+        s += `<rect x="80" y="${y - sizes[sizes.length - 1] * 0.55}" width="340" height="6" fill="${d.c[2]}"/>`;
+        s += txt(d.sub, 250, y + 10, "figtree", 24, d.c[2], 'font-weight="800" letter-spacing="8"') + "</g>";
+        return s;
+      },
+      steps: (d) => [
+        `Her kelimeyi ayrı satıra ${FONT.bebas.name} ile yaz; her satırı aynı genişliğe gelecek şekilde büyüt (blok görünüm).`,
+        `Satırları sırayla ${d.c[0]} ve ${d.c[1]} renklendir, satır aralığını sıkı tut.`,
+        `Altına ince bir çizgi ve "${d.sub}" (${d.c[2]}).`,
+        "Tüm gruba eskitme/grunge doku (Texture) uygula — vintage baskı hissi verir.",
+      ],
+    },
+    wave: {
+      name: "Dalgalı groovy yazı", fonts: ["bungee", "figtree"],
+      draw(d) {
+        const main = d.text.toUpperCase();
+        const fs = Math.min(64, 520 / (main.length * FONT.bungee.w));
+        let s = "";
+        [[190, 2], [290, 1], [390, 0]].forEach(([y, ci]) => {
+          const id = `w${uid++}`;
+          s += `<path id="${id}" d="M20 ${y} Q135 ${y - 55} 250 ${y} T480 ${y}" fill="none"/>`;
+          s += `<text text-anchor="middle" font-family="${FONT.bungee.css}" font-size="${fs.toFixed(1)}" fill="${d.c[ci]}"><textPath href="#${id}" startOffset="50%">${esc(main)}</textPath></text>`;
+        });
+        s += txt(d.sub, 250, 520, "figtree", 24, d.c[3] || d.c[0], 'font-weight="800" letter-spacing="8"');
+        return s;
+      },
+      steps: (d) => [
+        `Yazıyı BÜYÜK HARF ${FONT.bungee.name} ile yaz; Transform → Wave (dalga).`,
+        `Yazıyı 3 kez alt alta tekrarla; renkler yukarıdan aşağı ${d.c[2]}, ${d.c[1]}, ${d.c[0]}.`,
+        `Altına "${d.sub}".`,
+      ],
+    },
+    checker: {
+      name: "Dama bandı retro", fonts: ["bungee", "figtree"],
+      draw(d) {
+        const main = d.text.toUpperCase(), L = lines(main, 2);
+        let s = "";
+        for (let x = 0; x < 25; x++) for (let r = 0; r < 4; r++) if ((x + r) % 2 === 0) s += `<rect x="${x * 20}" y="${255 + r * 20}" width="20" height="20" fill="${d.c[1]}"/>`;
+        s += icon(d.icon, 250, 140, 120, d.c[2], d.k);
+        let y = L.length > 1 ? 280 : 318;
+        L.forEach((l) => { const fs = fit(l, "bungee", 460, 72); s += txt(l, 250, y, "bungee", fs, d.c[0], `stroke="${d.k}" stroke-width="14" paint-order="stroke" stroke-linejoin="round"`); y += fs * 1.05; });
+        s += txt(d.sub, 250, 470, "figtree", 24, d.c[0], 'font-weight="800" letter-spacing="8"');
+        return s;
+      },
+      steps: (d) => [
+        `Arkaya yatay dama deseni bandı koy (Kittl'da "checker" diye ara ya da kareleri çoğalt), renk ${d.c[1]}.`,
+        `Üstüne ${FONT.bungee.name} ile yazı; dolgu ${d.c[0]}, tişört renginde kalın dış çizgi (Outline) → desenden ayrılır.`,
+        `Yukarıya ikon (${d.iconTr}) ${d.c[2]}, alta "${d.sub}".`,
+      ],
+    },
+    western: {
+      name: "Western poster", fonts: ["rye", "figtree"],
+      draw(d) {
+        const id = `wa${uid++}`, main = d.text.toUpperCase();
+        const fs = Math.min(64, 470 / (main.length * FONT.rye.w));
+        let s = `<path id="${id}" d="M60 250 Q250 150 440 250" fill="none"/>`;
+        s += `<text text-anchor="middle" font-family="${FONT.rye.css}" font-size="${fs.toFixed(1)}" fill="${d.c[0]}"><textPath href="#${id}" startOffset="50%">${esc(main)}</textPath></text>`;
+        s += `<line x1="70" y1="290" x2="430" y2="290" stroke="${d.c[1]}" stroke-width="4" stroke-dasharray="14 6"/><line x1="70" y1="300" x2="430" y2="300" stroke="${d.c[1]}" stroke-width="2"/>`;
+        s += icon(d.icon, 250, 395, 140, d.c[2], d.k) + star(110, 395, 20, d.c[1]) + star(390, 395, 20, d.c[1]);
+        s += txt(d.sub, 250, 530, "rye", 34, d.c[0]);
+        return s;
+      },
+      steps: (d) => [
+        `Yazı: ${FONT.rye.name}, BÜYÜK HARF, Transform → hafif Arc (yay).`,
+        `Altına kesik + düz iki çizgi (ip görünümü), renk ${d.c[1]}.`,
+        `Ortaya ikon (${d.iconTr}) ${d.c[2]}, yanlarına yıldız.`,
+        `En alta aynı fontla "${d.sub}".`,
+      ],
+    },
+  };
+  const STYLE_ORDER = {
+    retro: ["sunset", "echo", "wave", "checker", "badge", "block"],
+    minimal: ["script", "badge", "block", "sunset", "varsity", "echo"],
+    typo: ["block", "echo", "varsity", "checker", "wave", "script"],
+    watercolor: ["script", "sunset", "badge", "echo", "wave", "block"],
+    cute: ["script", "checker", "echo", "sunset", "badge", "wave"],
+    western: ["western", "sunset", "badge", "echo", "block", "wave"],
+    badge: ["badge", "varsity", "western", "block", "sunset", "script"],
+    varsity: ["varsity", "checker", "block", "badge", "echo", "wave"],
+    doodle: ["script", "wave", "checker", "echo", "badge", "block"],
+    distressed: ["block", "badge", "varsity", "western", "echo", "sunset"],
+  };
+  const ICON_TR = { heart: "kalp", star: "yıldız", sun: "güneş", ghost: "hayalet", pumpkin: "balkabağı", clover: "yonca", snow: "kar tanesi", tree: "çam ağacı", paw: "pati", book: "kitap", cup: "kahve fincanı", mountain: "dağ", fish: "balık", flower: "çiçek", cross: "haç", ball: "top", football: "Amerikan futbolu topu", cake: "pasta", cap: "mezuniyet kepi", ribbon: "kurdele", leaf: "yaprak", wave: "dalga", horseshoe: "at nalı", bunny: "tavşan", dumbbell: "dambıl", smile: "gülen yüz", cat: "kedi" };
+
+  // Tişört rengine karşı en iyi görünen renkleri öne al
+  function inks(pal, garment) {
+    const g = hex2rgb(garment);
+    const sorted = [...pal].sort((x, y) => contrast(hex2rgb(y), g) - contrast(hex2rgb(x), g));
+    const good = pal.filter((h) => contrast(hex2rgb(h), g) >= 1.8);
+    const base = good.length >= 3 ? good : sorted.slice(0, 3);
+    // Tişörtte kaybolacak renkleri kullanma; eksik kalırsa okunaklı renkleri tekrarla
+    const ok = base.filter((h) => contrast(hex2rgb(h), g) >= 1.5);
+    const out = ok.length ? [...ok] : [...base];
+    const n = out.length;
+    while (out.length < 5) out.push(out[out.length % n]);
+    return out;
+  }
+  const SHIRT = "M190 40Q300 92 410 40L540 95L592 230L506 262L490 226V612Q300 632 110 612V226L94 262L8 230L60 95Z";
+  function mockup(design, garment) {
+    const dark = lum(hex2rgb(garment)) < 0.25;
+    return `<svg viewBox="0 0 600 640" role="img" xmlns="http://www.w3.org/2000/svg">
+      <defs><linearGradient id="sh${uid}" x1="0" x2="1"><stop offset="0" stop-color="#000" stop-opacity=".16"/><stop offset=".22" stop-color="#000" stop-opacity="0"/><stop offset=".78" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".16"/></linearGradient></defs>
+      <path d="${SHIRT}" fill="${garment}" stroke="${dark ? "#ffffff22" : "#00000022"}" stroke-width="2"/>
+      <path d="${SHIRT}" fill="url(#sh${uid++})"/>
+      <path d="M232 44Q300 108 368 44" fill="none" stroke="${dark ? "#ffffff33" : "#00000033"}" stroke-width="7"/>
+      <svg x="150" y="118" width="300" height="360" viewBox="0 0 500 600">${design}</svg>
+    </svg>`;
+  }
+
+  const studio = { trendId: TRENDS[0].id, shuffle: 0 };
+  function studioSub(t, i) {
+    const y = fill("{YEAR}", t), ev = EVENTS[t.id];
+    const opts = [`EST. ${y}`, `SEASON ${y}`, fill(t.en, t).split(/[&,(]/)[0].trim().toUpperCase(), `${y}`, "USA"];
+    return opts[(i + studio.shuffle) % opts.length].slice(0, 26) || (ev ? ev.name : "USA");
+  }
+  function renderStudio() {
+    const t = byId(studio.trendId);
+    if (!t) return;
+    const text = $("#sText").value.trim() || $("#sIdea").value || fill(t.ideas[0], t);
+    const garment = GARMENT_HEX[$("#sColor").value] || "#FFFFFF";
+    const order = STYLE_ORDER[t.style] || STYLE_ORDER.retro;
+    const others = Object.keys(TEMPLATES).filter((k) => !order.includes(k));
+    const all = [...order, ...others];
+    const picks = Array.from({ length: 6 }, (_, i) => all[(i + studio.shuffle * 2) % all.length]);
+    const palKeys = [...(TREND_PALETTE[t.id] || ["sunset"]), "sunset", "bright"];
+    const iconName = TREND_ICON[t.id] || "star";
+    $("#studioGrid").replaceChildren(...picks.map((key, i) => {
+      const tp = TEMPLATES[key];
+      const useMine = palette.length >= 3 && i === 0;
+      const palKey = palKeys[(i + studio.shuffle) % 2 === 0 ? 0 : 1];
+      const pal = useMine ? palette : PALETTES[palKey].c;
+      const d = { text, sub: studioSub(t, i), c: inks(pal, garment), k: garment, icon: iconName, iconTr: ICON_TR[iconName] };
+      const svgBox = el("div", { class: "mock" });
+      svgBox.innerHTML = mockup(tp.draw(d), garment);
+      svgBox.firstElementChild.setAttribute("aria-label", `${tp.name} örneği: ${text}`);
+      const steps = tp.steps(d);
+      const fonts = tp.fonts.map((f) => FONT[f].name);
+      const recipe = [`${tp.name} — "${text}"`, `Fontlar: ${fonts.join(", ")}`, `Renkler: ${d.c.slice(0, 4).join(", ")}`, `Tişört: ${GARMENT_COLORS[$("#sColor").value]?.en || "white"}`, ...steps.map((s, j) => `${j + 1}. ${s}`)].join("\n");
+      return el("article", { class: "idea" },
+        svgBox,
+        el("div", { class: "idea-body" },
+          el("div", { class: "idea-head" }, el("h3", { text: tp.name }), el("span", { class: "pill flat", text: useMine ? "Senin paletin" : PALETTES[palKey].name })),
+          el("div", { class: "font-row" }, ...fonts.map((f, j) => el("span", { class: "font-chip", style: `font-family:${FONT[tp.fonts[j]].css}`, text: f }))),
+          el("div", { class: "sw-row" }, ...d.c.slice(0, 4).map((h) => el("button", { class: "hex", type: "button", title: `${h} kopyala`, onclick: () => copy(h, `${h} kopyalandı`) }, el("i", { style: `background:${h}` }), h))),
+          el("details", {}, el("summary", { text: "Kittl'da nasıl yapılır?" }), el("ol", {}, ...steps.map((s) => el("li", { text: s })))),
+          el("div", { class: "idea-actions" },
+            el("button", { class: "btn", type: "button", onclick: () => copy(recipe, "Tarif kopyalandı") }, "Tarifi kopyala"),
+            el("a", { class: "btn", href: "https://www.kittl.com/", target: "_blank", rel: "noopener" }, "Kittl'ı aç ↗"))));
+    }));
+  }
+  function setStudioTrend(id) {
+    const t = byId(id);
+    if (!t) return;
+    studio.trendId = id;
+    $("#sTrend").value = id;
+    $("#sIdea").replaceChildren(...t.ideas.map((i) => el("option", { value: fill(i, t), text: fill(i, t) })));
+    $("#sText").value = "";
+    const ks = [...t.colors, ...Object.keys(GARMENT_COLORS).filter((k) => !t.colors.includes(k))];
+    $("#sColor").replaceChildren(...ks.map((k) => el("option", { value: k, text: GARMENT_COLORS[k].tr })));
+    $("#sColor").value = ks[0];
+    renderStudio();
+  }
+  function openStudio(id) {
+    closeSheet();
+    showView("studio");
+    setStudioTrend(id);
+    $("#tab-studio").scrollIntoView({ block: "start" });
+  }
+  function setupStudio() {
+    $("#sTrend").replaceChildren(...[...TRENDS].sort((a, b) => a.tr.localeCompare(b.tr, "tr")).map((t) => el("option", { value: t.id, text: fill(t.tr, t) })));
+    $("#sTrend").addEventListener("change", (e) => setStudioTrend(e.target.value));
+    ["#sIdea", "#sColor"].forEach((s) => $(s).addEventListener("change", renderStudio));
+    let tmr;
+    $("#sText").addEventListener("input", () => { clearTimeout(tmr); tmr = setTimeout(renderStudio, 150); });
+    $("#sShuffle").addEventListener("click", () => { studio.shuffle++; renderStudio(); });
+    $("#toStudio").addEventListener("click", () => openStudio(state.trendId));
+    // Varsayılan: şu anki 1 numara
+    const now = new Date();
+    const top = [...TRENDS].sort((a, b) => scoreAt(b, now) - scoreAt(a, now))[0];
+    setStudioTrend(top.id);
+    document.fonts?.ready?.then(() => { if (state.view === "studio") renderStudio(); });
+  }
+
   /* ---------- Sekmeler & filtreler ---------- */
   function showView(v) {
     state.view = v;
     document.querySelectorAll(".tab").forEach((b) => b.setAttribute("aria-selected", String(b.dataset.view === v)));
-    ["popular", "prep", "calendar", "bg", "sales"].forEach((k) => { $(`#view-${k}`).hidden = k !== v; });
-    const filters = !["sales", "bg"].includes(v);
+    ["popular", "studio", "prep", "calendar", "bg", "sales"].forEach((k) => { $(`#view-${k}`).hidden = k !== v; });
+    const filters = !["sales", "bg", "studio"].includes(v);
+    if (v === "studio" && $("#studioGrid").childElementCount) renderStudio();
     $("#controls").hidden = !filters; $("#chips").hidden = !filters;
     store.set("trendRadar.view", v);
   }
@@ -1875,7 +2326,7 @@ const WIKI = {
     } }, key ? el("i", { style: `background:var(--c-${key})` }) : null, label);
     $("#chips").replaceChildren(chip("", "Tümü"), ...Object.entries(CATEGORIES).map(([k, v]) => chip(k, v)));
     const hash = location.hash.slice(1);
-    const saved = ["popular", "prep", "calendar", "bg", "sales"].includes(hash) ? hash : store.get("trendRadar.view", "popular");
+    const saved = ["popular", "studio", "prep", "calendar", "bg", "sales"].includes(hash) ? hash : store.get("trendRadar.view", "popular");
     showView(saved);
   }
   function renderAll() {
@@ -1891,6 +2342,7 @@ const WIKI = {
   setupSales();
   setupWheel();
   setupBg();
+  setupStudio();
   renderEvents(new Date());
   renderSales();
   renderAll();
