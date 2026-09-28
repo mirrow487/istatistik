@@ -11,7 +11,10 @@ Tek dosya: **`index.html`**. İndirip çift tıkla (Chrome/Edge/Safari) — baş
 ## Nasıl kullanılır
 
 1. **Bir trend seç** — "Şu an popüler" sekmesinde kartlar talep puanına göre sıralı.
-2. **Turuncu "Gemini prompt'u al" butonuna bas** — ürün, stil, tişört rengi, yazı ve baskı yerini seç.
+2. **Turuncu "Gemini prompt'u" butonuna bas.** Prompt türü:
+   - **Sadece çizim (Kittl için, varsayılan):** Gemini yazısız bir çizim yapar (trende göre önerilen konu ya da kendi konun);
+     yazıyı sonra Kittl'da eklersin.
+   - **Tam tasarım (yazılı):** eski mod — Gemini yazı dahil tasarımın tamamını yapar.
    Renk çarkından tasarım renklerini seç (en fazla 5; tamamlayıcı / analog / üçlü öneriler var) —
    seçtiğin renkler prompt'a isim + HEX kodu olarak yazılır.
 3. **Prompt'u kopyala → Gemini'ye yapıştır.** Etsy için 13 etiket de hazır.

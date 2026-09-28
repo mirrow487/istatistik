@@ -357,6 +357,14 @@ table.plain { border-collapse: collapse; width: 100%; }
 @media (max-width: 900px) { .studio-bar { grid-template-columns: 1fr 1fr; } .studio-bar .btn { grid-column: 1 / -1; } }
 @media (max-width: 640px) { .studio-bar { grid-template-columns: 1fr; } .studio-grid { grid-template-columns: minmax(0, 1fr); } }
 
+
+/* ---------- Prompt türü anahtarı ---------- */
+.mode { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 6px; }
+.mode > span { font-size: .78rem; font-weight: 700; color: var(--text-2); }
+.mode .seg button.on { background: var(--accent); color: var(--accent-ink); }
+#modeHint { margin: 0 0 12px; }
+#subjectRow small { font-weight: 500; }
+
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
 @media (max-width: 900px) {
   .spot { grid-template-columns: 1fr; }
@@ -566,7 +574,16 @@ table.plain { border-collapse: collapse; width: 100%; }
   <div class="sheet-body">
     <div>
       <div class="step-h"><span class="n">1</span>Seçenekleri ve renkleri ayarla</div>
+      <div class="mode" role="group" aria-label="Prompt türü">
+        <span>Prompt türü</span>
+        <div class="seg">
+          <button type="button" id="modeDraw" class="on" aria-pressed="true">Sadece çizim (Kittl için)</button>
+          <button type="button" id="modeFull" aria-pressed="false">Tam tasarım (yazılı)</button>
+        </div>
+      </div>
+      <p class="hint" id="modeHint"></p>
       <div class="opts">
+        <label class="full" id="subjectRow">Çizim konusu <input id="pSubject" type="text" placeholder=""><small class="hint">Boş bırakırsan öneri kullanılır. İngilizce yazarsan Gemini daha iyi anlar.</small></label>
         <label>Ürün <select id="pProduct"></select></label>
         <label>Tasarım stili <select id="pStyle"></select></label>
         <label>Tişört rengi <select id="pColor"></select></label>
@@ -578,9 +595,9 @@ table.plain { border-collapse: collapse; width: 100%; }
             <option value="transparent">Transparan</option>
           </select>
         </label>
-        <label class="full">Tişörtteki yazı <select id="pIdea"></select></label>
-        <label class="full">…ya da kendi yazın <input id="pText" type="text" placeholder="örn. Spooky Mama"></label>
-        <label>Kaç farklı tasarım <select id="pVar"><option>1</option><option>2</option><option selected>3</option><option>4</option></select></label>
+        <label class="full" id="ideaRow">Tişörtteki yazı <select id="pIdea"></select></label>
+        <label class="full" id="textRow">…ya da kendi yazın <input id="pText" type="text" placeholder="örn. Spooky Mama"></label>
+        <label>Kaç farklı versiyon <select id="pVar"><option>1</option><option>2</option><option selected>3</option><option>4</option></select></label>
         <label>Baskı yeri
           <select id="pPlace">
             <option value="front">Ön (büyük)</option>
@@ -1532,6 +1549,66 @@ const WIKI = {
     sel.replaceChildren(...keys.map((k) => el("option", { value: k, text: typeof entries[k] === "string" ? entries[k] : entries[k].tr })));
     sel.value = keys[0];
   }
+
+  // Çizim modu: her trend için önerilen çizim konusu (İngilizce — Gemini'ye doğrudan gider)
+  const MOTIFS = {
+    newyear: "a disco ball with sparkling stars and confetti", fitness: "a cheerful dumbbell character flexing",
+    valentine: "a retro heart with small sparkles and a tiny arrow", galentine: "two cute cartoon hearts holding hands",
+    bhm: "a bold raised fist surrounded by a floral wreath", stpatrick: "a lucky four-leaf clover with a small horseshoe",
+    basketball: "a vintage basketball with motion lines", easter: "a cute bunny peeking out of a decorated egg",
+    earthday: "the planet Earth wrapped in leaves and flowers", autism: "a colorful puzzle-piece heart",
+    mothers: "a bouquet of wildflowers tied with a ribbon", teacherapp: "a stack of books with an apple and a pencil",
+    nurseweek: "a stethoscope forming a heart with small flowers", graduation: "a graduation cap with a diploma and stars",
+    pride: "a rainbow with clouds and sparkles", fathers: "a vintage fishing lure, a grill and a coffee mug arranged as a badge",
+    juneteenth: "a raised fist with a sun rising behind it", july4: "a retro firework burst over a star-spangled banner shape",
+    summer: "a retro sunset over ocean waves with a palm tree", reunion: "a road-trip camper van under a sunny sky",
+    bachelorette: "a cowgirl boot with a disco ball", backtoschool: "a smiling school bus with pencils and books",
+    football: "a vintage American football with laurel leaves (no team logos)", fall: "a cozy pumpkin with autumn leaves and a coffee cup",
+    halloween: "a cute retro ghost holding a jack-o'-lantern", breastcancer: "a pink ribbon surrounded by flowers",
+    thanksgiving: "a friendly turkey with autumn leaves", veterans: "a waving flag with a folded-flag triangle and stars",
+    christmas: "a retro Christmas tree with ornaments and a star", xmasfamily: "a string of Christmas lights with gingerbread cookies",
+    uglysweater: "a funny knitted-pattern reindeer", winter: "vintage skis crossed in front of snowy mountains",
+    dogmom: "a happy dog face with floppy ears (generic breed)", cat: "a sassy black cat sitting with its tail curled",
+    bookish: "a stack of open books with flowers growing from the pages", nurse: "a heartbeat line forming a heart with a stethoscope",
+    teacher: "an apple on top of books with a pencil", mentalhealth: "a smiling brain with flowers and small sparkles",
+    faith: "a simple cross wrapped in wildflowers", western: "a cowboy hat and boots with a desert cactus",
+    outdoors: "a vintage camping tent under pine trees and a starry sky", fishing: "a jumping bass fish with a fishing rod",
+    pickleball: "two crossed pickleball paddles with a ball", humor: "a sarcastic cartoon coffee cup with a side-eye expression",
+    coffee: "an iced coffee cup with whipped cream and sparkles", birthday: "a retro birthday cake with candles and confetti",
+    aunt: "a cute heart with small flowers and sparkles",
+  };
+  // Çizim modunda yazı/font içermeyen stil tarifleri
+  const STYLE_DRAW = {
+    retro: "retro vintage 1970s illustration style with warm sunset colors, rounded shapes and a subtle distressed grain texture",
+    minimal: "minimalist single-line art illustration with generous negative space",
+    typo: "bold graphic illustration built from strong flat shapes with high contrast",
+    watercolor: "soft watercolor illustration with gentle color bleeds and clean edges",
+    cute: "cute kawaii cartoon illustration with thick clean outlines and rounded shapes",
+    western: "western cowgirl illustration with desert and rodeo elements and a vintage rodeo poster feel",
+    badge: "vintage outdoor illustration in the style of retro national-park posters, limited flat colors",
+    varsity: "retro collegiate sports illustration with a faded, puff-print look",
+    doodle: "hand-drawn doodle illustration with marker-style lines",
+    distressed: "illustration with a distressed grunge texture and worn vintage print effect",
+  };
+  const promptMode = { v: store.get("trendRadar.promptMode", "draw") };
+  const PLACE_DRAW = {
+    front: "square 1:1 canvas at the highest resolution; the subject should fill about 80% of the canvas",
+    pocket: "square 1:1 canvas; keep it simple and icon-like so it stays readable at about 4 inches wide",
+    back: "square 1:1 canvas at the highest resolution; the subject should fill about 80% of the canvas",
+  };
+  function setPromptMode(v) {
+    promptMode.v = v;
+    store.set("trendRadar.promptMode", v);
+    const draw = v === "draw";
+    $("#modeDraw").classList.toggle("on", draw); $("#modeDraw").setAttribute("aria-pressed", String(draw));
+    $("#modeFull").classList.toggle("on", !draw); $("#modeFull").setAttribute("aria-pressed", String(!draw));
+    $("#subjectRow").hidden = !draw;
+    $("#ideaRow").hidden = draw; $("#textRow").hidden = draw;
+    setText($("#modeHint"), draw
+      ? "Gemini sadece çizimi yapar (yazısız). Arka planı sitede sil, Kittl'a yükle, yazıyı Kittl'da ekle."
+      : "Eski mod: Gemini yazı dahil tasarımın tamamını yapar.");
+    updatePrompt();
+  }
   let lastFocus = null;
   function openSheet(id) {
     const t = byId(id); if (!t) return;
@@ -1543,6 +1620,8 @@ const WIKI = {
     options($("#pColor"), GARMENT_COLORS, t.colors);
     $("#pIdea").replaceChildren(...t.ideas.map((i) => el("option", { value: fill(i, t), text: fill(i, t) })), el("option", { value: "", text: "Yazısız (sadece çizim)" }));
     $("#pText").value = "";
+    $("#pSubject").value = "";
+    $("#pSubject").placeholder = `Öneri: ${MOTIFS[t.id] || fill(t.en, t) + " themed illustration"}`;
     setText($("#tagsOut"), t.tags.map((x) => fill(x, t)).join(", "));
     renderPalette();
     updatePrompt();
@@ -1574,6 +1653,27 @@ const WIKI = {
       bgLine = `plain, solid pure ${bg} (${bg === "white" ? "#FFFFFF" : "#000000"}) background with no shadows, gradients, textures or scenery, so it can be removed cleanly.`;
     }
     const season = evergreen(t) ? "right now" : `for the ${MONTHS_EN[peakMonth(t)]} season`;
+    const colorsLine = palette.length
+      ? `COLORS: use ONLY this color palette (flat colors, no gradients): ${palette.map((h) => `${colorName(h)} (${h})`).join(", ")}.`
+      : `COLORS: limit the palette to 3–5 flat, harmonious colors that feel on-trend in the US ${season}.`;
+    if (promptMode.v === "draw") {
+      const subject = $("#pSubject").value.trim() || MOTIFS[t.id] || `${fill(t.en, t)} themed illustration`;
+      return [
+        `Create an original illustration to be used as a graphic element on a ${PRODUCT_EN[$("#pProduct").value]}. It will be combined with typography later in a design tool (Kittl), then printed and sold on Etsy to customers in the United States.`,
+        "",
+        `SUBJECT: ${subject}.`,
+        `THEME: ${fill(t.en, t)}.`,
+        `STYLE: ${STYLE_DRAW[$("#pStyle").value] || STYLES[$("#pStyle").value].en}.`,
+        `AUDIENCE: ${t.audience}.`,
+        `GARMENT COLOR: ${GARMENT_COLORS[colorKey].en} — ${contrast}`,
+        colorsLine,
+        `COMPOSITION: ${PLACE_DRAW[$("#pPlace").value]}. One single centered subject, fully visible, with a compact silhouette so text can be placed above or below it later; empty space around it and nothing touching the edges; clean bold outlines and flat color areas; no lines thinner than 2 mm when printed; suitable for DTG printing.`,
+        "TEXT: none — absolutely no letters, words, numbers, logos or signatures anywhere in the image.",
+        `BACKGROUND: ${bgLine}`,
+        "AVOID: t-shirt mockups, models, garments, frames, borders, scenery behind the subject, drop shadows on the background, watermarks, trademarked characters, brand names, sports team or league logos, celebrity likenesses.",
+        `OUTPUT: ${n === 1 ? "1 illustration" : `${n} clearly different variations of the subject (different pose or composition)`} at the highest resolution possible.`,
+      ].join("\n");
+    }
     return [
       `Create an original, print-ready graphic design for a ${PRODUCT_EN[$("#pProduct").value]} that will be sold on Etsy to customers in the United States.`,
       "",
@@ -1595,6 +1695,10 @@ const WIKI = {
   function setupSheet() {
     ["#pProduct", "#pStyle", "#pColor", "#pBg", "#pIdea", "#pVar", "#pPlace"].forEach((s) => $(s).addEventListener("change", updatePrompt));
     $("#pText").addEventListener("input", updatePrompt);
+    $("#pSubject").addEventListener("input", updatePrompt);
+    $("#modeDraw").addEventListener("click", () => setPromptMode("draw"));
+    $("#modeFull").addEventListener("click", () => setPromptMode("full"));
+    setPromptMode(promptMode.v);
     $("#closeSheet").addEventListener("click", closeSheet);
     $("#scrim").addEventListener("click", closeSheet);
     document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeSheet(); });
