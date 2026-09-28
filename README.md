@@ -20,6 +20,10 @@ Tek dosya: **`index.html`**. İndirip çift tıkla (Chrome/Edge/Safari) — baş
 ## Sekmeler
 
 - **Şu an popüler**: 47 tema; canlı talep puanı, son 30 gün değişimi, 12 aylık grafik, rekabet, etkinliğe geri sayım, Google Trends / Etsy linkleri, Wikipedia ilgisi.
+- **Fikir atölyesi**: yapay zekâ değil — seçilen trend ve yazı için kodla çizilmiş 6 örnek tişört tasarımı
+  (retro gün batımı, groovy yankı, varsity kemer, vintage rozet, script, eskitilmiş blok, dalgalı yazı,
+  dama bandı, western). Her örnekte font adları, HEX renkleri ve "Kittl'da nasıl yapılır" adımları var;
+  "Yeni fikirler" ile farklı şablon/palet kombinasyonları gelir.
 - **Hazırlanma zamanı**: yaklaşan ABD günleri tarih sırasıyla; etkinliğe ve "listeleme son gün"e (45 gün önce) saniyelik sayaç.
 - **Yıllık takvim**: hangi tema hangi ay zirve yapıyor.
 - **Arka plan sil**: Gemini görselini yükle (sürükle-bırak / yapıştır da olur); düz arka planı siler,
