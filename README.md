@@ -26,7 +26,11 @@ Tek dosya: **`index.html`**. İndirip çift tıkla (Chrome/Edge/Safari) — baş
 - **Fikir atölyesi**: yapay zekâ değil — seçilen trend ve yazı için kodla çizilmiş 6 örnek tişört tasarımı
   (retro gün batımı, groovy yankı, varsity kemer, vintage rozet, script, eskitilmiş blok, dalgalı yazı,
   dama bandı, western). Her örnekte font adları, HEX renkleri ve "Kittl'da nasıl yapılır" adımları var;
-  "Yeni fikirler" ile farklı şablon/palet kombinasyonları gelir.
+  "Yeni fikirler" ile farklı şablon/palet kombinasyonları gelir. 14 şablon tipi, trende özel ikon setleri ve
+  sloganlar; "Daha fazla örnek" ile 24'e kadar örnek. Etsy / Pinterest / Google Görseller'de hazır ilham aramaları.
+- **Fotoğraftan Kittl tarifi** (Fikir atölyesi içinde): beğendiğin bir tasarımın ekran görüntüsünü yükle;
+  baskın renkler cihazda çıkarılır, claude.ai linkinde "Claude ile analiz et" yerleşimi, benzer Google Fonts'ları,
+  Kittl adımlarını ve kopya olmaması için farklılaştırma önerilerini verir.
 - **Hazırlanma zamanı**: yaklaşan ABD günleri tarih sırasıyla; etkinliğe ve "listeleme son gün"e (45 gün önce) saniyelik sayaç.
 - **Yıllık takvim**: hangi tema hangi ay zirve yapıyor.
 - **Arka plan sil**: Gemini görselini yükle (sürükle-bırak / yapıştır da olur); düz arka planı siler,
