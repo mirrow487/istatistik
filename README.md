@@ -28,9 +28,11 @@ Tek dosya: **`index.html`**. İndirip çift tıkla (Chrome/Edge/Safari) — baş
   dama bandı, western). Her örnekte font adları, HEX renkleri ve "Kittl'da nasıl yapılır" adımları var;
   "Yeni fikirler" ile farklı şablon/palet kombinasyonları gelir. 14 şablon tipi, trende özel ikon setleri ve
   sloganlar; "Daha fazla örnek" ile 24'e kadar örnek. Etsy / Pinterest / Google Görseller'de hazır ilham aramaları.
-- **Fotoğraftan Kittl tarifi** (Fikir atölyesi içinde): beğendiğin bir tasarımın ekran görüntüsünü yükle;
-  baskın renkler cihazda çıkarılır, claude.ai linkinde "Claude ile analiz et" yerleşimi, benzer Google Fonts'ları,
-  Kittl adımlarını ve kopya olmaması için farklılaştırma önerilerini verir.
+- **Fotoğraftan Kittl tarifi** (Fikir atölyesi içinde): API anahtarı gerekmez.
+  1) "Prompt'u kopyala" → 2) Gemini ya da ChatGPT'de ekran görüntüsüyle birlikte gönder →
+  3) cevabı siteye yapıştır; site yerleşimi, benzer Google Fonts'ları, renkleri, Kittl adımlarını ve
+  kopya olmaması için farklılaştırma önerilerini düzenli bir tarife çevirir. Görseli siteye de yüklersen
+  baskın renkler cihazda çıkarılıp prompt'a eklenir.
 - **Hazırlanma zamanı**: yaklaşan ABD günleri tarih sırasıyla; etkinliğe ve "listeleme son gün"e (45 gün önce) saniyelik sayaç.
 - **Yıllık takvim**: hangi tema hangi ay zirve yapıyor.
 - **Arka plan sil**: Gemini görselini yükle (sürükle-bırak / yapıştır da olur); düz arka planı siler,
