@@ -365,6 +365,37 @@ table.plain { border-collapse: collapse; width: 100%; }
 #modeHint { margin: 0 0 12px; }
 #subjectRow small { font-weight: 500; }
 
+
+/* ---------- Atölye: ilham linkleri, daha fazla, fotoğraf analizi ---------- */
+.inspo { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin: -4px 0 14px; }
+.inspo .k, .studio-head .k, #pColors .k { font-size: .78rem; color: var(--muted); font-weight: 700; }
+.inspo .chip { text-decoration: none; }
+.studio-head { margin: 4px 0 10px; }
+.more-row { display: flex; justify-content: center; margin-top: 16px; }
+.more-row .btn { padding: 12px 22px; }
+.idea-text { margin: -4px 0 0; color: var(--text-2); font-size: .86rem; font-style: italic; }
+.photo { margin-bottom: 16px; }
+.photo summary { cursor: pointer; display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; }
+.photo summary b { font-family: var(--f-display); font-size: 1.08rem; }
+.photo summary span { color: var(--muted); font-size: .85rem; }
+.photo[open] summary { margin-bottom: 14px; }
+.photo-grid { display: grid; grid-template-columns: 300px 1fr; gap: 16px; align-items: start; }
+.photo-grid > * { min-width: 0; }
+.photo-prev { margin-top: 10px; border-radius: 14px; overflow: hidden; border: 1px solid var(--line); background: var(--panel-2); }
+.photo-prev canvas { display: block; width: 100%; height: auto; }
+.photo-out { display: flex; flex-direction: column; gap: 10px; }
+#pResult { display: flex; flex-direction: column; gap: 12px; }
+.an-sum { margin: 0; font-size: .95rem; }
+.an-meta { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; margin: 0; font-size: .88rem; }
+.an-meta dt { color: var(--muted); font-weight: 700; }
+.an-meta dd { margin: 0; color: var(--text-2); }
+.an-sec h4 { margin: 0 0 6px; font-family: var(--f-display); font-size: 1rem; }
+.an-list, .an-steps { margin: 0; padding-left: 20px; display: grid; gap: 6px; font-size: .88rem; color: var(--text-2); }
+.an-list b { color: var(--text); }
+.an-list .font-row { margin: 4px 0; }
+.an-warn { white-space: normal; line-height: 1.4; padding: 6px 12px; }
+@media (max-width: 760px) { .photo-grid { grid-template-columns: 1fr; } }
+
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
 @media (max-width: 900px) {
   .spot { grid-template-columns: 1fr; }
@@ -461,7 +492,31 @@ table.plain { border-collapse: collapse; width: 100%; }
       <label>Tişört rengi <select id="sColor"></select></label>
       <button type="button" class="btn cta" id="sShuffle">Yeni fikirler ↻</button>
     </div>
+    <div class="inspo" id="inspo"></div>
+    <details class="panel photo" id="photoBox">
+      <summary><b>Fotoğraftan Kittl tarifi</b><span>Beğendiğin bir tasarımın ekran görüntüsünü yükle → nasıl yapıldığını çıkarayım</span></summary>
+      <div class="photo-grid">
+        <div>
+          <label class="drop" id="pDrop" for="pFile"><b>Görsel seç</b><span>ya da sürükle · Ctrl+V ile yapıştır</span></label>
+          <input type="file" id="pFile" accept="image/*" hidden>
+          <div class="photo-prev" id="pPrev" hidden><canvas id="pCanvas" aria-label="Yüklenen tasarım"></canvas></div>
+        </div>
+        <div class="photo-out">
+          <div class="sw-row" id="pColors"></div>
+          <div class="btn-row">
+            <button type="button" class="btn cta" id="pAnalyze" disabled>Claude ile analiz et</button>
+            <button type="button" class="btn" id="pStop" hidden>Durdur</button>
+            <button type="button" class="btn" id="pCopy" hidden>Tarifi kopyala</button>
+          </div>
+          <p class="hint" id="pStatus"></p>
+          <div id="pResult" aria-live="polite"></div>
+        </div>
+      </div>
+      <p class="hint">Telif: başkasının tasarımını birebir kopyalama. Tarif, fikrin nasıl kurulduğunu anlayıp kendi versiyonunu yapman için.</p>
+    </details>
+    <div class="studio-head"><span class="k" id="sCount"></span></div>
     <div class="studio-grid" id="studioGrid"></div>
+    <div class="more-row"><button type="button" class="btn" id="sMore">Daha fazla örnek (+6)</button></div>
     <p class="hint" style="margin-top:14px">Kittl'daki menü adları değişebilir. Bir font Kittl'da yoksa Google Fonts'tan indirip yükleyebilirsin. Renk çarkında 3+ renklik paletin varsa ilk örnek senin paletinle çizilir.</p>
   </section>
 
@@ -2091,16 +2146,40 @@ const WIKI = {
     dumbbell: (f) => `<rect x="8" y="34" width="14" height="32" rx="3" fill="${f}"/><rect x="78" y="34" width="14" height="32" rx="3" fill="${f}"/><rect x="22" y="42" width="8" height="16" fill="${f}"/><rect x="70" y="42" width="8" height="16" fill="${f}"/><rect x="30" y="46" width="40" height="8" fill="${f}"/>`,
     smile: (f, k) => `<circle cx="50" cy="50" r="44" fill="${f}"/><circle cx="36" cy="40" r="6" fill="${k}"/><circle cx="64" cy="40" r="6" fill="${k}"/><path d="M28 58Q50 82 72 58" stroke="${k}" stroke-width="6" fill="none" stroke-linecap="round"/>`,
     cat: (f, k) => `<path d="M18 94V40L10 10L36 28H64L90 10L82 40V94Z" fill="${f}"/><ellipse cx="38" cy="54" rx="5" ry="8" fill="${k}"/><ellipse cx="62" cy="54" rx="5" ry="8" fill="${k}"/>`,
+    moon: (f) => `<path d="M62 8A44 44 0 1 0 92 70A36 36 0 1 1 62 8Z" fill="${f}"/>`,
+    bat: (f) => `<path d="M50 36C44 30 40 30 36 34C30 26 16 24 4 30C14 36 16 46 12 56C22 50 30 54 34 62C38 56 44 54 50 58C56 54 62 56 66 62C70 54 78 50 88 56C84 46 86 36 96 30C84 24 70 26 64 34C60 30 56 30 50 36Z" fill="${f}"/><path d="M44 36L46 26L50 32L54 26L56 36Z" fill="${f}"/>`,
+    gift: (f, k) => `<rect x="12" y="40" width="76" height="52" rx="4" fill="${f}"/><rect x="6" y="28" width="88" height="16" rx="3" fill="${f}"/><rect x="45" y="28" width="10" height="64" fill="${k}"/><path d="M50 28C40 10 24 14 30 24C34 30 44 28 50 28C56 28 66 30 70 24C76 14 60 10 50 28Z" fill="none" stroke="${f}" stroke-width="5"/>`,
+    apple: (f, k) => `<path d="M50 30C36 20 12 26 14 54C16 80 34 96 50 88C66 96 84 80 86 54C88 26 64 20 50 30Z" fill="${f}"/><path d="M50 30Q48 16 56 8" stroke="${f}" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M54 18Q68 6 76 16Q64 24 54 18Z" fill="${f}"/><path d="M28 50Q30 40 38 38" stroke="${k}" stroke-width="4" fill="none" stroke-linecap="round"/>`,
+    flag: (f, k) => `<rect x="10" y="12" width="6" height="84" fill="${f}"/><path d="M16 14H90V62H16Z" fill="${f}"/><rect x="16" y="14" width="34" height="24" fill="${k}"/>${[0, 1, 2].map((i) => `<rect x="50" y="${20 + i * 14}" width="40" height="6" fill="${k}"/>`).join("")}<rect x="16" y="46" width="74" height="6" fill="${k}"/>`,
+    cactus: (f) => `<rect x="40" y="10" width="20" height="84" rx="10" fill="${f}"/><path d="M40 60H26A8 8 0 0 1 18 52V34A7 7 0 0 1 32 34V46H40Z" fill="${f}"/><path d="M60 50H74A8 8 0 0 0 82 42V26A7 7 0 0 0 68 26V38H60Z" fill="${f}"/><rect x="24" y="90" width="52" height="6" rx="3" fill="${f}"/>`,
+    egg: (f, k) => `<path d="M50 6C74 6 88 44 88 62A38 34 0 0 1 12 62C12 44 26 6 50 6Z" fill="${f}"/><path d="M14 52L26 44L38 52L50 44L62 52L74 44L86 52" stroke="${k}" stroke-width="4" fill="none"/><circle cx="34" cy="70" r="4" fill="${k}"/><circle cx="50" cy="74" r="4" fill="${k}"/><circle cx="66" cy="70" r="4" fill="${k}"/>`,
+    bone: (f) => `<path d="M26 36A10 10 0 1 1 36 26L64 54A10 10 0 1 1 74 64A10 10 0 1 1 64 74L36 46A10 10 0 1 1 26 36Z" fill="${f}" transform="rotate(0)"/>`,
+    palm: (f) => `<path d="M48 92Q52 60 50 40" stroke="${f}" stroke-width="7" fill="none" stroke-linecap="round"/><path d="M50 40Q30 20 6 32Q28 30 50 40ZM50 40Q70 20 94 32Q72 30 50 40ZM50 40Q40 14 22 10Q40 24 50 40ZM50 40Q60 14 78 10Q60 24 50 40Z" fill="${f}" stroke="${f}" stroke-width="4" stroke-linejoin="round"/>`,
+    disco: (f, k) => `<circle cx="50" cy="54" r="38" fill="${f}"/><path d="M12 54H88M50 16V92M18 36H82M18 72H82M30 22Q20 54 30 86M70 22Q80 54 70 86" stroke="${k}" stroke-width="2.5" fill="none"/><rect x="47" y="4" width="6" height="12" fill="${f}"/>`,
+    rainbow: (f, k) => `${[40, 30, 20].map((r, i) => `<path d="M${50 - r} 80A${r} ${r} 0 0 1 ${50 + r} 80" stroke="${i === 1 ? k : f}" stroke-width="9" fill="none" stroke-linecap="round" ${i === 1 ? 'opacity=".55"' : ""}/>`).join("")}<ellipse cx="18" cy="82" rx="14" ry="8" fill="${f}"/><ellipse cx="82" cy="82" rx="14" ry="8" fill="${f}"/>`,
+    bolt: (f) => `<polygon points="58,4 18,56 46,56 38,96 82,40 54,40" fill="${f}"/>`,
+    sparkle: (f) => `<path d="M50 4Q54 44 96 50Q54 56 50 96Q46 56 4 50Q46 44 50 4Z" fill="${f}"/>`,
   };
-  const TREND_ICON = {
-    newyear: "star", fitness: "dumbbell", valentine: "heart", galentine: "heart", bhm: "star", stpatrick: "clover", basketball: "ball",
-    easter: "bunny", earthday: "leaf", autism: "heart", mothers: "flower", teacherapp: "book", nurseweek: "heart", graduation: "cap",
-    pride: "heart", fathers: "star", juneteenth: "star", july4: "star", summer: "wave", reunion: "sun", bachelorette: "horseshoe",
-    backtoschool: "book", football: "football", fall: "leaf", halloween: "ghost", breastcancer: "ribbon", thanksgiving: "pumpkin",
-    veterans: "star", christmas: "tree", xmasfamily: "tree", uglysweater: "snow", winter: "snow", dogmom: "paw", cat: "cat",
-    bookish: "book", nurse: "heart", teacher: "book", mentalhealth: "smile", faith: "cross", western: "horseshoe", outdoors: "mountain",
-    fishing: "fish", pickleball: "ball", humor: "smile", coffee: "cup", birthday: "cake", aunt: "heart",
+  // Her trendin kendi ikon seti: örnekler trendden trende gerçekten farklı görünsün
+  const TREND_ICONS = {
+    newyear: ["disco", "sparkle", "star"], fitness: ["dumbbell", "bolt", "heart"], valentine: ["heart", "sparkle", "flower"],
+    galentine: ["heart", "smile", "sparkle"], bhm: ["star", "sun", "flower"], stpatrick: ["clover", "horseshoe", "rainbow"],
+    basketball: ["ball", "bolt", "star"], easter: ["bunny", "egg", "flower"], earthday: ["leaf", "sun", "flower"],
+    autism: ["heart", "rainbow", "star"], mothers: ["flower", "heart", "sun"], teacherapp: ["apple", "book", "sparkle"],
+    nurseweek: ["heart", "sparkle", "flower"], graduation: ["cap", "star", "book"], pride: ["rainbow", "heart", "sparkle"],
+    fathers: ["fish", "cup", "star"], juneteenth: ["sun", "star", "flower"], july4: ["flag", "star", "sparkle"],
+    summer: ["palm", "sun", "wave"], reunion: ["sun", "palm", "heart"], bachelorette: ["disco", "horseshoe", "heart"],
+    backtoschool: ["apple", "book", "star"], football: ["football", "star", "bolt"], fall: ["leaf", "pumpkin", "cup"],
+    halloween: ["ghost", "bat", "pumpkin", "moon"], breastcancer: ["ribbon", "heart", "flower"], thanksgiving: ["pumpkin", "leaf", "heart"],
+    veterans: ["flag", "star", "heart"], christmas: ["tree", "gift", "snow", "star"], xmasfamily: ["gift", "tree", "heart"],
+    uglysweater: ["snow", "tree", "gift"], winter: ["snow", "mountain", "cup"], dogmom: ["paw", "bone", "heart"],
+    cat: ["cat", "moon", "heart"], bookish: ["book", "cup", "moon"], nurse: ["heart", "sparkle", "cup"],
+    teacher: ["apple", "book", "sparkle"], mentalhealth: ["smile", "flower", "sun"], faith: ["cross", "sun", "flower"],
+    western: ["horseshoe", "cactus", "star"], outdoors: ["mountain", "sun", "leaf"], fishing: ["fish", "sun", "wave"],
+    pickleball: ["ball", "sun", "bolt"], humor: ["smile", "bolt", "cup"], coffee: ["cup", "heart", "sparkle"],
+    birthday: ["cake", "gift", "sparkle"], aunt: ["heart", "flower", "sparkle"],
   };
+
   const icon = (name, x, y, size, f, k) => `<g transform="translate(${x - size / 2} ${y - size / 2}) scale(${size / 100})">${(ICONS[name] || ICONS.star)(f, k)}</g>`;
   const txt = (s, x, y, font, size, fill, extra = "") => `<text x="${x}" y="${y}" text-anchor="middle" font-family="${FONT[font].css}" font-size="${size.toFixed(1)}" fill="${fill}" ${extra}>${esc(s)}</text>`;
 
@@ -2287,6 +2366,114 @@ const WIKI = {
         `En alta aynı fontla "${d.sub}".`,
       ],
     },
+    arch: {
+      name: "Kemer pencere manzara", fonts: ["abril", "figtree"],
+      draw(d) {
+        const id = `ar${uid++}`, A = "M110 400V220A140 140 0 0 1 390 220V400Z";
+        let s = `<clipPath id="${id}"><path d="${A}"/></clipPath><g clip-path="url(#${id})"><rect x="100" y="70" width="300" height="340" fill="${d.c[0]}"/>`;
+        s += `<circle cx="250" cy="260" r="80" fill="${d.c[1]}"/>`;
+        s += `<path d="M100 300Q180 250 250 300T400 300V410H100Z" fill="${d.c[2]}"/><path d="M100 340Q200 300 290 345T400 335V410H100Z" fill="${d.c[3]}"/></g>`;
+        s += `<path d="${A}" fill="none" stroke="${d.c[2]}" stroke-width="8"/>`;
+        s += icon(d.icon, 250, 170, 70, d.c[3], d.k);
+        const L = lines(d.text, 2);
+        let y = 470;
+        L.forEach((l) => { const fs = fit(l, "abril", 440, 60); s += txt(l, 250, y, "abril", fs, d.c[0]); y += fs * 1.02; });
+        s += txt(d.sub, 250, Math.min(590, y + 16), "figtree", 20, d.c[1], 'font-weight="800" letter-spacing="7"');
+        return s;
+      },
+      steps: (d) => [
+        "Shapes'ten kemer (üstü yuvarlak dikdörtgen) şekli ekle; kalın dış çizgi ver.",
+        `İçine manzara kur: zemin ${d.c[0]}, büyük güneş dairesi ${d.c[1]}, alta iki dalgalı tepe (${d.c[2]}, ${d.c[3]}) → hepsini kemerle maskele (Clip).`,
+        `Kemerin tepesine küçük ikon (${d.iconTr}).`,
+        `Altına ${FONT.abril.name} ile yazı, en alta harf aralığı geniş "${d.sub}".`,
+      ],
+    },
+    pattern: {
+      name: "İkon desen + etiket", fonts: ["alfa", "figtree"],
+      draw(d) {
+        let s = "";
+        const set = d.icons;
+        for (let r = 0; r < 5; r++) for (let q = 0; q < 4; q++) {
+          const x = 70 + q * 120 + (r % 2 ? 60 : 0), y = 70 + r * 115;
+          if (x > 460) continue;
+          s += icon(set[(r + q) % set.length], x, y, 70, d.c[(r + q) % 2 ? 1 : 2], d.k);
+        }
+        const L = lines(d.text.toUpperCase(), 2);
+        const sizes = L.map((l) => fit(l, "alfa", 340, 58));
+        const h = sizes.reduce((a, b) => a + b * 1.05, 0) + 50;
+        s += `<rect x="60" y="${300 - h / 2}" width="380" height="${h}" rx="22" fill="${d.k}" stroke="${d.c[0]}" stroke-width="7"/>`;
+        let y = 300 - h / 2 + 25 + sizes[0] * 0.82;
+        L.forEach((l, i) => { s += txt(l, 250, y, "alfa", sizes[i], d.c[0]); y += sizes[i] * 1.05; });
+        return s;
+      },
+      steps: (d) => [
+        `Trend ikonlarından 2–3 tanesini (${d.icons.map((i) => ICON_TR[i]).join(", ")}) Kittl'daki çizim/ikon kütüphanesinden bul.`,
+        `İkonları kaydırmalı bir ızgarada tekrarla (Duplicate + hizala), renkleri ${d.c[1]} ve ${d.c[2]} dönüşümlü.`,
+        `Ortaya tişört renginde, köşeleri yuvarlak, ${d.c[0]} kenarlıklı bir etiket kutusu koy.`,
+        `Kutunun içine ${FONT.alfa.name} ile BÜYÜK HARF yazı.`,
+      ],
+    },
+    ticket: {
+      name: "Retro bilet / etiket", fonts: ["bebas", "figtree"],
+      draw(d) {
+        const T = "M40 190H460V255A45 45 0 0 0 460 345V410H40V345A45 45 0 0 0 40 255Z";
+        let s = `<path d="${T}" fill="${d.c[0]}"/><rect x="62" y="212" width="376" height="176" rx="6" fill="none" stroke="${d.k}" stroke-width="3" stroke-dasharray="10 7"/>`;
+        const main = d.text.toUpperCase(), fs = fit(main, "bebas", 320, 120);
+        s += txt(main, 250, 300 + fs * 0.33, "bebas", fs, d.k, 'letter-spacing="2"');
+        s += icon(d.icon, 250, 120, 110, d.c[1], d.k);
+        s += star(95, 300, 16, d.k) + star(405, 300, 16, d.k);
+        s += txt(d.sub, 250, 470, "figtree", 24, d.c[1], 'font-weight="800" letter-spacing="9"');
+        return s;
+      },
+      steps: (d) => [
+        `Dikdörtgen çiz (${d.c[0]}); iki yanına daire koyup çıkar (Subtract) → bilet çentikleri.`,
+        "İçine tişört renginde kesik çizgili bir çerçeve ekle.",
+        `Yazıyı ${FONT.bebas.name} ile tişört renginde, bileti dolduracak kadar büyük yaz; yanlarına yıldız.`,
+        `Üste ikon (${d.iconTr}) ${d.c[1]}, alta "${d.sub}".`,
+      ],
+    },
+    burst: {
+      name: "Patlama yıldızı", fonts: ["bungee", "figtree"],
+      draw(d) {
+        const pts = [];
+        for (let i = 0; i < 48; i++) { const a = i * Math.PI / 24, r = i % 2 ? 175 : 215; pts.push(`${(250 + Math.cos(a) * r).toFixed(1)},${(290 + Math.sin(a) * r).toFixed(1)}`); }
+        let s = `<polygon points="${pts.join(" ")}" fill="${d.c[1]}"/><circle cx="250" cy="290" r="160" fill="none" stroke="${d.k}" stroke-width="4" stroke-dasharray="3 9"/>`;
+        const L = lines(d.text.toUpperCase(), 3);
+        const sizes = L.map((l) => fit(l, "bungee", 300, 70));
+        let y = 290 - sizes.reduce((a, b) => a + b, 0) / 2 + sizes[0] * 0.8;
+        L.forEach((l, i) => { s += txt(l, 250, y, "bungee", sizes[i], d.c[0], `stroke="${d.k}" stroke-width="10" paint-order="stroke" stroke-linejoin="round"`); y += sizes[i]; });
+        s += icon(d.icon, 400, 110, 80, d.c[2], d.k);
+        s += txt(d.sub, 250, 560, "figtree", 22, d.c[0], 'font-weight="800" letter-spacing="8"');
+        return s;
+      },
+      steps: (d) => [
+        `Shapes → yıldız/burst şekli (çok köşeli, ~24 uç), renk ${d.c[1]}.`,
+        "İçine tişört renginde noktalı bir daire çizgisi.",
+        `Yazıyı ${FONT.bungee.name} ile BÜYÜK HARF, ${d.c[0]} dolgu + tişört renginde kalın Outline.`,
+        `Köşeye eğik küçük ikon (${d.iconTr}), alta "${d.sub}".`,
+      ],
+    },
+    daisy: {
+      name: "Çiçek halkası", fonts: ["shrikhand", "figtree"],
+      draw(d) {
+        let s = "";
+        for (let i = 0; i < 12; i++) {
+          const a = i * Math.PI / 6, x = 250 + Math.cos(a) * 190, y = 290 + Math.sin(a) * 190;
+          s += icon(i % 3 === 0 ? d.icon : "flower", x, y, i % 3 === 0 ? 62 : 54, d.c[i % 2 ? 1 : 2], d.k);
+        }
+        const L = lines(d.text, 3);
+        const sizes = L.map((l) => fit(l, "shrikhand", 290, 70));
+        let y = 290 - sizes.reduce((a, b) => a + b * 0.95, 0) / 2 + sizes[0] * 0.75;
+        L.forEach((l, i) => { s += txt(l, 250, y, "shrikhand", sizes[i], d.c[0]); y += sizes[i] * 0.95; });
+        s += txt(d.sub, 250, y + 16, "figtree", 18, d.c[1], 'font-weight="800" letter-spacing="6"');
+        return s;
+      },
+      steps: (d) => [
+        `Papatya/çiçek ikonlarını daire şeklinde diz (12 adet); araya trend ikonunu (${d.iconTr}) serpiştir.`,
+        `Renkleri ${d.c[1]} ve ${d.c[2]} dönüşümlü yap.`,
+        `Ortaya ${FONT.shrikhand.name} ile 2–3 satır yazı (${d.c[0]}), altına küçük "${d.sub}".`,
+      ],
+    },
   };
   const STYLE_ORDER = {
     retro: ["sunset", "echo", "wave", "checker", "badge", "block"],
@@ -2300,7 +2487,7 @@ const WIKI = {
     doodle: ["script", "wave", "checker", "echo", "badge", "block"],
     distressed: ["block", "badge", "varsity", "western", "echo", "sunset"],
   };
-  const ICON_TR = { heart: "kalp", star: "yıldız", sun: "güneş", ghost: "hayalet", pumpkin: "balkabağı", clover: "yonca", snow: "kar tanesi", tree: "çam ağacı", paw: "pati", book: "kitap", cup: "kahve fincanı", mountain: "dağ", fish: "balık", flower: "çiçek", cross: "haç", ball: "top", football: "Amerikan futbolu topu", cake: "pasta", cap: "mezuniyet kepi", ribbon: "kurdele", leaf: "yaprak", wave: "dalga", horseshoe: "at nalı", bunny: "tavşan", dumbbell: "dambıl", smile: "gülen yüz", cat: "kedi" };
+  const ICON_TR = { heart: "kalp", star: "yıldız", sun: "güneş", ghost: "hayalet", pumpkin: "balkabağı", clover: "yonca", snow: "kar tanesi", tree: "çam ağacı", paw: "pati", book: "kitap", cup: "kahve fincanı", mountain: "dağ", fish: "balık", flower: "çiçek", cross: "haç", ball: "top", football: "Amerikan futbolu topu", cake: "pasta", cap: "mezuniyet kepi", ribbon: "kurdele", leaf: "yaprak", wave: "dalga", horseshoe: "at nalı", bunny: "tavşan", dumbbell: "dambıl", smile: "gülen yüz", cat: "kedi", moon: "ay", bat: "yarasa", gift: "hediye kutusu", apple: "elma", flag: "bayrak", cactus: "kaktüs", egg: "süslü yumurta", bone: "kemik", palm: "palmiye", disco: "disko topu", rainbow: "gökkuşağı", bolt: "şimşek", sparkle: "parıltı" };
 
   // Tişört rengine karşı en iyi görünen renkleri öne al
   function inks(pal, garment) {
@@ -2327,53 +2514,84 @@ const WIKI = {
     </svg>`;
   }
 
-  const studio = { trendId: TRENDS[0].id, shuffle: 0 };
+  const studio = { trendId: TRENDS[0].id, shuffle: 0, count: 9 };
+  const MAX_IDEAS = 24;
+  const hashStr = (str) => { let h = 2166136261; for (const ch of str) { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; };
+  // Trendin id'sinden türetilen sabit karıştırma: her trendde farklı şablon sırası
+  function seeded(list, seed) {
+    const a = [...list];
+    let x = seed || 1;
+    for (let i = a.length - 1; i > 0; i--) { x = (Math.imul(x, 1103515245) + 12345) >>> 0; const j = x % (i + 1); [a[i], a[j]] = [a[j], a[i]]; }
+    return a;
+  }
   function studioSub(t, i) {
-    const y = fill("{YEAR}", t), ev = EVENTS[t.id];
-    const opts = [`EST. ${y}`, `SEASON ${y}`, fill(t.en, t).split(/[&,(]/)[0].trim().toUpperCase(), `${y}`, "USA"];
-    return opts[(i + studio.shuffle) % opts.length].slice(0, 26) || (ev ? ev.name : "USA");
+    const y = fill("{YEAR}", t);
+    const short = fill(t.en, t).split(/[&,(]/)[0].trim().toUpperCase();
+    const tag = fill(t.tags[(i + 3) % t.tags.length], t).toUpperCase();
+    const opts = [`EST. ${y}`, short, `SEASON ${y}`, tag, `${y}`, "USA", "VINTAGE"];
+    return (opts[(i + studio.shuffle) % opts.length] || "USA").slice(0, 26);
   }
   function renderStudio() {
     const t = byId(studio.trendId);
     if (!t) return;
-    const text = $("#sText").value.trim() || $("#sIdea").value || fill(t.ideas[0], t);
+    const custom = $("#sText").value.trim() || $("#sIdea").value;
     const garment = GARMENT_HEX[$("#sColor").value] || "#FFFFFF";
-    const order = STYLE_ORDER[t.style] || STYLE_ORDER.retro;
-    const others = Object.keys(TEMPLATES).filter((k) => !order.includes(k));
-    const all = [...order, ...others];
-    const picks = Array.from({ length: 6 }, (_, i) => all[(i + studio.shuffle * 2) % all.length]);
-    const palKeys = [...(TREND_PALETTE[t.id] || ["sunset"]), "sunset", "bright"];
-    const iconName = TREND_ICON[t.id] || "star";
-    $("#studioGrid").replaceChildren(...picks.map((key, i) => {
+    const seed = hashStr(t.id) + studio.shuffle * 7919;
+    const prefs = (STYLE_ORDER[t.style] || STYLE_ORDER.retro).slice(0, 3);
+    const rest = seeded(Object.keys(TEMPLATES).filter((k) => !prefs.includes(k)), seed);
+    const all = [...seeded(prefs, seed), ...rest];
+    const icons = seeded(TREND_ICONS[t.id] || ["star"], seed);
+    const palKeys = [...new Set([...(TREND_PALETTE[t.id] || ["sunset"]), ...seeded(["sunset", "bright", "earthy", "cool"], seed).slice(0, 2)])];
+    const ideas = seeded(t.ideas.map((x) => fill(x, t)), seed);
+    const n = Math.min(studio.count, MAX_IDEAS);
+    const tiles = Array.from({ length: n }, (_, i) => {
+      const key = all[i % all.length];
+      const round = Math.floor(i / all.length);
       const tp = TEMPLATES[key];
       const useMine = palette.length >= 3 && i === 0;
-      const palKey = palKeys[(i + studio.shuffle) % 2 === 0 ? 0 : 1];
+      const palKey = palKeys[(i + round) % palKeys.length];
       const pal = useMine ? palette : PALETTES[palKey].c;
-      const d = { text, sub: studioSub(t, i), c: inks(pal, garment), k: garment, icon: iconName, iconTr: ICON_TR[iconName] };
+      const text = custom || ideas[i % ideas.length];
+      const iconName = icons[(i + round) % icons.length];
+      const d = { text, sub: studioSub(t, i), c: inks(pal, garment), k: garment, icon: iconName, iconTr: ICON_TR[iconName], icons };
       const svgBox = el("div", { class: "mock" });
       svgBox.innerHTML = mockup(tp.draw(d), garment);
       svgBox.firstElementChild.setAttribute("aria-label", `${tp.name} örneği: ${text}`);
       const steps = tp.steps(d);
       const fonts = tp.fonts.map((f) => FONT[f].name);
-      const recipe = [`${tp.name} — "${text}"`, `Fontlar: ${fonts.join(", ")}`, `Renkler: ${d.c.slice(0, 4).join(", ")}`, `Tişört: ${GARMENT_COLORS[$("#sColor").value]?.en || "white"}`, ...steps.map((s, j) => `${j + 1}. ${s}`)].join("\n");
+      const recipe = [`${tp.name} — "${text}"`, `Fontlar: ${fonts.join(", ")}`, `Renkler: ${d.c.slice(0, 4).join(", ")}`, `Tişört: ${GARMENT_COLORS[$("#sColor").value]?.en || "white"}`, ...steps.map((st, j) => `${j + 1}. ${st}`)].join("\n");
       return el("article", { class: "idea" },
         svgBox,
         el("div", { class: "idea-body" },
           el("div", { class: "idea-head" }, el("h3", { text: tp.name }), el("span", { class: "pill flat", text: useMine ? "Senin paletin" : PALETTES[palKey].name })),
+          el("p", { class: "idea-text", text: `"${text}"` }),
           el("div", { class: "font-row" }, ...fonts.map((f, j) => el("span", { class: "font-chip", style: `font-family:${FONT[tp.fonts[j]].css}`, text: f }))),
           el("div", { class: "sw-row" }, ...d.c.slice(0, 4).map((h) => el("button", { class: "hex", type: "button", title: `${h} kopyala`, onclick: () => copy(h, `${h} kopyalandı`) }, el("i", { style: `background:${h}` }), h))),
-          el("details", {}, el("summary", { text: "Kittl'da nasıl yapılır?" }), el("ol", {}, ...steps.map((s) => el("li", { text: s })))),
+          el("details", {}, el("summary", { text: "Kittl'da nasıl yapılır?" }), el("ol", {}, ...steps.map((st) => el("li", { text: st })))),
           el("div", { class: "idea-actions" },
             el("button", { class: "btn", type: "button", onclick: () => copy(recipe, "Tarif kopyalandı") }, "Tarifi kopyala"),
             el("a", { class: "btn", href: "https://www.kittl.com/", target: "_blank", rel: "noopener" }, "Kittl'ı aç ↗"))));
-    }));
+    });
+    $("#studioGrid").replaceChildren(...tiles);
+    const more = $("#sMore");
+    more.hidden = n >= MAX_IDEAS;
+    setText($("#sCount"), `${n} örnek · ${Object.keys(TEMPLATES).length} şablon tipi`);
+    // İlham linkleri: trendin anahtar kelimesiyle hazır aramalar
+    const q = encodeURIComponent(`${fill(t.tags[0], t)} design`);
+    const q2 = encodeURIComponent(`${fill(t.en, t)} t-shirt design`);
+    $("#inspo").replaceChildren(
+      el("span", { class: "k", text: "Gerçek örneklere bak:" }),
+      el("a", { class: "chip", href: `https://www.etsy.com/search?q=${encodeURIComponent(fill(t.tags[0], t))}`, target: "_blank", rel: "noopener", text: "Etsy'de ara ↗" }),
+      el("a", { class: "chip", href: `https://www.pinterest.com/search/pins/?q=${q2}`, target: "_blank", rel: "noopener", text: "Pinterest ↗" }),
+      el("a", { class: "chip", href: `https://www.google.com/search?tbm=isch&q=${q}`, target: "_blank", rel: "noopener", text: "Google Görseller ↗" }));
   }
   function setStudioTrend(id) {
     const t = byId(id);
     if (!t) return;
     studio.trendId = id;
     $("#sTrend").value = id;
-    $("#sIdea").replaceChildren(...t.ideas.map((i) => el("option", { value: fill(i, t), text: fill(i, t) })));
+    $("#sIdea").replaceChildren(el("option", { value: "", text: "Her örnekte farklı slogan" }), ...t.ideas.map((i) => el("option", { value: fill(i, t), text: fill(i, t) })));
+    studio.count = 9;
     $("#sText").value = "";
     const ks = [...t.colors, ...Object.keys(GARMENT_COLORS).filter((k) => !t.colors.includes(k))];
     $("#sColor").replaceChildren(...ks.map((k) => el("option", { value: k, text: GARMENT_COLORS[k].tr })));
@@ -2393,12 +2611,193 @@ const WIKI = {
     let tmr;
     $("#sText").addEventListener("input", () => { clearTimeout(tmr); tmr = setTimeout(renderStudio, 150); });
     $("#sShuffle").addEventListener("click", () => { studio.shuffle++; renderStudio(); });
+    $("#sMore").addEventListener("click", () => { studio.count += 6; renderStudio(); });
+    setupPhoto();
     $("#toStudio").addEventListener("click", () => openStudio(state.trendId));
     // Varsayılan: şu anki 1 numara
     const now = new Date();
     const top = [...TRENDS].sort((a, b) => scoreAt(b, now) - scoreAt(a, now))[0];
     setStudioTrend(top.id);
     document.fonts?.ready?.then(() => { if (state.view === "studio") renderStudio(); });
+  }
+
+  /* ---------- Fotoğraftan Kittl tarifi ---------- */
+  const photo = { blob: null, ctl: null, sample: null, canImg: false, ready: false, recipe: "", colors: [] };
+  // Görseldeki baskın renkler (cihazda, basit k-means)
+  function extractColors(cv, k = 6) {
+    const W = 80, H = Math.max(1, Math.round(cv.height / cv.width * 80));
+    const c = el("canvas", { width: W, height: H }), x = c.getContext("2d");
+    x.drawImage(cv, 0, 0, W, H);
+    const d = x.getImageData(0, 0, W, H).data, px = [];
+    for (let i = 0; i < d.length; i += 4) if (d[i + 3] > 128) px.push([d[i], d[i + 1], d[i + 2]]);
+    if (!px.length) return [];
+    let cent = Array.from({ length: k }, (_, i) => px[Math.floor((i + 0.5) * px.length / k)].slice());
+    let assign = new Int32Array(px.length);
+    for (let it = 0; it < 10; it++) {
+      const sum = cent.map(() => [0, 0, 0, 0]);
+      px.forEach((p, i) => {
+        let best = 0, bd = Infinity;
+        cent.forEach((q, j) => { const dd = (p[0] - q[0]) ** 2 + (p[1] - q[1]) ** 2 + (p[2] - q[2]) ** 2; if (dd < bd) { bd = dd; best = j; } });
+        assign[i] = best; const s = sum[best]; s[0] += p[0]; s[1] += p[1]; s[2] += p[2]; s[3]++;
+      });
+      cent = cent.map((q, j) => sum[j][3] ? [sum[j][0] / sum[j][3], sum[j][1] / sum[j][3], sum[j][2] / sum[j][3]] : q);
+    }
+    const counts = new Array(k).fill(0);
+    assign.forEach((a) => counts[a]++);
+    const out = cent.map((q, j) => ({ hex: rgb2hex(...q), share: counts[j] / px.length })).filter((c2) => c2.share > 0.01);
+    out.sort((a, b) => b.share - a.share);
+    // Birbirine çok yakın renkleri birleştir
+    const merged = [];
+    for (const c2 of out) {
+      const m = merged.find((q) => { const [a1, a2, a3] = hex2rgb(q.hex), [b1, b2, b3] = hex2rgb(c2.hex); return Math.hypot(a1 - b1, a2 - b2, a3 - b3) < 28; });
+      if (m) m.share += c2.share; else merged.push({ ...c2 });
+    }
+    return merged;
+  }
+  const arr = (v) => (Array.isArray(v) ? v : []);
+  const str = (v) => (typeof v === "string" ? v : v == null ? "" : String(v));
+  function photoStatus(msg) { setText($("#pStatus"), msg); }
+  function updatePhotoUi() {
+    const btn = $("#pAnalyze");
+    if (!photo.ready) { btn.disabled = true; return; }
+    if (!photo.sample || !photo.canImg) {
+      btn.hidden = true;
+      photoStatus(photo.blob
+        ? "Renkleri çıkardım. Fotoğrafın yapı/font/Kittl analizi claude.ai linkinde açınca çalışır (bu görünümde Claude'a erişim yok)."
+        : "Görsel yükle: renkleri burada çıkarırım. Tam analiz (yerleşim, font, Kittl adımları) claude.ai linkinde çalışır.");
+      return;
+    }
+    btn.hidden = false;
+    btn.disabled = !photo.blob;
+    if (!photo.blob) photoStatus("Beğendiğin bir tasarımın ekran görüntüsünü yükle, sonra \"Claude ile analiz et\"e bas.");
+  }
+  function loadPhoto(file) {
+    if (!file || !file.type.startsWith("image/")) { toast("Lütfen bir görsel seç"); return; }
+    const url = URL.createObjectURL(file), im = new Image();
+    im.onload = () => {
+      const cv = $("#pCanvas"), sc = Math.min(1, 900 / Math.max(im.naturalWidth, im.naturalHeight));
+      cv.width = Math.round(im.naturalWidth * sc); cv.height = Math.round(im.naturalHeight * sc);
+      cv.getContext("2d").drawImage(im, 0, 0, cv.width, cv.height);
+      URL.revokeObjectURL(url);
+      $("#pPrev").hidden = false;
+      photo.colors = extractColors(cv);
+      $("#pColors").replaceChildren(el("span", { class: "k", text: "Baskın renkler:" }), ...photo.colors.slice(0, 6).map((c) => el("button", { class: "hex", type: "button", title: `${c.hex} kopyala · %${Math.round(c.share * 100)}`, onclick: () => copy(c.hex, `${c.hex} kopyalandı`) }, el("i", { style: `background:${c.hex}` }), `${c.hex} · %${Math.round(c.share * 100)}`)));
+      $("#pResult").replaceChildren();
+      $("#pCopy").hidden = true;
+      // Claude'a gönderilecek görsel: kabul edilen türdeyse orijinal, değilse PNG
+      const ok = ["image/jpeg", "image/png", "image/webp", "image/gif"].includes(file.type) && file.size < 15e6;
+      if (ok) { photo.blob = file; updatePhotoUi(); }
+      else cv.toBlob((b) => { photo.blob = b; updatePhotoUi(); }, "image/png");
+      if (photo.sample && photo.canImg) photoStatus("Hazır. \"Claude ile analiz et\"e bas (15–60 sn sürebilir).");
+    };
+    im.onerror = () => toast("Görsel açılamadı");
+    im.src = url;
+  }
+  function renderAnalysis(r) {
+    const box = $("#pResult"), lines2 = [];
+    const sec = (title, ...kids) => el("section", { class: "an-sec" }, el("h4", { text: title }), ...kids);
+    const out = [];
+    if (str(r.ozet)) { out.push(el("p", { class: "an-sum", text: str(r.ozet) })); lines2.push(str(r.ozet)); }
+    const meta = [["Stil", r.stil], ["Yerleşim", r.yerlesim]].filter(([, v]) => str(v));
+    if (meta.length) out.push(el("dl", { class: "an-meta" }, ...meta.flatMap(([k2, v]) => [el("dt", { text: k2 }), el("dd", { text: str(v) })])));
+    meta.forEach(([k2, v]) => lines2.push(`${k2}: ${str(v)}`));
+    const texts = arr(r.yazilar);
+    if (texts.length) {
+      out.push(sec("Yazılar", el("ul", { class: "an-list" }, ...texts.map((y) => {
+        const fonts = arr(y.benzer_google_fontlari).map(str).filter(Boolean).slice(0, 4);
+        lines2.push(`Yazı "${str(y.metin)}": ${str(y.font_tarzi)} — fontlar: ${fonts.join(", ")} — ${str(y.kittl_donusum)} — ${str(y.efektler)}`);
+        return el("li", {},
+          el("b", { text: `"${str(y.metin)}"` }), ` — ${str(y.font_tarzi)}`,
+          fonts.length ? el("div", { class: "font-row" }, ...fonts.map((f) => el("span", { class: "font-chip", text: f }))) : null,
+          str(y.kittl_donusum) ? el("div", { class: "hint", text: `Dönüşüm: ${str(y.kittl_donusum)}` }) : null,
+          str(y.efektler) ? el("div", { class: "hint", text: `Efekt: ${str(y.efektler)}` }) : null);
+      }))));
+    }
+    const gr = arr(r.grafikler);
+    if (gr.length) {
+      out.push(sec("Grafikler", el("ul", { class: "an-list" }, ...gr.map((g) => { lines2.push(`Grafik: ${str(g.tarif)} — ${str(g.kittl_nasil)}`); return el("li", {}, el("b", { text: str(g.tarif) }), str(g.kittl_nasil) ? el("div", { class: "hint", text: str(g.kittl_nasil) }) : null); }))));
+    }
+    const cols = arr(r.renkler).filter((c) => /^#[0-9a-f]{6}$/i.test(str(c.hex)));
+    if (cols.length) {
+      out.push(sec("Renkler", el("div", { class: "sw-row" }, ...cols.map((c) => el("button", { class: "hex", type: "button", title: str(c.nerede), onclick: () => copy(str(c.hex).toUpperCase(), `${str(c.hex).toUpperCase()} kopyalandı`) }, el("i", { style: `background:${str(c.hex)}` }), `${str(c.hex).toUpperCase()} ${str(c.nerede)}`)))));
+      lines2.push(`Renkler: ${cols.map((c) => `${str(c.hex).toUpperCase()} (${str(c.nerede)})`).join(", ")}`);
+    }
+    const steps = arr(r.kittl_adimlari).map(str).filter(Boolean);
+    if (steps.length) { out.push(sec("Kittl'da adım adım", el("ol", { class: "an-steps" }, ...steps.map((st) => el("li", { text: st }))))); steps.forEach((st, i) => lines2.push(`${i + 1}. ${st}`)); }
+    const own = arr(r.farkli_yap).map(str).filter(Boolean);
+    if (own.length) { out.push(sec("Kendi versiyonunu yap (kopya olmasın)", el("ul", { class: "an-list" }, ...own.map((o) => el("li", { text: o }))))); own.forEach((o) => lines2.push(`Farklılaştır: ${o}`)); }
+    if (str(r.telif_uyarisi)) out.push(el("p", { class: "pill warn an-warn", text: `⚠ ${str(r.telif_uyarisi)}` }));
+    box.replaceChildren(...(out.length ? out : [el("p", { class: "hint", text: "Analiz boş döndü; başka bir görselle dene." })]));
+    photo.recipe = lines2.join("\n");
+    $("#pCopy").hidden = !photo.recipe;
+  }
+  async function analyzePhoto() {
+    if (!photo.sample || !photo.blob) return;
+    const t = byId(studio.trendId);
+    const prompt = [
+      "You are a t-shirt design coach for a Turkish Etsy seller who recreates design ideas in Kittl (kittl.com).",
+      "The attached image is a t-shirt design (or a photo of one) the seller found as inspiration.",
+      "Explain how it is built so they can make an ORIGINAL design inspired by it — they must not copy it exactly.",
+      `Context: the seller is working on the US trend "${t ? fill(t.en, t) : "t-shirt"}".`,
+      `Colors measured from the image on the device (hex, share): ${photo.colors.slice(0, 6).map((c) => `${c.hex} ${Math.round(c.share * 100)}%`).join(", ")}.`,
+      "Write ALL values in Turkish. Font suggestions must be free Google Fonts that look similar.",
+      "kittl_adimlari: 6-10 concrete steps using Kittl features (text Transform like Arch / Circle / Wave / Angle, effects like Outline / Shadow, shapes, masking/clipping, textures, the illustrations library). Keep feature names in English as they appear in Kittl.",
+      "farkli_yap: 3-4 concrete ways to make the result clearly original.",
+      "telif_uyarisi: if the image contains brand names, logos, sports teams, movie/cartoon characters or famous quotes, say so; otherwise an empty string.",
+      'Reply with only JSON of this shape: {"ozet": string, "stil": string, "yerlesim": string, "yazilar": [{"metin": string, "font_tarzi": string, "benzer_google_fontlari": [string], "kittl_donusum": string, "efektler": string}], "grafikler": [{"tarif": string, "kittl_nasil": string}], "renkler": [{"hex": "#RRGGBB", "nerede": string}], "kittl_adimlari": [string], "farkli_yap": [string], "telif_uyarisi": string}',
+    ].join("\n");
+    photo.ctl = new AbortController();
+    $("#pAnalyze").disabled = true; $("#pStop").hidden = false;
+    photoStatus("Claude görseli inceliyor… (15–60 sn sürebilir; ilk kullanımda izin sorulur)");
+    $("#pResult").replaceChildren(el("p", { class: "hint", text: "Düşünüyor…" }));
+    try {
+      const data = await photo.sample.json(prompt, { images: photo.blob, signal: photo.ctl.signal });
+      renderAnalysis(data && typeof data === "object" ? data : {});
+      photoStatus("Analiz hazır. Renk kodlarına tıklayınca kopyalanır.");
+    } catch (e) {
+      const msg = {
+        cancelled: "Durduruldu.",
+        not_granted: "Claude'a erişim izni verilmedi; renk analizi yine de yukarıda.",
+        sampling_disabled: "Bu hesapta Claude analizi kapalı.",
+        images_unavailable: "Bu görünümde görsel analizi yapılamıyor.",
+        image_rejected: "Bu görsel kabul edilmedi — başka bir dosya (JPG/PNG) dene.",
+        rate_limited: "Çok sık denendi ya da kullanım limiti doldu — biraz sonra tekrar dene.",
+        refused: "Bu görsel analiz edilemedi — farklı bir görsel dene.",
+        invalid_json: "Cevap okunamadı — bir kez daha dene.",
+        session_expired: "Oturum süresi doldu — sayfayı yenileyip tekrar giriş yap.",
+      }[e?.code] || "Bir sorun oldu — tekrar dene.";
+      if (["not_granted", "sampling_disabled", "images_unavailable", "capability_disabled", "capability_removed", "not_declared"].includes(e?.code)) photo.canImg = false;
+      $("#pResult").replaceChildren();
+      photoStatus(msg);
+    } finally {
+      $("#pStop").hidden = true;
+      $("#pAnalyze").disabled = !photo.blob;
+      updatePhotoUi();
+    }
+  }
+  function setupPhoto() {
+    $("#pFile").addEventListener("change", (e) => { loadPhoto(e.target.files[0]); e.target.value = ""; });
+    const drop = $("#pDrop");
+    ["dragenter", "dragover"].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.add("over"); }));
+    ["dragleave", "drop"].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.remove("over"); }));
+    drop.addEventListener("drop", (e) => loadPhoto(e.dataTransfer.files[0]));
+    document.addEventListener("paste", (e) => {
+      if (state.view !== "studio") return;
+      const f = [...(e.clipboardData?.files || [])].find((x) => x.type.startsWith("image/"));
+      if (f) { $("#photoBox").open = true; loadPhoto(f); }
+    });
+    $("#pAnalyze").addEventListener("click", analyzePhoto);
+    $("#pStop").addEventListener("click", () => photo.ctl?.abort());
+    $("#pCopy").addEventListener("click", () => copy(photo.recipe, "Tarif kopyalandı"));
+    photo.ready = true;
+    updatePhotoUi();
+    (async () => {
+      try {
+        photo.sample = window.claude?.use ? await window.claude.use("sample") : null;
+        if (photo.sample) { const lim = await photo.sample.limits().catch(() => null); photo.canImg = !!lim?.images; }
+      } catch { photo.sample = null; }
+      updatePhotoUi();
+    })();
   }
 
   /* ---------- Sekmeler & filtreler ---------- */
