@@ -396,6 +396,14 @@ table.plain { border-collapse: collapse; width: 100%; }
 .an-warn { white-space: normal; line-height: 1.4; padding: 6px 12px; }
 @media (max-width: 760px) { .photo-grid { grid-template-columns: 1fr; } }
 
+
+.ext-steps { margin: 0; padding-left: 22px; display: grid; gap: 12px; font-size: .9rem; color: var(--text-2); }
+.ext-steps li::marker { color: var(--accent); font-weight: 800; }
+.ext-steps b { color: var(--text); display: block; margin-bottom: 6px; }
+.ext-steps .btn-row { margin-top: 6px; }
+.ext-steps textarea { margin: 4px 0 2px; resize: vertical; font: 12.5px/1.5 var(--f-mono); }
+.raw-answer { margin: 0; padding: 12px; background: var(--ink); border-radius: 12px; white-space: pre-wrap; word-break: break-word; font: 12.5px/1.55 var(--f-mono); color: var(--text-2); max-height: 360px; overflow-y: auto; }
+
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
 @media (max-width: 900px) {
   .spot { grid-template-columns: 1fr; }
@@ -494,7 +502,7 @@ table.plain { border-collapse: collapse; width: 100%; }
     </div>
     <div class="inspo" id="inspo"></div>
     <details class="panel photo" id="photoBox">
-      <summary><b>Fotoğraftan Kittl tarifi</b><span>Beğendiğin bir tasarımın ekran görüntüsünü yükle → nasıl yapıldığını çıkarayım</span></summary>
+      <summary><b>Fotoğraftan Kittl tarifi</b><span>Beğendiğin bir tasarımı Gemini/ChatGPT'ye analiz ettir → site Kittl tarifine çevirsin</span></summary>
       <div class="photo-grid">
         <div>
           <label class="drop" id="pDrop" for="pFile"><b>Görsel seç</b><span>ya da sürükle · Ctrl+V ile yapıştır</span></label>
@@ -503,12 +511,28 @@ table.plain { border-collapse: collapse; width: 100%; }
         </div>
         <div class="photo-out">
           <div class="sw-row" id="pColors"></div>
-          <div class="btn-row">
-            <button type="button" class="btn cta" id="pAnalyze" disabled>Claude ile analiz et</button>
-            <button type="button" class="btn" id="pStop" hidden>Durdur</button>
-            <button type="button" class="btn" id="pCopy" hidden>Tarifi kopyala</button>
-          </div>
           <p class="hint" id="pStatus"></p>
+          <ol class="ext-steps">
+            <li>
+              <b>Analiz prompt'unu kopyala</b>
+              <button type="button" class="btn cta" id="pCopyPrompt">Prompt'u kopyala</button>
+            </li>
+            <li>
+              <b>Gemini ya da ChatGPT'yi aç</b>Ekran görüntüsünü yükle, prompt'u yapıştırıp gönder.
+              <span class="btn-row">
+                <a class="btn" href="https://gemini.google.com/app" target="_blank" rel="noopener">Gemini'yi aç ↗</a>
+                <a class="btn" href="https://chatgpt.com/" target="_blank" rel="noopener">ChatGPT'yi aç ↗</a>
+              </span>
+            </li>
+            <li>
+              <b>Gelen cevabın tamamını kopyalayıp buraya yapıştır</b>
+              <textarea id="pAnswer" rows="4" placeholder="Gemini / ChatGPT cevabını buraya yapıştır…" aria-label="Yapay zekâ cevabı"></textarea>
+              <span class="btn-row">
+                <button type="button" class="btn cta" id="pShow">Tarifi göster</button>
+                <button type="button" class="btn" id="pCopy" hidden>Tarifi kopyala</button>
+              </span>
+            </li>
+          </ol>
           <div id="pResult" aria-live="polite"></div>
         </div>
       </div>
@@ -2622,7 +2646,7 @@ const WIKI = {
   }
 
   /* ---------- Fotoğraftan Kittl tarifi ---------- */
-  const photo = { blob: null, ctl: null, sample: null, canImg: false, ready: false, recipe: "", colors: [] };
+  const photo = { ready: false, recipe: "", colors: [] };
   // Görseldeki baskın renkler (cihazda, basit k-means)
   function extractColors(cv, k = 6) {
     const W = 80, H = Math.max(1, Math.round(cv.height / cv.width * 80));
@@ -2658,18 +2682,10 @@ const WIKI = {
   const str = (v) => (typeof v === "string" ? v : v == null ? "" : String(v));
   function photoStatus(msg) { setText($("#pStatus"), msg); }
   function updatePhotoUi() {
-    const btn = $("#pAnalyze");
-    if (!photo.ready) { btn.disabled = true; return; }
-    if (!photo.sample || !photo.canImg) {
-      btn.hidden = true;
-      photoStatus(photo.blob
-        ? "Renkleri çıkardım. Fotoğrafın yapı/font/Kittl analizi claude.ai linkinde açınca çalışır (bu görünümde Claude'a erişim yok)."
-        : "Görsel yükle: renkleri burada çıkarırım. Tam analiz (yerleşim, font, Kittl adımları) claude.ai linkinde çalışır.");
-      return;
-    }
-    btn.hidden = false;
-    btn.disabled = !photo.blob;
-    if (!photo.blob) photoStatus("Beğendiğin bir tasarımın ekran görüntüsünü yükle, sonra \"Claude ile analiz et\"e bas.");
+    if (!photo.ready) return;
+    photoStatus(photo.colors.length
+      ? "Renkler çıktı ve prompt'a eklendi. Şimdi prompt'u kopyala, Gemini/ChatGPT'de görselle birlikte gönder."
+      : "İstersen görseli buraya da yükle: baskın renkleri çıkarıp prompt'a eklerim. Yüklemeden de prompt'u kopyalayabilirsin.");
   }
   function loadPhoto(file) {
     if (!file || !file.type.startsWith("image/")) { toast("Lütfen bir görsel seç"); return; }
@@ -2684,11 +2700,7 @@ const WIKI = {
       $("#pColors").replaceChildren(el("span", { class: "k", text: "Baskın renkler:" }), ...photo.colors.slice(0, 6).map((c) => el("button", { class: "hex", type: "button", title: `${c.hex} kopyala · %${Math.round(c.share * 100)}`, onclick: () => copy(c.hex, `${c.hex} kopyalandı`) }, el("i", { style: `background:${c.hex}` }), `${c.hex} · %${Math.round(c.share * 100)}`)));
       $("#pResult").replaceChildren();
       $("#pCopy").hidden = true;
-      // Claude'a gönderilecek görsel: kabul edilen türdeyse orijinal, değilse PNG
-      const ok = ["image/jpeg", "image/png", "image/webp", "image/gif"].includes(file.type) && file.size < 15e6;
-      if (ok) { photo.blob = file; updatePhotoUi(); }
-      else cv.toBlob((b) => { photo.blob = b; updatePhotoUi(); }, "image/png");
-      if (photo.sample && photo.canImg) photoStatus("Hazır. \"Claude ile analiz et\"e bas (15–60 sn sürebilir).");
+      updatePhotoUi();
     };
     im.onerror = () => toast("Görsel açılamadı");
     im.src = url;
@@ -2731,48 +2743,45 @@ const WIKI = {
     photo.recipe = lines2.join("\n");
     $("#pCopy").hidden = !photo.recipe;
   }
-  async function analyzePhoto() {
-    if (!photo.sample || !photo.blob) return;
+  // Gemini / ChatGPT'ye yapıştırılacak analiz talimatı (görseli kullanıcı oraya kendisi yükler)
+  function analysisPrompt() {
     const t = byId(studio.trendId);
-    const prompt = [
+    return [
       "You are a t-shirt design coach for a Turkish Etsy seller who recreates design ideas in Kittl (kittl.com).",
-      "The attached image is a t-shirt design (or a photo of one) the seller found as inspiration.",
-      "Explain how it is built so they can make an ORIGINAL design inspired by it — they must not copy it exactly.",
-      `Context: the seller is working on the US trend "${t ? fill(t.en, t) : "t-shirt"}".`,
-      `Colors measured from the image on the device (hex, share): ${photo.colors.slice(0, 6).map((c) => `${c.hex} ${Math.round(c.share * 100)}%`).join(", ")}.`,
+      "The image I attached is a t-shirt design (or a photo of one) I found as inspiration.",
+      "Explain how it is built so I can make an ORIGINAL design inspired by it — I must not copy it exactly.",
+      `Context: I am working on the US trend "${t ? fill(t.en, t) : "t-shirt"}".`,
+      photo.colors.length ? `Colors measured from the image (hex, share): ${photo.colors.slice(0, 6).map((c) => `${c.hex} ${Math.round(c.share * 100)}%`).join(", ")}.` : "",
       "Write ALL values in Turkish. Font suggestions must be free Google Fonts that look similar.",
       "kittl_adimlari: 6-10 concrete steps using Kittl features (text Transform like Arch / Circle / Wave / Angle, effects like Outline / Shadow, shapes, masking/clipping, textures, the illustrations library). Keep feature names in English as they appear in Kittl.",
       "farkli_yap: 3-4 concrete ways to make the result clearly original.",
       "telif_uyarisi: if the image contains brand names, logos, sports teams, movie/cartoon characters or famous quotes, say so; otherwise an empty string.",
-      'Reply with only JSON of this shape: {"ozet": string, "stil": string, "yerlesim": string, "yazilar": [{"metin": string, "font_tarzi": string, "benzer_google_fontlari": [string], "kittl_donusum": string, "efektler": string}], "grafikler": [{"tarif": string, "kittl_nasil": string}], "renkler": [{"hex": "#RRGGBB", "nerede": string}], "kittl_adimlari": [string], "farkli_yap": [string], "telif_uyarisi": string}',
-    ].join("\n");
-    photo.ctl = new AbortController();
-    $("#pAnalyze").disabled = true; $("#pStop").hidden = false;
-    photoStatus("Claude görseli inceliyor… (15–60 sn sürebilir; ilk kullanımda izin sorulur)");
-    $("#pResult").replaceChildren(el("p", { class: "hint", text: "Düşünüyor…" }));
-    try {
-      const data = await photo.sample.json(prompt, { images: photo.blob, signal: photo.ctl.signal });
-      renderAnalysis(data && typeof data === "object" ? data : {});
-      photoStatus("Analiz hazır. Renk kodlarına tıklayınca kopyalanır.");
-    } catch (e) {
-      const msg = {
-        cancelled: "Durduruldu.",
-        not_granted: "Claude'a erişim izni verilmedi; renk analizi yine de yukarıda.",
-        sampling_disabled: "Bu hesapta Claude analizi kapalı.",
-        images_unavailable: "Bu görünümde görsel analizi yapılamıyor.",
-        image_rejected: "Bu görsel kabul edilmedi — başka bir dosya (JPG/PNG) dene.",
-        rate_limited: "Çok sık denendi ya da kullanım limiti doldu — biraz sonra tekrar dene.",
-        refused: "Bu görsel analiz edilemedi — farklı bir görsel dene.",
-        invalid_json: "Cevap okunamadı — bir kez daha dene.",
-        session_expired: "Oturum süresi doldu — sayfayı yenileyip tekrar giriş yap.",
-      }[e?.code] || "Bir sorun oldu — tekrar dene.";
-      if (["not_granted", "sampling_disabled", "images_unavailable", "capability_disabled", "capability_removed", "not_declared"].includes(e?.code)) photo.canImg = false;
-      $("#pResult").replaceChildren();
-      photoStatus(msg);
-    } finally {
-      $("#pStop").hidden = true;
-      $("#pAnalyze").disabled = !photo.blob;
-      updatePhotoUi();
+      'Reply with ONLY one JSON code block of this shape and no other text: {"ozet": string, "stil": string, "yerlesim": string, "yazilar": [{"metin": string, "font_tarzi": string, "benzer_google_fontlari": [string], "kittl_donusum": string, "efektler": string}], "grafikler": [{"tarif": string, "kittl_nasil": string}], "renkler": [{"hex": "#RRGGBB", "nerede": string}], "kittl_adimlari": [string], "farkli_yap": [string], "telif_uyarisi": string}',
+    ].filter(Boolean).join("\n");
+  }
+  // Yapıştırılan cevaptan JSON'u toleranslı biçimde çıkar (kod bloğu, önünde/arkasında metin olabilir)
+  function parseAnswer(raw) {
+    const s = String(raw || "").trim();
+    const tries = [s];
+    const fence = s.match(/```(?:json)?\s*([\s\S]*?)```/i);
+    if (fence) tries.push(fence[1]);
+    const a = s.indexOf("{"), b = s.lastIndexOf("}");
+    if (a >= 0 && b > a) tries.push(s.slice(a, b + 1));
+    for (const x of tries) { try { const v = JSON.parse(x); if (v && typeof v === "object") return v; } catch { /* sıradaki */ } }
+    return null;
+  }
+  function showAnswer() {
+    const raw = $("#pAnswer").value;
+    if (!raw.trim()) { toast("Önce Gemini/ChatGPT'nin cevabını yapıştır"); return; }
+    const data = parseAnswer(raw);
+    if (data) {
+      renderAnalysis(data);
+      photoStatus("Tarif hazır. Renk kodlarına tıklayınca kopyalanır.");
+    } else {
+      $("#pResult").replaceChildren(el("pre", { class: "raw-answer", text: raw.trim() }));
+      photo.recipe = raw.trim();
+      $("#pCopy").hidden = false;
+      photoStatus("Cevap beklenen düzende değildi; olduğu gibi gösteriyorum. Düzenli tarif için prompt'u tekrar gönderip \"sadece JSON\" iste.");
     }
   }
   function setupPhoto() {
@@ -2782,22 +2791,17 @@ const WIKI = {
     ["dragleave", "drop"].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.remove("over"); }));
     drop.addEventListener("drop", (e) => loadPhoto(e.dataTransfer.files[0]));
     document.addEventListener("paste", (e) => {
-      if (state.view !== "studio") return;
+      if (state.view !== "studio" || e.target === $("#pAnswer")) return;
       const f = [...(e.clipboardData?.files || [])].find((x) => x.type.startsWith("image/"));
       if (f) { $("#photoBox").open = true; loadPhoto(f); }
     });
-    $("#pAnalyze").addEventListener("click", analyzePhoto);
-    $("#pStop").addEventListener("click", () => photo.ctl?.abort());
+    $("#pCopyPrompt").addEventListener("click", () => copy(analysisPrompt(), "Prompt kopyalandı — Gemini/ChatGPT'de görselle birlikte gönder"));
+    $("#pShow").addEventListener("click", showAnswer);
+    // Cevap yapıştırılınca otomatik göster
+    $("#pAnswer").addEventListener("paste", () => setTimeout(() => { if (parseAnswer($("#pAnswer").value)) showAnswer(); }, 0));
     $("#pCopy").addEventListener("click", () => copy(photo.recipe, "Tarif kopyalandı"));
     photo.ready = true;
     updatePhotoUi();
-    (async () => {
-      try {
-        photo.sample = window.claude?.use ? await window.claude.use("sample") : null;
-        if (photo.sample) { const lim = await photo.sample.limits().catch(() => null); photo.canImg = !!lim?.images; }
-      } catch { photo.sample = null; }
-      updatePhotoUi();
-    })();
   }
 
   /* ---------- Sekmeler & filtreler ---------- */
